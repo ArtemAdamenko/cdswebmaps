@@ -26,7 +26,7 @@ import org.json.JSONObject;
 public class JsonReader {
 
     /*Запрос к службе геокодирования (по адресу получаем координаты)*/
-   /* public static void main(final String[] args) throws IOException, JSONException {
+    public static void main(final String[] args) throws IOException, JSONException {
     final String baseUrl = "http://maps.googleapis.com/maps/api/geocode/json";// путь к Geocoding API по HTTP
     final Map<String, String> params = Maps.newHashMap();
     params.put("sensor", "false");// исходит ли запрос на геокодирование от устройства с датчиком местоположения
@@ -42,9 +42,9 @@ public class JsonReader {
     final double lng = location.getDouble("lng");// долгота
     final double lat = location.getDouble("lat");// широта
     System.out.println(String.format("%f,%f", lat, lng));// итоговая широта и долгота
-}*/
+}
     /*Обратная операция (по координатам определяем адрес)*/
-    public static void main(final String[] args) throws IOException, JSONException {
+    /*public static void main(final String[] args) throws IOException, JSONException {
     final String baseUrl = "http://maps.googleapis.com/maps/api/geocode/json";// путь к Geocoding API по HTTP
     final Map<String, String> params = Maps.newHashMap();
     params.put("language", "ru");// язык данных, на котором мы хотим получить
@@ -62,7 +62,7 @@ public class JsonReader {
     final JSONObject location = response.getJSONArray("results").getJSONObject(0);
     final String formattedAddress = location.getString("formatted_address");
     System.out.println(formattedAddress);// итоговый адрес
-}
+}*/
     
     private static String readAll(final Reader rd) throws IOException {
         final StringBuilder sb = new StringBuilder();

@@ -5,9 +5,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Cds Main</title>
     </head>
     <body>
         <h1>Hello World!</h1>
+        <a href="maps.jsp">maps</a>
     </body>
 </html>
