@@ -1,6 +1,5 @@
 package com.mycompany.cdswebmaps;
 
-import Entities.User;
 import com.google.gson.Gson;
 import com.mycompany.cdswebmaps.JsonReader;
 import entities.BusObject;

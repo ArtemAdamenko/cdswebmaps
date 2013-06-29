@@ -32,6 +32,7 @@ public class GetBusesServlet extends HttpServlet {
 
     /*Менеджер подключений к БД*/
      private static MyBatisManager manager = new MyBatisManager();
+     SqlSession session;
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -47,24 +48,25 @@ public class GetBusesServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            App.main();
-            //manager.initFactory("development");
-            //SqlSession session = manager.getSessionFactory().openSession();
-            /*Забираем маппер из сессии*/
-            //Mapper mapper = session.getMapper(Mapper.class);
+            /*инициализация сессии и маппера*/
+            manager.initFactory("development");
+            session = manager.getSessionFactory().openSession();
+            Mapper mapper = session.getMapper(Mapper.class);
+            
             /*Получаем id поль-ля*/
-            //int userId = mapper.selectUserId("ponomarev");
+            int userId = mapper.selectUserId("ponomarev");
             /*Получаем проекты и маршруты по каждому в соответствии с id поль-ля*/
-            //List<Map> routes = mapper.selectProjsAndRoutes(10);
-           // session.close();
-            //Map<Integer, List<Integer>> newRoutes = mapFromListOfMap(routes);
-           // getObjects(newRoutes);
-           // session.close();
-            //System.out.println(newRoutes.toString());
-       /* }catch(ResourceException e){
+            List<Map> routes = mapper.selectProjsAndRoutes(userId);
+            /*преобразовываем данные в удобный формат*/
+            Map<Integer, List<Integer>> newRoutes = mapFromListOfMap(routes);
+            /*преобразовываем данные в json*/
+            String res = getObjects(newRoutes);
+            session.commit();
+            out.print(res);       
+        }catch(ResourceException e){
             Logger.getLogger(GetBusesServlet.class.getName()).log(Level.SEVERE, null, e);
-        } */
-        }finally {            
+        }finally {
+            session.close();
             out.close();
         }
     }
@@ -95,12 +97,14 @@ public class GetBusesServlet extends HttpServlet {
                 jsonBuses += gson.toJson(buses);
                 //System.out.println(jsonBuses.toString());
             }
-        return jsonBuses;
+        session.commit();
+        String newBus = jsonBuses.replaceAll("]", "");
+        String new1 = newBus.replaceAll("[", "");
+        return newBus;
         }catch(Exception e){
             throw new Exception(e);
         }
         finally{
-            session.commit();
             session.close();
         }
     }

@@ -29,8 +29,11 @@
             type: "GET",  
             url: "GetBusesServlet",  
             //data: iduser,  
-            success: function(result){  
-              alert(result);
+            success: function(result){
+                result.replace("[","");
+                result.replace("]","");
+                alert(res);
+              //var res =  JSON.parse(result);
             }                
           });  
         }        
