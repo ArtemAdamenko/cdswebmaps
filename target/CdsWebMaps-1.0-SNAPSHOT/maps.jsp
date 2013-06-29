@@ -19,6 +19,22 @@
       }
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        function getBuses(){  
+
+          //$("#loading").hide();
+
+          $.ajax({  
+            type: "GET",  
+            url: "GetBusesServlet",  
+            //data: iduser,  
+            success: function(result){  
+              alert(result);
+            }                
+          });  
+        }        
+    </script>
     <script>
         var map;
         function initialize() {
@@ -35,10 +51,10 @@
                 title: 'Hello World!'
             });
         }
-        google.maps.event.addDomListener(window, 'load', initialize);
+        //google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>
-  <body>
+  <body onload="getBuses()">
     <div id="map-canvas"></div>
   </body>
 </html>

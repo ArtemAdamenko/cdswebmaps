@@ -1,6 +1,6 @@
 package mapper;
 
-import Entities.User;
+import entities.BusObject;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.MapKey;
@@ -22,4 +22,8 @@ public interface Mapper {
             "where up.user_ = #{userId}")
     @MapKey("proj")
     public List<Map> selectProjsAndRoutes(int userId);
+    
+    /*Запрос на объекты по маршруту*/
+    @Select("SELECT name_, last_lon_, last_lat_, last_time_ FROM objects WHERE disp_route_ = #{route} ORDER BY last_time_")
+    public List<BusObject> selectObjects(int route);
 }

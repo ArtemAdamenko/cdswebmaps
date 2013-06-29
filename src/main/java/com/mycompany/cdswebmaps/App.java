@@ -1,7 +1,9 @@
 package com.mycompany.cdswebmaps;
 
 import Entities.User;
+import com.google.gson.Gson;
 import com.mycompany.cdswebmaps.JsonReader;
+import entities.BusObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,11 +20,12 @@ import org.json.JSONException;
  */
 public class App 
 {
-    public static void main( String[] args ) throws IOException, JSONException, Exception
+    
+    private static MyBatisManager manager = new MyBatisManager();
+    public static void main() throws IOException, JSONException, Exception
     {
-        System.out.println( "Hello World!" );
         //JsonReader.main(args);
-        MyBatisManager manager = new MyBatisManager();
+        //MyBatisManager manager = new MyBatisManager();
         /*Выбираем среду параметров БД*/
         manager.initFactory("development");
         SqlSession session = manager.getSessionFactory().openSession();
@@ -32,9 +35,11 @@ public class App
         int userId = mapper.selectUserId("ponomarev");
         /*Получаем проекты и маршруты по каждому в соответствии с id поль-ля*/
         List<Map> routes = mapper.selectProjsAndRoutes(userId);
-        Map<Integer, List<Integer>> newRoutes = mapFromListOfMap(routes);
+        session.close();
         
-        System.out.println(newRoutes.size());
+        Map<Integer, List<Integer>> newRoutes = mapFromListOfMap(routes);
+        getObjects(newRoutes);
+        System.out.println(newRoutes.toString());
     }
     
     public static Map<Integer,List<Integer>> mapFromListOfMap (List<Map> listOfMap ) 
@@ -55,5 +60,37 @@ public class App
             }        
         }
         return map;
+    }
+    
+    public static void getObjects(Map<Integer, List<Integer>> projects) throws Exception
+    {
+        /*Открываем сессию для запросов*/
+        SqlSession session = manager.getSessionFactory().openSession();
+        Mapper mapper = session.getMapper(Mapper.class);
+        /*результирующий список объектов по маршруту*/
+        List<BusObject> buses = new ArrayList<BusObject>();
+        
+        try{
+            /*Проход по всем проектам*/
+            for (List<Integer> routes : projects.values()){
+                /*Проход по всем маршрутам*/
+                for (int i = 0; i <= routes.size()-1; i++){
+                    if (routes.get(i) != 0){
+                        /*Объекты-автобусы по каждому маршруту*/
+                        buses = mapper.selectObjects(routes.get(i));
+                    }
+                }
+                /*Преобразование в json автобусов по маршруту*/
+                Gson gson = new Gson();
+                String jsonBuses = gson.toJson(buses);
+                System.out.println(jsonBuses.toString());
+            }
+        }catch(Exception e){
+            throw new Exception(e);
+        }
+        finally{
+            session.commit();
+            session.close();
+        }
     }
 }
