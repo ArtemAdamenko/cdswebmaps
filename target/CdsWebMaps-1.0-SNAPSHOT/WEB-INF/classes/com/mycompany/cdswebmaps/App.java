@@ -21,24 +21,24 @@ public class App
 {
     
     private static MyBatisManager manager = new MyBatisManager();
-    public static void main() throws IOException, JSONException, Exception
+    public static void main(String[] args) throws IOException, JSONException, Exception
     {
-        //JsonReader.main(args);
+        JsonReader.main(args);
         //MyBatisManager manager = new MyBatisManager();
         /*Выбираем среду параметров БД*/
-        manager.initFactory("development");
-        SqlSession session = manager.getSessionFactory().openSession();
+        //manager.initFactory("development");
+        //SqlSession session = manager.getSessionFactory().openSession();
         /*Забираем маппер из сессии*/
-        Mapper mapper = session.getMapper(Mapper.class);
+        //Mapper mapper = session.getMapper(Mapper.class);
         /*Получаем id поль-ля*/
-        int userId = mapper.selectUserId("ponomarev");
+        //int userId = mapper.selectUserId("ponomarev");
         /*Получаем проекты и маршруты по каждому в соответствии с id поль-ля*/
-        List<Map> routes = mapper.selectProjsAndRoutes(userId);
-        session.close();
+       // List<Map> routes = mapper.selectProjsAndRoutes(userId);
+        //session.close();
         
-        Map<Integer, List<Integer>> newRoutes = mapFromListOfMap(routes);
-        getObjects(newRoutes);
-        System.out.println(newRoutes.toString());
+       // Map<Integer, List<Integer>> newRoutes = mapFromListOfMap(routes);
+        //getObjects(newRoutes);
+        //System.out.println(newRoutes.toString());
     }
     
     public static Map<Integer,List<Integer>> mapFromListOfMap (List<Map> listOfMap ) 

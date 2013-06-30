@@ -32,7 +32,7 @@ public class GetBusesServlet extends HttpServlet {
 
     /*Менеджер подключений к БД*/
      private static MyBatisManager manager = new MyBatisManager();
-     SqlSession session;
+     //private static SqlSession session;
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -47,11 +47,12 @@ public class GetBusesServlet extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        manager.initFactory("development");
+        SqlSession session = manager.getSessionFactory().openSession();
+        Mapper mapper = session.getMapper(Mapper.class);
         try {
             /*инициализация сессии и маппера*/
-            manager.initFactory("development");
-            session = manager.getSessionFactory().openSession();
-            Mapper mapper = session.getMapper(Mapper.class);
+           
             
             /*Получаем id поль-ля*/
             int userId = mapper.selectUserId("ponomarev");
@@ -82,7 +83,8 @@ public class GetBusesServlet extends HttpServlet {
         /*результирующий список объектов по маршруту*/
         List<BusObject> buses = new ArrayList<BusObject>();
         Gson gson = new Gson();
-        String jsonBuses = "";
+        String allJsonBuses="[";
+       
         try{
             /*Проход по всем проектам*/
             for (List<Integer> routes : projects.values()){
@@ -94,13 +96,15 @@ public class GetBusesServlet extends HttpServlet {
                     }
                 }
                 /*Преобразование в json автобусов по маршруту*/
-                jsonBuses += gson.toJson(buses);
-                //System.out.println(jsonBuses.toString());
+                /*Т.к. у нас json конкатенуется друг к другу, то нужно форматировать ответ*/
+                allJsonBuses += gson.toJson(buses).replaceAll("\\[|\\]", "") +",";
+                
             }
         session.commit();
-        String newBus = jsonBuses.replaceAll("]", "");
-        String new1 = newBus.replaceAll("[", "");
-        return newBus;
+        /*стирание лишних символов дял валидности json*/
+        allJsonBuses = allJsonBuses.replaceAll(",,", ",");
+        allJsonBuses = allJsonBuses.substring(0, allJsonBuses.length()-1);
+        return allJsonBuses + "]";
         }catch(Exception e){
             throw new Exception(e);
         }
