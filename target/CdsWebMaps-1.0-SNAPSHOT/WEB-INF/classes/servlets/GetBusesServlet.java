@@ -93,11 +93,13 @@ public class GetBusesServlet extends HttpServlet {
                     if (routes.get(i) != 0){
                         /*Объекты-автобусы по каждому маршруту*/
                         buses = mapper.selectObjects(routes.get(i));
+                        if (buses.size()!=0)
+                            allJsonBuses += gson.toJson(buses).replaceAll("\\[|\\]", "") +",";
                     }
                 }
                 /*Преобразование в json автобусов по маршруту*/
                 /*Т.к. у нас json конкатенуется друг к другу, то нужно форматировать ответ*/
-                allJsonBuses += gson.toJson(buses).replaceAll("\\[|\\]", "") +",";
+               
                 
             }
         session.commit();
