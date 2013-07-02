@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.resource.ResourceException;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +33,6 @@ public class GetBusesServlet extends HttpServlet {
 
     /*Менеджер подключений к БД*/
      private static MyBatisManager manager = new MyBatisManager();
-     //private static SqlSession session;
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -50,12 +50,15 @@ public class GetBusesServlet extends HttpServlet {
         manager.initFactory("development");
         SqlSession session = manager.getSessionFactory().openSession();
         Mapper mapper = session.getMapper(Mapper.class);
+        Cookie[] cookies = request.getCookies();
+        String username = "";
         try {
-            /*инициализация сессии и маппера*/
-           
-            
+            for (int i = 0; i <= cookies.length-1; i++){
+                if (cookies[i].getName().equals("username"))
+                     username = cookies[i].getValue();
+            }
             /*Получаем id поль-ля*/
-            int userId = mapper.selectUserId("ponomarev");
+            int userId = mapper.selectUserId(username);
             /*Получаем проекты и маршруты по каждому в соответствии с id поль-ля*/
             List<Map> routes = mapper.selectProjsAndRoutes(userId);
             /*преобразовываем данные в удобный формат*/
@@ -93,7 +96,7 @@ public class GetBusesServlet extends HttpServlet {
                     if (routes.get(i) != 0){
                         /*Объекты-автобусы по каждому маршруту*/
                         buses = mapper.selectObjects(routes.get(i));
-                        if (buses.size()!=0)
+                        if (!buses.isEmpty())
                             allJsonBuses += gson.toJson(buses).replaceAll("\\[|\\]", "") +",";
                     }
                 }

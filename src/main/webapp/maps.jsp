@@ -21,18 +21,26 @@
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
     <script>
-        
-        function convert(number){
-           // var gradus = 5142.14;
-            var temp = number.toString();
-            var one = temp.substr(0,2);
-            var two = temp.substr(2,2);
-            var three = temp.substr(5,2);
+        function logout(name){
+            document.cookie = name + "=" + "; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+            var url = document.location.href.split("/");
+            var redirect = "";
+            for (var i = 0; i <= url.length - 2; i++){
+                redirect +=url[i];
+            }
+            document.location.href = redirect;
+        }
+        function convert(radian){
+            var radian = radian.toString();
+            var hour = radian.substr(0,2);
+            var min = radian.substr(2,2);
+            var sec = radian.substr(5,2);
+            var sec2 = radian.substr(7,2);
+            var sec = sec.toString() + "." + sec2.toString();
             
-            var res = parseInt(one) + (parseInt(two) + parseInt(three)/60)/60;
-            var res2 = res*Math.PI/180;
-           //var res3=1+1;
-           return res2;
+            var deg = (parseInt(hour) + (parseInt(min) + parseFloat(sec)/60)/60);
+            //var deg = deg*Math.PI/180;
+           return deg;
         }
         
         function initialize() {
@@ -44,21 +52,21 @@
                 var res =  JSON.parse(result);
                 var myLatlng = new google.maps.LatLng(51.7038,39.1833);
                 var mapOptions = {
-                  zoom: 4,
+                  zoom: 12,
                   center: myLatlng,
                   mapTypeId: google.maps.MapTypeId.ROADMAP
                 }
                 var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
                 for (var i = 0; i <= res.length-1; i++)
-              {
+                {
                   var Coords = new google.maps.LatLng(convert(res[i].last_lon_),convert(res[i].last_lat_));
                   var marker = new google.maps.Marker({
                     position: Coords,
                     map: map,
                     title: res[i].name_ + " " + res[i].last_time_
-                });
-              }
+                    });
+                }
             }
             });
         }
@@ -69,5 +77,6 @@
   </head>
   <body>
   <div id="map-canvas"></div>
+  <input type="submit" value='Выход' id ='logout' onclick="logout('username');">
   </body>
 </html>

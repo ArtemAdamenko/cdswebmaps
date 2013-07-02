@@ -4,6 +4,7 @@ import entities.BusObject;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.MapKey;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 /**
@@ -26,4 +27,8 @@ public interface Mapper {
     /*Запрос на объекты по маршруту*/
     @Select("SELECT name_, last_lon_, last_lat_, last_time_ FROM objects WHERE disp_route_ = #{route} ORDER BY last_time_ ASC")
     public List<BusObject> selectObjects(int route);
+    
+    /*Проверка пользователя*/
+    @Select("SELECT ID_ FROM USERS WHERE NAME_ = #{userName} AND PASS_ = #{password}")
+    public Integer checkUser(@Param("userName") String name, @Param("password") String pass);
 }

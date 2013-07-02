@@ -6,10 +6,17 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import mapper.Mapper;
+import mybatis.MyBatisManager;
+import org.apache.ibatis.session.SqlSession;
 
 /**
  *
@@ -17,6 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class AuthorizationServlet extends HttpServlet {
 
+    /*Менеджер подключений к БД*/
+     private static MyBatisManager manager = new MyBatisManager();
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -28,20 +37,23 @@ public class AuthorizationServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+            throws ServletException, IOException, Exception {
         PrintWriter out = response.getWriter();
+        manager.initFactory("development");
+        SqlSession session = manager.getSessionFactory().openSession();
+        Mapper mapper = session.getMapper(Mapper.class);
+        
+        String userName = request.getParameter("username");
+        Cookie cookie = null;
+
         try {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AuthorizationServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet AuthorizationServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+            Integer id = mapper.checkUser(request.getParameter("username"), request.getParameter("pass"));
+            if (id != null){
+                cookie = new Cookie("username", userName);
+                cookie.setMaxAge(365 * 24 * 60 * 60);
+                response.addCookie(cookie);
+                out.print("access done");
+            }
         } finally {            
             out.close();
         }
@@ -60,7 +72,11 @@ public class AuthorizationServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+         try {
+             processRequest(request, response);
+         } catch (Exception ex) {
+             Logger.getLogger(AuthorizationServlet.class.getName()).log(Level.SEVERE, null, ex);
+         }
     }
 
     /**
@@ -75,7 +91,11 @@ public class AuthorizationServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+         try {
+             processRequest(request, response);
+         } catch (Exception ex) {
+             Logger.getLogger(AuthorizationServlet.class.getName()).log(Level.SEVERE, null, ex);
+         }
     }
 
     /**
