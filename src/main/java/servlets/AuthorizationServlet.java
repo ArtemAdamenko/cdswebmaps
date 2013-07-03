@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package servlets;
 
 import java.io.IOException;
@@ -13,14 +9,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import mapper.Mapper;
 import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
  *
- * @author Администратор
+ * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Сервлет авторизации пользователя
  */
 public class AuthorizationServlet extends HttpServlet {
 
@@ -44,12 +40,14 @@ public class AuthorizationServlet extends HttpServlet {
         Mapper mapper = session.getMapper(Mapper.class);
         
         String userName = request.getParameter("username");
+        String pass = request.getParameter("pass");
         Cookie cookie = null;
-
+        
         try {
-            Integer id = mapper.checkUser(request.getParameter("username"), request.getParameter("pass"));
+            /*Если пользователь существует, то генерируем сессию и кидаем в куки*/
+            Integer id = mapper.checkUser(userName, pass);
             if (id != null){
-                cookie = new Cookie("username", userName);
+                cookie = new Cookie("session_id", userName);
                 cookie.setMaxAge(365 * 24 * 60 * 60);
                 response.addCookie(cookie);
                 out.print("access done");

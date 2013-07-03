@@ -1,11 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package servlets;
 
 import com.google.gson.Gson;
-import com.mycompany.cdswebmaps.App;
 import entities.BusObject;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,7 +22,8 @@ import org.apache.ibatis.session.SqlSession;
 
 /**
  *
- * @author Администратор
+ * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Сервлет отдающий данные об автобусах
  */
 public class GetBusesServlet extends HttpServlet {
 
@@ -54,7 +50,7 @@ public class GetBusesServlet extends HttpServlet {
         String username = "";
         try {
             for (int i = 0; i <= cookies.length-1; i++){
-                if (cookies[i].getName().equals("username"))
+                if (cookies[i].getName().equals("session_id"))
                      username = cookies[i].getValue();
             }
             /*Получаем id поль-ля*/
@@ -75,8 +71,11 @@ public class GetBusesServlet extends HttpServlet {
         }
     }
     
+   
+    
     /*Получить автобусы в виде json
      * @param Map<Integer, List<Integer>> проекты с маршрутами
+     * @return String
      */
     public static String getObjects(Map<Integer, List<Integer>> projects) throws Exception
     {
@@ -99,11 +98,7 @@ public class GetBusesServlet extends HttpServlet {
                         if (!buses.isEmpty())
                             allJsonBuses += gson.toJson(buses).replaceAll("\\[|\\]", "") +",";
                     }
-                }
-                /*Преобразование в json автобусов по маршруту*/
-                /*Т.к. у нас json конкатенуется друг к другу, то нужно форматировать ответ*/
-               
-                
+                }      
             }
         session.commit();
         /*стирание лишних символов дял валидности json*/

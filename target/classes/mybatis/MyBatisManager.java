@@ -19,6 +19,7 @@ public class MyBatisManager {
     
     /*
      * Инициализация подключения к БД
+     * @param String environment
      */
     public void initFactory(String environment) throws Exception{
         try{
@@ -30,13 +31,13 @@ public class MyBatisManager {
             }
             sqlSessionFactory.getConfiguration().addMapper(Mapper.class);
         }catch(Exception e){
-            Log.info("Ошибка подключения к БД: " + e);
-            //throw new IOException("Ошибка подключения к БД : " + e); 
+            Log.info("Ошибка подключения к БД: " + e); 
         }
     }
     
     /*
      * Возвращает singleton SqlSessionFactory
+     * @return SqlSessionFactory
      */
     public SqlSessionFactory getSessionFactory() throws Exception{
         return sqlSessionFactory;

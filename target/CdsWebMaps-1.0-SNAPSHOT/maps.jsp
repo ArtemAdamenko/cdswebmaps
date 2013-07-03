@@ -1,9 +1,3 @@
-<%-- 
-    Document   : maps
-    Created on : Jun 28, 2013, 9:19:33 AM
-    Author     : Администратор
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -21,12 +15,18 @@
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
     <script>
+    function fresh() {
+        location.reload();
+    }
+    setInterval("fresh()",15000);
+    </script>
+    <script>
         function logout(name){
             document.cookie = name + "=" + "; expires=Thu, 01 Jan 1970 00:00:01 GMT";
             var url = document.location.href.split("/");
             var redirect = "";
             for (var i = 0; i <= url.length - 2; i++){
-                redirect +=url[i];
+                redirect +=url[i]+"/";
             }
             document.location.href = redirect;
         }
@@ -52,7 +52,7 @@
                 var res =  JSON.parse(result);
                 var myLatlng = new google.maps.LatLng(51.7038,39.1833);
                 var mapOptions = {
-                  zoom: 12,
+                  zoom: 13,
                   center: myLatlng,
                   mapTypeId: google.maps.MapTypeId.ROADMAP
                 }
@@ -70,13 +70,12 @@
             }
             });
         }
-
       google.maps.event.addDomListener(window, 'load', initialize);
 
     </script>
   </head>
   <body>
   <div id="map-canvas"></div>
-  <input type="submit" value='Выход' id ='logout' onclick="logout('username');">
+    <input type="submit" value='Выход' id ='logout' onclick="logout('session_id');">
   </body>
 </html>

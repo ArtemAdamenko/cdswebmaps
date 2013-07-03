@@ -4,6 +4,13 @@ import java.io.*;
 import javax.servlet.*; 
 import javax.servlet.http.*; 
   
+
+
+/**
+ *
+ * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Фильтр работы Веб-приложения
+ */
   public class UserFilter implements Filter 
   { 
        private FilterConfig config = null; 
@@ -22,22 +29,27 @@ import javax.servlet.http.*;
        public void doFilter (ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException                         
        { 
               boolean exist = false;
+              HttpServletRequest req = (HttpServletRequest)request;
+              HttpServletResponse res = (HttpServletResponse)response;
+              String site = req.getServerName() + req.getContextPath();
+
               if (active)  
-              {
-                    HttpServletRequest req = (HttpServletRequest)request;
+              { 
                     Cookie[] cookies = req.getCookies();
-                    for (int i = 0; i <= cookies.length-1; i++){
-                        if (cookies[i].getName().equals("username"))
-                            exist = true;         
+                    if (cookies != null){
+                        for (int i = 0; i <= cookies.length-1; i++){
+                            if (cookies[i].getName().equals("session_id"))
+                                exist = true;         
+                        }
                     }
-                    if (exist)
-                        chain.doFilter(request, response);
-                    else{
-                        RequestDispatcher dispatcher = request.getRequestDispatcher("/");
-                        dispatcher.forward(request, response);
-                    }
-              } 
-              //chain.doFilter(request, response); 
+              }
+              if (exist)
+                chain.doFilter(request, response);
+              else{
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/");
+                dispatcher.forward(request, response);
+                
+              }
        } 
        
        @Override
