@@ -1,0 +1,121 @@
+body {
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    font-family:Arial;
+    font-size:14px;
+    /*background-color:#E6E6E6;*/
+    background-color:#FFFFFF;
+}
+
+div.no_permission{
+	
+	background-color: #ffffff;
+	text-align: center;
+	margin-top: 20%;	
+	font-family: Arial;
+	font-size: 20px;
+	font-weight: normal;
+	color: #FF0000;
+}
+a{
+	color: #000000;
+	font-weight: normal;
+}
+	
+div.report_title{
+	background-color: inherit;
+	text-align: center;
+		
+	font-family: Arial;
+	font-size: 20px;
+	font-weight: normal;
+	color: #000000;	
+	margin:15px 0px 20px 0px;
+}
+div.report_content{
+		width: 100%;
+		height: 100%;
+		text-align: center;
+}
+	
+div.report_bottom{
+	width: 100%;
+	height: 100%;
+	text-align: left;
+
+        display:none;
+}
+td.pj_obj_title{
+	font-size: 12px;
+	font-family: Arial;
+	color: #000000;
+	font-weight: normal;
+	background-color: #cccccc;	
+	border:1px solid #000000;
+	border-spacing: 0px;
+	border-collapse: collapse;
+	text-align: center;
+        font-weight:bold;
+}
+td.pj_obj_title_hide{
+	font-size: 12px;
+	font-family: Arial;
+	color: #000000;
+	font-weight: normal;
+	background-color: #cccccc;
+	border:1px solid #000000;
+	border-spacing: 0px;
+	border-collapse: collapse;
+	text-align: center;
+        display:none;
+}
+td.pj_obj_item_num{
+	font-size: 12px;
+	font-family: Arial;
+	color: #000000;
+	font-weight: normal;
+	background-color: #cccccc;	
+	border:1px solid #000000;
+	border-spacing: 0px;
+	border-collapse: collapse;
+	text-align: center;
+        height:20px;
+        vertical-align:middle;
+        margin:0px;
+        padding:0px;
+        border-collapse:collapse;
+}
+td.pj_obj_item{
+	font-size: 12px;
+	font-family: Arial;
+	color: #000000;
+	font-weight: normal;
+	background-color: #ffffff;	
+	border:1px solid #000000;
+	border-spacing: 0px;
+	border-collapse: collapse;
+	text-align: center;
+        height:20px;
+        vertical-align:middle;
+        margin:0px;
+        padding:0px;
+        border-collapse:collapse;
+}
+
+a.top_menu_bt{
+    text-decoration:none;
+    color:#303030;
+    cursor:default;
+    font-size:12px;
+}
+a.top_menu_bt_over{
+    text-decoration:none;
+    color:#ff0000;
+    cursor:pointer;
+    font-size:12px;
+}
+
+tr.page_bottom{
+    display: none;
+}
