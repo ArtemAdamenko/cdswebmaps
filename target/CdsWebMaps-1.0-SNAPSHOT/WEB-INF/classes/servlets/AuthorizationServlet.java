@@ -52,7 +52,11 @@ public class AuthorizationServlet extends HttpServlet {
                 response.addCookie(cookie);
                 out.print("access done");
             }
-        } finally {            
+        }catch(RuntimeException e){
+             Logger.getLogger(GetBusesServlet.class.getName()).log(Level.SEVERE, null, "Ошибка авторизации " + e);
+        }finally {   
+            session.commit();
+            session.close();
             out.close();
         }
     }

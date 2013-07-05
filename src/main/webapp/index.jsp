@@ -6,15 +6,11 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Главная</title>
-        <link rel="stylesheet" type="text/css" href="css/style.css">    
+        <link rel="stylesheet" type="text/css" href="css/style.css">   
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>   
     </head>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>    
 <body>
 <script type="text/javascript">
-/*Удаление куки*/
-    function delCookie(name) {
-        document.cookie = name + "=" + "; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-    }
         
     $(document).ready(function() {	
         $(document).mouseup(function() {
@@ -45,8 +41,6 @@
             $(".lock").fadeIn();
         });	
     });
-</script>
-<script>
     function auth(){
         var userName = document.forms["signin"].elements["username"].value;
         var pass = document.forms["signin"].elements["password"].value;

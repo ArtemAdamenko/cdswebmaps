@@ -100,17 +100,17 @@ public class GetBusesServlet extends HttpServlet {
                     }
                 }      
             }
-        session.commit();
         /*стирание лишних символов дял валидности json*/
         allJsonBuses = allJsonBuses.replaceAll(",,", ",");
         allJsonBuses = allJsonBuses.substring(0, allJsonBuses.length()-1);
-        return allJsonBuses + "]";
         }catch(Exception e){
-            throw new Exception(e);
+             Logger.getLogger(GetBusesServlet.class.getName()).log(Level.SEVERE, null, "Ошибка обработки данных GetBusesServlet " + e);
         }
         finally{
+            session.commit();
             session.close();
         }
+        return allJsonBuses + "]";
     }
     
     /*Преобразование в Map из List<Map>

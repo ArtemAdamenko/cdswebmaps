@@ -51,4 +51,9 @@ public interface Mapper {
             + " AND o.OBJ_OUTPUT_ = 0\n"
             + " ORDER BY o.proj_id_, o.last_rout_, o.last_station_time_ desc")
     public List<ReportObject> getDataToReport(String name);
+    
+    @Select("SELECT FIRST 1 SKIP 0 a.NAME_\n"
+                    + "FROM PROJECTS a\n"
+                    + "WHERE a.ID_ in (select up.PROJ_ID_ from USERS_PROJS up left join USERS u on up.USER_=u.ID_ where u.NAME_=#{name})")
+    public Map<Integer,String> getUserProject(String user);
 }
