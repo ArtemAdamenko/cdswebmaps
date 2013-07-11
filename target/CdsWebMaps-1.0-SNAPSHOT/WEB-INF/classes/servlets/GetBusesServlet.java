@@ -10,13 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.resource.ResourceException;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import mapper.Mapper;
+import mapper.ProjectsMapper;
 import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 
@@ -43,9 +42,9 @@ public class GetBusesServlet extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        manager.initFactory("development");
+        manager.initFactory("development", "Projects");
         SqlSession session = manager.getSessionFactory().openSession();
-        Mapper mapper = session.getMapper(Mapper.class);
+        ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         Cookie[] cookies = request.getCookies();
         String username = "";
         try {
@@ -63,15 +62,11 @@ public class GetBusesServlet extends HttpServlet {
             String res = getObjects(newRoutes);
             session.commit();
             out.print(res);       
-        }catch(ResourceException e){
-            Logger.getLogger(GetBusesServlet.class.getName()).log(Level.SEVERE, null, e);
         }finally {
             session.close();
             out.close();
         }
     }
-    
-   
     
     /*Получить автобусы в виде json
      * @param Map<Integer, List<Integer>> проекты с маршрутами
@@ -81,7 +76,7 @@ public class GetBusesServlet extends HttpServlet {
     {
         /*Открываем сессию для запросов*/
         SqlSession session = manager.getSessionFactory().openSession();
-        Mapper mapper = session.getMapper(Mapper.class);
+        ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         /*результирующий список объектов по маршруту*/
         List<BusObject> buses = new ArrayList<BusObject>();
         Gson gson = new Gson();
@@ -100,11 +95,9 @@ public class GetBusesServlet extends HttpServlet {
                     }
                 }      
             }
-        /*стирание лишних символов дял валидности json*/
-        allJsonBuses = allJsonBuses.replaceAll(",,", ",");
-        allJsonBuses = allJsonBuses.substring(0, allJsonBuses.length()-1);
-        }catch(Exception e){
-             Logger.getLogger(GetBusesServlet.class.getName()).log(Level.SEVERE, null, "Ошибка обработки данных GetBusesServlet " + e);
+            /*стирание лишних символов дял валидности json*/
+            allJsonBuses = allJsonBuses.replaceAll(",,", ",");
+            allJsonBuses = allJsonBuses.substring(0, allJsonBuses.length()-1);
         }
         finally{
             session.commit();
@@ -153,7 +146,7 @@ public class GetBusesServlet extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(GetBusesServlet.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(GetBusesServlet.class.getName()).log(Level.SEVERE, "Ошибка обработки данных GetBusesServlet ", ex);
          }
     }
 
@@ -172,7 +165,7 @@ public class GetBusesServlet extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(GetBusesServlet.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(GetBusesServlet.class.getName()).log(Level.SEVERE, "Ошибка обработки данных GetBusesServlet ", ex);
          }
     }
 
@@ -183,6 +176,6 @@ public class GetBusesServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return " Сервлет отдающий данные об автобусах";
     }// </editor-fold>
 }

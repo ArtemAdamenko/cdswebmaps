@@ -1,20 +1,35 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package entities;
 
 import java.util.Date;
 
 /**
  *
- * @author Администратор
+ * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Класс хранящий данные об автобусах
  */
 public class BusObject {
     String name_;
     double last_lon_;
     double last_lat_;
     Date last_time_;
+    int obj_id_;
+    int proj_id_;
+
+    public void setObj_id_(int obj_id_) {
+        this.obj_id_ = obj_id_;
+    }
+
+    public void setProj_id_(int proj_id_) {
+        this.proj_id_ = proj_id_;
+    }
+
+    public int getObj_id_() {
+        return obj_id_;
+    }
+
+    public int getProj_id_() {
+        return proj_id_;
+    }
 
     public String getName_() {
         return name_;

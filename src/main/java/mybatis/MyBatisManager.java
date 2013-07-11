@@ -1,15 +1,17 @@
 package mybatis;
 
-import mapper.Mapper;
+import mapper.ProjectsMapper;
 import java.io.Reader;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import java.util.logging.Logger;
+import mapper.DataMapper;
 
 /**
  *
  * @author Artem Adamenko <adamenko.artem@gmail.com>
+ * Класс для работы с сессиями
  */
 public class MyBatisManager {
     /*Объект хранящий Sql сессии*/
@@ -21,17 +23,30 @@ public class MyBatisManager {
      * Инициализация подключения к БД
      * @param String environment
      */
-    public void initFactory(String environment) throws Exception{
-        try{
-            Log.info("Запуск SqlSessionFactory");
-            String resource = "mybatis/mybatis-config.xml";
-            Reader reader = Resources.getResourceAsReader(resource);
-            if (sqlSessionFactory == null){
-                sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
+    public void initFactory(String environment, String db) throws Exception{
+        Log.info("Запуск SqlSessionFactory");
+        if (db.equals("Projects")){
+            try{
+                String resource = "mybatis/mybatis-config-projects.xml";
+                Reader reader = Resources.getResourceAsReader(resource);
+                if (sqlSessionFactory == null){
+                    sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
+                }
+                sqlSessionFactory.getConfiguration().addMapper(ProjectsMapper.class);
+            }catch(Exception e){
+                Log.info("Ошибка подключения к БД Projects: " + e); 
             }
-            sqlSessionFactory.getConfiguration().addMapper(Mapper.class);
-        }catch(Exception e){
-            Log.info("Ошибка подключения к БД: " + e); 
+        }if (db.equals("Data")){
+            try{
+                String resource = "mybatis/mybatis-config-data.xml";
+                Reader reader = Resources.getResourceAsReader(resource);
+                if (sqlSessionFactory == null){
+                    sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
+                }
+                sqlSessionFactory.getConfiguration().addMapper(DataMapper.class);
+            }catch(Exception e){
+                Log.info("Ошибка подключения к БД Data: " + e); 
+            }
         }
     }
     

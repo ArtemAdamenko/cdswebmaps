@@ -1,7 +1,6 @@
 package entities;
 
 import java.util.Date;
-import javax.xml.crypto.Data;
 
 /**
  *

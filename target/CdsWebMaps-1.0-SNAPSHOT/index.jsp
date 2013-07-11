@@ -15,7 +15,7 @@
     $(document).ready(function() {	
         $(document).mouseup(function() {
             $("#loginform").mouseup(function() {
-                return false
+                return false;
             });		
             $("a.close").click(function(e){
                 e.preventDefault();
@@ -48,7 +48,7 @@
             url: 'AuthorizationServlet',
             data : { username: userName, pass: pass },
             success: function(data) {
-                if (data == "access done"){
+                if (data === "access done"){
                     var url = document.location.href; // юрл в котором происходит поиск
                     var regV = /maps/;     // шаблон
                     var result = url.match(regV); 
@@ -70,10 +70,10 @@
                     <span class="message">Пожалуйста введите данные для входа</span>
                     <form method="post" id="signin" action="">
                         <label for="username">Имя пользователя</label>
-                        <input id="username" name="username" value="" title="username" class="required" tabindex="4" type="text">
+                        <input id="username" name="username" value="" title="username" tabindex="4" type="text">
                         <p>
                             <label for="password">Пароль</label>
-                            <input id="password" name="password" value="" title="password" class="required" tabindex="5" type="password">
+                            <input id="password" name="password" value="" title="password" tabindex="5" type="password">
                         </p>
                         <p class="clear"></p>
                         <p class="remember">

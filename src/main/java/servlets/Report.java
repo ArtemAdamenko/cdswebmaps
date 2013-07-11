@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package servlets;
 
 import com.google.gson.Gson;
@@ -10,7 +6,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -22,13 +17,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import mapper.Mapper;
+import mapper.ProjectsMapper;
 import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
  *
- * @author Администратор
+ * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Класс для формирования данных для отчетов
  */
 public class Report extends HttpServlet {
 
@@ -49,9 +45,9 @@ public class Report extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         /*инициализация объектов*/
-        manager.initFactory("development");
+        manager.initFactory("development", "Projects");
         SqlSession session = manager.getSessionFactory().openSession();
-        Mapper mapper = session.getMapper(Mapper.class);
+        ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         Cookie[] cookies = request.getCookies();
         String username = "";
         Gson gson = new Gson();
@@ -63,13 +59,12 @@ public class Report extends HttpServlet {
         try {
             /*подготовка данных для клиентской стороны*/
             List<ReportObject> Objects = mapper.getDataToReport(username);
-            String buses = getDataFromObjects(Objects);    
+            List<ReportObject> busesList = sortDataList(Objects); 
+            String buses = gson.toJson(busesList);
             Map<Integer,String> userProject = mapper.getUserProject(username);
             String jsonUserProject = gson.toJson(userProject) + "@";
             out.println(jsonUserProject);
             out.println(buses);
-        }catch(RuntimeException e){
-            Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, "Ошибка обработки данных Report Servlet"+e);
         } finally {      
             session.commit();
             session.close();
@@ -77,16 +72,18 @@ public class Report extends HttpServlet {
         }
     }
     
-    private static String getDataFromObjects(List<ReportObject> Objects) throws UnsupportedEncodingException, ParseException{
-        Gson gson = new Gson();
+    /*Сортировка
+     * @param List<ReportObject>
+     * @return List<ReportObject>
+     */
+    private static List<ReportObject> sortDataList(List<ReportObject> Objects) throws UnsupportedEncodingException, ParseException{
         Collections.sort(Objects, new Comparator<ReportObject>(){
             @Override
             public int compare(ReportObject o1, ReportObject o2) {
                return o1.NAME_.compareTo(o2.NAME_);
             }
         });
-        String report = gson.toJson(Objects); 
-        return report;
+        return Objects;
     } 
     
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -105,7 +102,7 @@ public class Report extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, "Ошибка обработки данных Report Servlet", ex);
          }
     }
 
@@ -124,7 +121,7 @@ public class Report extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, "Ошибка обработки данных Report Servlet", ex);
          }
     }
 
@@ -135,6 +132,6 @@ public class Report extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Класс для формирования данных для отчетов";
     }// </editor-fold>
 }

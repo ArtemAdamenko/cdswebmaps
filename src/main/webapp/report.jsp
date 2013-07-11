@@ -53,6 +53,7 @@
     </script>
     </head>
     <body onload="report();">
+        <input type="submit" value="Печать" onclick="javascript: window.print();">
         <input type="submit" value="Карты" onclick="redirect('maps.jsp');">
         <input type="submit" value="Выйти" onclick="logout('session_id');">
         <div id="report_header"></div>

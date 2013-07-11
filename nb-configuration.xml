@@ -15,4 +15,10 @@ Any value defined here will override the pom.xml file value but is only applicab
 -->
         <netbeans.hint.j2eeVersion>1.6-web</netbeans.hint.j2eeVersion>
     </properties>
+    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>автобуса</word>
+        <word>Время</word>
+        <word>Класс</word>
+        <word>формирования</word>
+    </spellchecker-wordlist>
 </project-shared-configuration>

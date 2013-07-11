@@ -53,3 +53,5 @@ function getMyDate(date){
     return day + "." + month + "." + year + " " + hour + ":" + min;
 }
 
+
+

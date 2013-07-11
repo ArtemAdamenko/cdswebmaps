@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mapper.Mapper;
+import mapper.ProjectsMapper;
 import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 import org.json.JSONException;
@@ -65,7 +65,7 @@ public class App
     {
         /*Открываем сессию для запросов*/
         SqlSession session = manager.getSessionFactory().openSession();
-        Mapper mapper = session.getMapper(Mapper.class);
+        ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         /*результирующий список объектов по маршруту*/
         List<BusObject> buses = new ArrayList<BusObject>();
         

@@ -9,7 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import mapper.Mapper;
+import mapper.ProjectsMapper;
 import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 
@@ -35,9 +35,9 @@ public class AuthorizationServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         PrintWriter out = response.getWriter();
-        manager.initFactory("development");
+        manager.initFactory("development", "Projects");
         SqlSession session = manager.getSessionFactory().openSession();
-        Mapper mapper = session.getMapper(Mapper.class);
+        ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         
         String userName = request.getParameter("username");
         String pass = request.getParameter("pass");
@@ -52,8 +52,6 @@ public class AuthorizationServlet extends HttpServlet {
                 response.addCookie(cookie);
                 out.print("access done");
             }
-        }catch(RuntimeException e){
-             Logger.getLogger(GetBusesServlet.class.getName()).log(Level.SEVERE, null, "Ошибка авторизации " + e);
         }finally {   
             session.commit();
             session.close();
@@ -77,7 +75,7 @@ public class AuthorizationServlet extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(AuthorizationServlet.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(AuthorizationServlet.class.getName()).log(Level.SEVERE, "Ошибка авторизации", ex);
          }
     }
 
@@ -96,7 +94,7 @@ public class AuthorizationServlet extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(AuthorizationServlet.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(AuthorizationServlet.class.getName()).log(Level.SEVERE, "Ошибка авторизации", ex);
          }
     }
 
@@ -107,6 +105,6 @@ public class AuthorizationServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Сервлет авторизации пользователя";
     }// </editor-fold>
 }

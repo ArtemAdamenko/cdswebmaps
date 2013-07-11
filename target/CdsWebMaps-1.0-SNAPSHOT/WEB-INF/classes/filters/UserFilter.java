@@ -13,7 +13,9 @@ import javax.servlet.http.*;
  */
   public class UserFilter implements Filter 
   { 
+      /*Настройки фильтра*/
        private FilterConfig config = null; 
+       /*Активность*/
        private boolean active = false; 
        
        @Override
@@ -30,8 +32,6 @@ import javax.servlet.http.*;
        { 
               boolean exist = false;
               HttpServletRequest req = (HttpServletRequest)request;
-              HttpServletResponse res = (HttpServletResponse)response;
-              String site = req.getServerName() + req.getContextPath();
 
               if (active)  
               { 
