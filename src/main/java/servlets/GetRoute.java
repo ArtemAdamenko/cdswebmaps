@@ -30,10 +30,6 @@ public class GetRoute extends HttpServlet {
 
     /*Менеджер подключений к БД*/
      private static MyBatisManager manager = new MyBatisManager();
-     /*Количество миллисекунд в дне*/
-     final static long dayInMilli = 86400000;
-     /*шаблон форматирования даты*/
-     final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -54,16 +50,10 @@ public class GetRoute extends HttpServlet {
         DataMapper mapper = session.getMapper(DataMapper.class);
         String projectId = request.getParameter("proj");
         String busId = request.getParameter("bus");
-        /*Текущая дата*/
-        Date dateNow = new Date(System.currentTimeMillis()-dayInMilli);
-        long dateNowMilli = dateNow.getTime();
-        /*Нижняя граница интервала времени для запроса*/
-        long dateLowerLimit = dateNowMilli - dayInMilli;
-        /*Интервал времени*/
-        String toTime = dateFormat.format(dateNowMilli);
-        String fromTime = dateFormat.format(dateLowerLimit);      
+        String fromTimeStr = request.getParameter("fromTime");
+        String toTimeStr = request.getParameter("toTime");
         try {
-            List<Route> route = mapper.getRoute(Integer.parseInt(busId), Integer.parseInt(projectId), fromTime, toTime);
+            List<Route> route = mapper.getRoute(Integer.parseInt(busId), Integer.parseInt(projectId), fromTimeStr, toTimeStr);
             Gson gson = new Gson();
             String jsonRoutes = gson.toJson(route);
             out.print(jsonRoutes);
