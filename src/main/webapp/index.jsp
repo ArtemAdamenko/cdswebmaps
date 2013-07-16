@@ -56,11 +56,42 @@
                         document.location.href = document.location.href;
                     else
                         document.location.href = document.location.href+"maps.jsp";
+                }else {
+                    open_popup('#modal_window');
                 }
             }
         });
     }
 </script>
+    <script type="text/javascript">
+            /* Открываем модальное окно: */
+            function open_popup(box) { 
+              $("#background").show() 
+              $(box).centered_popup(); 
+              $(box).delay(100).show(1); 
+            } 
+
+            /* Закрываем модальное окно: */
+            function close_popup(box) { 
+              $(box).hide(); 
+              $("#background").delay(100).hide(1); 
+            } 
+
+            $(document).ready(function() { 
+              /* Позиционируем блочный элемент окна по центру страницы: */
+              $.fn.centered_popup = function() { 
+                this.css('position', 'absolute'); 
+                this.css('top', ($(window).height() - this.height()) / 2 + $(window).scrollTop() + 'px'); 
+                this.css('left', ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + 'px'); 
+              } 
+
+            });
+    </script>
+    <div id="modal_window" onclick="close_popup('#modal_window');" > 
+        <p>Вы ввели неверный логин или пароль</p><br>
+        <p style="font-size: 10px;">Нажмите на любую область страницы</p>
+    </div> 
+    <div id="background" onclick="close_popup('#modal_window');"></div>
     <div id="cont">
         <div class="box lock"> </div>
         <div id="loginform" class="box form">

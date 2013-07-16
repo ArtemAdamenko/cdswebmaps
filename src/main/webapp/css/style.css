@@ -219,12 +219,37 @@ a.close {
 }
 
 #signin_submit::-moz-focus-inner {
-padding:0;
-border:0;
+        padding:0;
+        border:0;
 }
 #signin_submit:hover, #signin_submit:focus {
 	background-position:0 -5px;
 	cursor:pointer;
 }
 
-#focus-stealer      { position: absolute; left: -9999px; }
+#focus-stealer{ 
+    position: absolute; left: -9999px; 
+}
+
+#background { 
+  left: 0; 
+  top: 0; 
+  position: absolute; 
+  background: #000; 
+  opacity: 0.7; 
+  z-index: 999; 
+  display: none; 
+  height: 100%; 
+  width: 100%; 
+} 
+ 
+#modal_window { 
+  display: none; 
+  z-index: 9999; 
+  border: 1px solid #444; 
+  background-color: #FEFEFE; 
+  border-radius: 10px; 
+  padding: 15px 20px; 
+  height: 80px; 
+  width: 250px; 
+}

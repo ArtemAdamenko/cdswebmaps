@@ -5,7 +5,8 @@
     <title>Cds Web Map</title>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="css/reportStyle.css">
-     <script src="//api-maps.yandex.ru/2.0/?load=package.standard,package.route&lang=ru-RU" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">  
+     <script src="//api-maps.yandex.ru/2.0/?load=package.standard,package.route,package.geoObjects&lang=ru-RU" type="text/javascript"></script>
      <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
@@ -30,23 +31,35 @@
         function parseDate(date){
             var parts = date.split(" ");
             var calendarDate = parts[0].split(".");
+            if (parts[1] === undefined || parts[1] === ""){
+                var dt = new Date();
+                parts[1] = dt.getHours() + ":" + dt.getMinutes();
+            }
             var dayTime = parts[1].split(":");
-            //var newDate = new Date(calendarDate[2], calendarDate[1] - 1, calendarDate[0], dayTime[0], dayTime[1]);
-            var newDate = calendarDate[1] + "-" + calendarDate[1] + " " + dayTime[0] + ":" + dayTime[1] + ":00";
+            var newDate = calendarDate[1] + "-" + calendarDate[0] + " " + dayTime[0] + ":" + dayTime[1] + ":00";
             newDate = calendarDate[2] + "-" + newDate;
             return newDate;
         }
+
+        /*хранение маршрута, для его дальнейшего удаления с карты*/
+        var router;
+        var mass = new Array();
+        var Placemarks = new Array();
         var routes;
         function route(){
             //очищаем карту
-            document.getElementById('map-canvas').innerHTML = "";
+            
             var check = jQuery("input[type='radio']").filter(":checked");
             var fromTime = jQuery("input[type='text']")[0].value;
             var toTime = jQuery("input[type='text']")[1].value;
             fromTime = parseDate(fromTime);
             toTime = parseDate(toTime);
-            //var dt = new Date(fromTime);
+
             //получаем данные для запроса маршрута
+            if (check.length === 0){
+                open_popup('#modal_window');
+                return 0;
+            }
             var proj = check[0].name;
             var busId = check[0].value;
             $.ajax({  
@@ -55,6 +68,7 @@
                 url: "GetRoute",  
                 success: function(result){
                     routes =  JSON.parse(result);
+                    document.getElementById('map-canvas').innerHTML = "";
                     ymaps.ready(init);
                     function init() {
                         myMap = new ymaps.Map("map-canvas", {
@@ -69,39 +83,53 @@
                         .add('typeSelector')
                         // Стандартный набор кнопок
                         .add('mapTools', { left: 35, top: 5 });
-                        var mass = new Array();
+                        //var mass = new Array();
 
                         for (var i = 0; i <= routes.length-1; i++){
                             var obj = new Object();
                             obj.point = [convert(routes[i].LON_), convert(routes[i].LAT_)];
                             obj.type = 'viaPoint';
                             mass[i] = obj;
-                            //mass[i] =  [convert(routes[i].LON_), convert(routes[i].LAT_)];
                         }
                         //слайдер для удобного просмотра пути
                         $("#slider").slider({
                                 min: 0,
                                 max: mass.length-1,
                                 change: function(event, ui) {
-                                    myMap.geoObjects.remove(routes);
+                                    if (router !== null)
+                                        router && myMap.geoObjects.remove(router);
+                                    router = null;
                                     var value = $( "#slider" ).slider( "option", "value" );
-                                    alert("Положение: " + value);
+                                    if (Placemarks.length !== 0){
+                                        myMap.geoObjects.remove(Placemarks[0]);
+                                        Placemarks = new Array();
+                                    }
+                                    var Placemark = new ymaps.Placemark(mass[value].point, {                                 
+                                        hintContent: routes[value].last_time_
+                                    }, {
+                                        // Опции.
+                                        // Своё изображение иконки метки.
+                                        iconImageHref: '/CdsWebMaps/images/car.png',
+                                        // Размеры метки.
+                                        iconImageSize: [40, 40],
+                                        // Смещение левого верхнего угла иконки относительно
+                                        // её "ножки" (точки привязки).
+                                        iconImageOffset: [-3, -42]
+                                    });
+                                    Placemarks.push(Placemark);
+                                    myMap.geoObjects.add(Placemark);
+                                    
                                 }
 
                         });
                         ymaps.route(mass,{ mapStateAutoApply: true}).then(function (route) {
+                            router = route;
                             myMap.geoObjects.add(route);
                         });
                     }
                 }
             });
         }
-            function routeChange() {
-                value = document.getElementById("value").value;
-                ymaps.route(value).then(function (route) {
-                    myMap.geoObjects.add(route);
-                });
-           }
         //setInterval("fresh()",15000);
        
         function initialize() {    
@@ -131,13 +159,33 @@
                         var lng = convert(routes[i].last_lon_);
                         var lat = convert(routes[i].last_lat_);
                         checkboxes +="<input type='radio' name='"+routes[i].proj_id_+"' value="+routes[i].obj_id_+">"+routes[i].name_+"<br>";
-                        myPlacemark = new ymaps.Placemark([lng, lat], {
+                        // Создаем геообъект с типом геометрии "Точка".
+                        // Создаем геообъект с типом геометрии "Точка".
+                            myGeoObject = new ymaps.GeoObject({
+                                // Описание геометрии.
+                                geometry: {
+                                    type: "Point",
+                                    coordinates: [lng, lat]
+                                },
+                                // Свойства.
+                                properties: {
+                                    // Контент метки.
+                                    iconContent: routes[i].name_,
+                                    balloonContent: routes[i].last_time_
+                                }
+                            }, {
+                                // Опции.
+                                // Иконка метки будет растягиваться под размер ее содержимого.
+                                preset: 'twirl#redStretchyIcon'
+                            });
+                        /*myPlacemark = new ymaps.Placemark([lng, lat], {
+                            iconContent :routes[i].name_,
                             balloonContentHeader: routes[i].name_,
                             balloonContentBody: "Долгота "+  lng.toFixed(4) + " " + "Широта " + lat.toFixed(4),
                             balloonContentFooter: routes[i].last_time_,
                             hintContent: routes[i].name_
-                        });
-                        myMap.geoObjects.add(myPlacemark);
+                        });*/
+                        myMap.geoObjects.add( myGeoObject);
                     }
                     controlPanel.innerHTML = checkboxes;
                 }
@@ -145,8 +193,36 @@
             });
         }
     </script>
-   
+   <script type="text/javascript">
+            /* Открываем модальное окно: */
+            function open_popup(box) { 
+              $("#background").show() 
+              $(box).centered_popup(); 
+              $(box).delay(100).show(1); 
+            } 
+
+            /* Закрываем модальное окно: */
+            function close_popup(box) { 
+              $(box).hide(); 
+              $("#background").delay(100).hide(1); 
+            } 
+
+            $(document).ready(function() { 
+              /* Позиционируем блочный элемент окна по центру страницы: */
+              $.fn.centered_popup = function() { 
+                this.css('position', 'absolute'); 
+                this.css('top', ($(window).height() - this.height()) / 2 + $(window).scrollTop() + 'px'); 
+                this.css('left', ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + 'px'); 
+              } 
+
+            });
+    </script>
   </head>
+  <div id="modal_window" onclick="close_popup('#modal_window');" > 
+      <p style="font-size: 20px;">Выберите автобус из списка</p><br>
+        <p style="font-size: 12px;">Нажмите на любую область страницы</p>
+    </div> 
+    <div id="background" onclick="close_popup('#modal_window');"></div>
   <body onload="initialize();">
       <div id="map-canvas" style="width: 83%; position: absolute;"></div> 
       <div style="position: relative;margin-left: 1600px;font-size: 1.2em;">
