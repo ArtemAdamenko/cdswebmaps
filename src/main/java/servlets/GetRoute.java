@@ -46,7 +46,7 @@ public class GetRoute extends HttpServlet {
         PrintWriter out = response.getWriter();
         /*инициализация объектов*/
         manager.initFactory("development", "Data");
-        SqlSession session = manager.getSessionFactory().openSession();
+        SqlSession session = manager.getDataSessionFactory().openSession();
         DataMapper mapper = session.getMapper(DataMapper.class);
         String projectId = request.getParameter("proj");
         String busId = request.getParameter("bus");

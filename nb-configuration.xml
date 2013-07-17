@@ -19,6 +19,8 @@ Any value defined here will override the pom.xml file value but is only applicab
         <word>автобуса</word>
         <word>Время</word>
         <word>Класс</word>
+        <word>маршрут</word>
+        <word>пароль</word>
         <word>формирования</word>
     </spellchecker-wordlist>
 </project-shared-configuration>

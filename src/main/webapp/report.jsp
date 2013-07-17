@@ -5,8 +5,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Отчет</title>
         <link rel="stylesheet" type="text/css" href="css/reportStyle.css">
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
-        <script src="js/utils.js"></script>  
+        <script src="http://code.jquery.com/jquery-1.9.1.js" type="text/javascript"></script> 
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <script src="js/utils.js" type="text/javascript"></script>  
         <script>
         function report(){
         $.ajax({
@@ -53,11 +54,13 @@
     </script>
     </head>
     <body onload="report();">
-        <input type="submit" value="Печать" onclick="javascript: window.print();">
-        <input type="submit" value="Карты" onclick="redirect('maps.jsp');">
-        <input type="submit" value="Выйти" onclick="logout('session_id');">
+        <div class="btn-group">
+            <button class="btn" onclick="javascript: window.print();">Печать</button>
+            <button class="btn" onclick="redirect('maps.jsp');">Карта</button>
+            <button class="btn" onclick="logout('session_id');">Выход</button>          
+        </div>
         <div id="report_header"></div>
-        <table id="report_content" align=center BORDER="1" cellpadding="0" cellspacing="0"> 
+        <table id="report_content" align="center" BORDER="1" cellpadding="0" cellspacing="0"> 
             <tr id="table_header">
                 <td>№ п/п</td>
                 <td>ГосНомерТС</td>

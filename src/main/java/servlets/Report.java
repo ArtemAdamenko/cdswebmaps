@@ -46,7 +46,7 @@ public class Report extends HttpServlet {
         PrintWriter out = response.getWriter();
         /*инициализация объектов*/
         manager.initFactory("development", "Projects");
-        SqlSession session = manager.getSessionFactory().openSession();
+        SqlSession session = manager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         Cookie[] cookies = request.getCookies();
         String username = "";

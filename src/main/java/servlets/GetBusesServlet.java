@@ -43,7 +43,7 @@ public class GetBusesServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         manager.initFactory("development", "Projects");
-        SqlSession session = manager.getSessionFactory().openSession();
+        SqlSession session = manager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         Cookie[] cookies = request.getCookies();
         String username = "";
@@ -75,7 +75,7 @@ public class GetBusesServlet extends HttpServlet {
     public static String getObjects(Map<Integer, List<Integer>> projects) throws Exception
     {
         /*Открываем сессию для запросов*/
-        SqlSession session = manager.getSessionFactory().openSession();
+        SqlSession session = manager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         /*результирующий список объектов по маршруту*/
         List<BusObject> buses = new ArrayList<BusObject>();

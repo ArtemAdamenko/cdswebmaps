@@ -7,86 +7,62 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Главная</title>
         <link rel="stylesheet" type="text/css" href="css/style.css">   
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>   
+        <script src="http://code.jquery.com/jquery-1.9.1.js" type="text/javascript"></script> 
+        <script src="js/utils.js" type="text/javascript"></script>
+        <script type="text/javascript">      
+            $(document).ready(function() {	
+                $(document).mouseup(function() {
+                    $("#loginform").mouseup(function() {
+                        return false;
+                    });		
+                    $("a.close").click(function(e){
+                        e.preventDefault();
+                        $("#loginform").hide();
+                        $(".lock").fadeIn();
+                    });
+
+                    if ($("#loginform").is(":hidden"))
+                    {
+                        $(".lock").fadeOut();
+                    } else {
+                        $(".lock").fadeIn();
+                    }				
+                    $("#loginform").toggle();
+                });
+
+                $("form#signin").submit(function() {
+                    return false;
+                });
+
+                $("input#cancel_submit").click(function(e) {
+                    $("#loginform").hide();
+                    $(".lock").fadeIn();
+                });	
+            });
+            function auth(){
+                var userName = document.forms["signin"].elements["username"].value;
+                var pass = document.forms["signin"].elements["password"].value;
+                $.ajax({
+                    url: 'AuthorizationServlet',
+                    data : { username: userName, pass: pass },
+                    success: function(data) {
+                        if (data === "access done"){
+                            var url = document.location.href; // юрл в котором происходит поиск
+                            var regV = /maps/;     // шаблон
+                            var result = url.match(regV); 
+                            if (result)
+                                document.location.href = document.location.href;
+                            else
+                                document.location.href = document.location.href+"maps.jsp";
+                        }else {
+                            open_popup('#modal_window');
+                        }
+                    }
+                });
+            }
+        </script>
     </head>
 <body>
-<script type="text/javascript">
-        
-    $(document).ready(function() {	
-        $(document).mouseup(function() {
-            $("#loginform").mouseup(function() {
-                return false;
-            });		
-            $("a.close").click(function(e){
-                e.preventDefault();
-                $("#loginform").hide();
-                $(".lock").fadeIn();
-            });
-				
-            if ($("#loginform").is(":hidden"))
-            {
-                $(".lock").fadeOut();
-            } else {
-                $(".lock").fadeIn();
-            }				
-            $("#loginform").toggle();
-        });
-			
-        $("form#signin").submit(function() {
-            return false;
-        });
-			
-        $("input#cancel_submit").click(function(e) {
-            $("#loginform").hide();
-            $(".lock").fadeIn();
-        });	
-    });
-    function auth(){
-        var userName = document.forms["signin"].elements["username"].value;
-        var pass = document.forms["signin"].elements["password"].value;
-        $.ajax({
-            url: 'AuthorizationServlet',
-            data : { username: userName, pass: pass },
-            success: function(data) {
-                if (data === "access done"){
-                    var url = document.location.href; // юрл в котором происходит поиск
-                    var regV = /maps/;     // шаблон
-                    var result = url.match(regV); 
-                    if (result)
-                        document.location.href = document.location.href;
-                    else
-                        document.location.href = document.location.href+"maps.jsp";
-                }else {
-                    open_popup('#modal_window');
-                }
-            }
-        });
-    }
-</script>
-    <script type="text/javascript">
-            /* Открываем модальное окно: */
-            function open_popup(box) { 
-              $("#background").show() 
-              $(box).centered_popup(); 
-              $(box).delay(100).show(1); 
-            } 
-
-            /* Закрываем модальное окно: */
-            function close_popup(box) { 
-              $(box).hide(); 
-              $("#background").delay(100).hide(1); 
-            } 
-
-            $(document).ready(function() { 
-              /* Позиционируем блочный элемент окна по центру страницы: */
-              $.fn.centered_popup = function() { 
-                this.css('position', 'absolute'); 
-                this.css('top', ($(window).height() - this.height()) / 2 + $(window).scrollTop() + 'px'); 
-                this.css('left', ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + 'px'); 
-              } 
-
-            });
-    </script>
     <div id="modal_window" onclick="close_popup('#modal_window');" > 
         <p>Вы ввели неверный логин или пароль</p><br>
         <p style="font-size: 10px;">Нажмите на любую область страницы</p>
@@ -121,7 +97,7 @@
         <div>
             <table cellspacing="0" cellpadding="0">
                 <tr>
-                    <td><img src="images/bg.jpg" alt=""/> </td>
+                    <td><img src="images/bg.jpg" alt=""> </td>
                 </tr>
             </table>
         </div>

@@ -36,7 +36,7 @@ public class AuthorizationServlet extends HttpServlet {
             throws ServletException, IOException, Exception {
         PrintWriter out = response.getWriter();
         manager.initFactory("development", "Projects");
-        SqlSession session = manager.getSessionFactory().openSession();
+        SqlSession session = manager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         
         String userName = request.getParameter("username");

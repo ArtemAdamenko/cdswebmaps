@@ -14,8 +14,10 @@ import mapper.DataMapper;
  * Класс для работы с сессиями
  */
 public class MyBatisManager {
-    /*Объект хранящий Sql сессии*/
-    private SqlSessionFactory sqlSessionFactory;
+    /*Объект хранящий Sql Project сессии*/
+    private SqlSessionFactory sqlProjectSessionFactory;
+    /*Объект хранящий Sql Data сессии*/
+    private SqlSessionFactory sqlDataSessionFactory;
     /*Запись в лог*/
     private final static Logger Log = Logger.getLogger(MyBatisManager.class.getName());
     
@@ -24,26 +26,28 @@ public class MyBatisManager {
      * @param String environment
      */
     public void initFactory(String environment, String db) throws Exception{
-        Log.info("Запуск SqlSessionFactory");
-        if (db.equals("Projects")){
+        if (db.equals("Projects")){     
             try{
+                Log.info("Запуск SqlProjectSessionFactory");
                 String resource = "mybatis/mybatis-config-projects.xml";
                 Reader reader = Resources.getResourceAsReader(resource);
-                if (sqlSessionFactory == null){
-                    sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
-                }
-                sqlSessionFactory.getConfiguration().addMapper(ProjectsMapper.class);
+                if (sqlProjectSessionFactory == null){
+                    sqlProjectSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
+                    sqlProjectSessionFactory.getConfiguration().addMapper(ProjectsMapper.class);
+                }            
             }catch(Exception e){
                 Log.info("Ошибка подключения к БД Projects: " + e); 
             }
         }if (db.equals("Data")){
             try{
+                Log.info("Запуск SqlDataSessionFactory");
                 String resource = "mybatis/mybatis-config-data.xml";
                 Reader reader = Resources.getResourceAsReader(resource);
-                if (sqlSessionFactory == null){
-                    sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
+                if (sqlDataSessionFactory == null){
+                    sqlDataSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
+                    sqlDataSessionFactory.getConfiguration().addMapper(DataMapper.class);
                 }
-                sqlSessionFactory.getConfiguration().addMapper(DataMapper.class);
+                
             }catch(Exception e){
                 Log.info("Ошибка подключения к БД Data: " + e); 
             }
@@ -54,8 +58,12 @@ public class MyBatisManager {
      * Возвращает singleton SqlSessionFactory
      * @return SqlSessionFactory
      */
-    public SqlSessionFactory getSessionFactory() throws Exception{
-        return sqlSessionFactory;
+    public SqlSessionFactory getProjectSessionFactory() throws Exception{
+        return sqlProjectSessionFactory;
+    }
+    
+    public SqlSessionFactory getDataSessionFactory() throws Exception{
+        return sqlDataSessionFactory;
     }
 }
 
