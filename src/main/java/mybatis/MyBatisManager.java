@@ -28,10 +28,10 @@ public class MyBatisManager {
     public void initFactory(String environment, String db) throws Exception{
         if (db.equals("Projects")){     
             try{
-                Log.info("Запуск SqlProjectSessionFactory");
                 String resource = "mybatis/mybatis-config-projects.xml";
                 Reader reader = Resources.getResourceAsReader(resource);
                 if (sqlProjectSessionFactory == null){
+                    Log.info("Запуск SqlProjectSessionFactory");
                     sqlProjectSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
                     sqlProjectSessionFactory.getConfiguration().addMapper(ProjectsMapper.class);
                 }            
@@ -39,15 +39,14 @@ public class MyBatisManager {
                 Log.info("Ошибка подключения к БД Projects: " + e); 
             }
         }if (db.equals("Data")){
-            try{
-                Log.info("Запуск SqlDataSessionFactory");
+            try{          
                 String resource = "mybatis/mybatis-config-data.xml";
                 Reader reader = Resources.getResourceAsReader(resource);
                 if (sqlDataSessionFactory == null){
+                    Log.info("Запуск SqlDataSessionFactory");
                     sqlDataSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
                     sqlDataSessionFactory.getConfiguration().addMapper(DataMapper.class);
                 }
-                
             }catch(Exception e){
                 Log.info("Ошибка подключения к БД Data: " + e); 
             }
