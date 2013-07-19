@@ -43,7 +43,7 @@
 
             //получаем данные для запроса маршрута
             if (check.length === 0){
-                open_popup('#modal_window');
+                open_popup('#null_bus_window');
                 return 0;
             }
             var proj = check[0].name;
@@ -69,7 +69,10 @@
                         .add('typeSelector')
                         // Стандартный набор кнопок
                         .add('mapTools', { left: 35, top: 5 });
-
+                        if (routes.length === 0){
+                            open_popup('#null_coord_window');
+                            return 0;
+                        }
                         for (var i = 0; i <= routes.length-1; i++){
                             var obj = new Object();
                             obj.point = [convert(routes[i].LON_), convert(routes[i].LAT_)];
@@ -123,7 +126,6 @@
             success: function(result){
                 var list = document.getElementsByClassName('dropdown-menu')[0];
                 var routes =  JSON.parse(result);               
-                var checkboxes = "";
                 ymaps.ready(init);
                     function init(){
                     myMap = new ymaps.Map("map-canvas", {
@@ -145,6 +147,20 @@
                         var li = document.createElement('LI');
                         li.innerHTML = "<input type='radio' name='"+routes[i].proj_id_+"' value="+routes[i].obj_id_+">"+routes[i].name_;
                         list.appendChild(li);
+                        
+                        /**/
+                        var month = routes[i].last_time_.substring(0,3);
+                        month = convDate(month);
+                        var times = month + routes[i].last_time_.substring(3,routes[i].last_time_.length);
+                        var newDate = convTime(times);
+                        /**/
+                        
+                        var monthst = routes[i].last_station_time_.substring(0,3);
+                        monthst = convDate(monthst);
+                        var timesst = monthst + routes[i].last_station_time_.substring(3,routes[i].last_station_time_.length);
+                        var newDatest = convTime(timesst);
+                        
+                        var address = getGeoLocation(lat,lng);
                         myGeoObject = new ymaps.GeoObject({
                             geometry: {
                                 type: "Point",
@@ -152,7 +168,9 @@
                             },
                             properties: {
                                 iconContent: routes[i].name_,
-                                balloonContent: routes[i].last_time_
+                                balloonContent: newDate + "<br>Долгота: " + lng.toFixed(6) + " Широта: " + lat.toFixed(6) + 
+                                        "<br> Скорость: " + routes[i].last_speed_ + " КМ/Ч<br>Время последней остановки: " + newDatest + 
+                                        "<br>Местоположение: " + address
                             }
                         }, {
                                 preset: 'twirl#redStretchyIcon'
@@ -163,6 +181,19 @@
             }
             });
         }
+        
+        function getGeoLocation(lat,lng) {
+        var res;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'GeocodeServlet?lat=' + lat + "&lng=" + lng, false);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState !== 4) return;
+                    res = xhr.responseText;
+            };
+            xhr.send(null);
+            return res;
+        }
+
     </script>
   </head>
   <body onload="initialize();">
@@ -178,11 +209,16 @@
             <button class="btn" onclick="logout('session_id');">Выход</button>   
         </div>
       <div id="slider"></div>
-      <div id="modal_window" onclick="close_popup('#modal_window');" > 
+      <div id="null_bus_window" onclick="close_popup('#null_bus_window');" > 
           <p style="font-size: 20px;">Выберите автобус из списка</p><br>
           <p style="font-size: 12px;">Нажмите на любую область страницы</p>
       </div> 
-      <div id="background" onclick="close_popup('#modal_window');"></div>
+      <div id="background" onclick="close_popup('#null_bus_window');"></div>
+      <div id="null_coord_window" onclick="close_popup('#null_coord_window');" > 
+          <p style="font-size: 20px;">Данные отсутствуют</p><br>
+          <p style="font-size: 12px;">Нажмите на любую область страницы</p>
+      </div> 
+      <div id="background" onclick="close_popup('#null_coord_window');"></div>
     
       
       <div id="map-canvas"></div>      

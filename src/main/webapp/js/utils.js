@@ -21,6 +21,83 @@ function logout(name){
 function fresh() {
     location.reload();
 }
+
+function convTime(date){
+    var half = date.substring(date.length-2, date.length);
+    
+    if(half == "PM"){
+        var parts = date.split(" ");
+        var time = parts[3].split(":");
+        var newHour;
+        if (time[0] == "0")
+            newHour = "12";
+        if (time[0] == "1")
+            newHour = "13";
+        if (time[0] == "2")
+            newHour = "14";
+        if (time[0] == "3")
+            newHour = "15";
+        if (time[0] == "4")
+            newHour = "16";
+        if (time[0] == "5")
+            newHour = "17";
+        if (time[0] == "6")
+            newHour = "18";
+        if (time[0] == "7")
+            newHour = "19";
+        if (time[0] == "8")
+            newHour = "20";
+        if (time[0] == "9")
+            newHour = "21";
+        if (time[0] == "10")
+            newHour = "22";
+        if (time[0] == "11")
+            newHour = "23";
+        var newTime = parts[0] + " " + parts[1] + " " + parts[2] + " " + newHour + ":" + time[1] + ":" + time[2];
+        return newTime;
+    }
+    return date = date.substring(0, date.length-2);
+    
+}
+
+function convDate(month){
+    if(month == "Jul"){
+        return "Июль";
+    }
+    if(month == "Jun"){
+        return "Июнь";
+    }
+    if(month == "Aug"){
+        return "Август";
+    }
+    if(month == "Sep"){
+        return "Сентябрь";
+    }
+    if(month == "Oct"){
+        return "Октябрь";
+    }
+    if(month == "Nov"){
+        return "Ноябрь";
+    }
+    if(month == "Dec"){
+        return "Декабрь";
+    }
+    if(month == "Jan"){
+        return "Январь";
+    }
+    if(month == "Feb"){
+        return "Февраль";
+    }
+    if(month == "Mar"){
+        return "Март";
+    }
+    if(month == "Apr"){
+        return "Апрель";
+    }
+    if(month == "May"){
+        return "Май";
+    }
+}
 /*конвертирование радиан в градусы*/
 function convert(radian){
     var radian = radian.toString();

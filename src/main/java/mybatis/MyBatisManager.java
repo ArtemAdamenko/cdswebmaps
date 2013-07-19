@@ -14,9 +14,9 @@ import mapper.DataMapper;
  * Класс для работы с сессиями
  */
 public class MyBatisManager {
-    /*Объект хранящий Sql Project сессии*/
+    /*Объект хранящий Sql Project сессию*/
     private SqlSessionFactory sqlProjectSessionFactory;
-    /*Объект хранящий Sql Data сессии*/
+    /*Объект хранящий Sql Data сессию*/
     private SqlSessionFactory sqlDataSessionFactory;
     /*Запись в лог*/
     private final static Logger Log = Logger.getLogger(MyBatisManager.class.getName());
@@ -25,7 +25,7 @@ public class MyBatisManager {
      * Инициализация подключения к БД
      * @param String environment
      */
-    public void initFactory(String environment, String db) throws Exception{
+    public void initDBFactory(String environment, String db) throws Exception{
         if (db.equals("Projects")){     
             try{
                 String resource = "mybatis/mybatis-config-projects.xml";
@@ -54,13 +54,17 @@ public class MyBatisManager {
     }
     
     /*
-     * Возвращает singleton SqlSessionFactory
+     * Возвращает singleton SqlProjectSessionFactory
      * @return SqlSessionFactory
      */
     public SqlSessionFactory getProjectSessionFactory() throws Exception{
         return sqlProjectSessionFactory;
     }
     
+     /*
+     * Возвращает singleton SqlDataSessionFactory
+     * @return SqlSessionFactory
+     */
     public SqlSessionFactory getDataSessionFactory() throws Exception{
         return sqlDataSessionFactory;
     }

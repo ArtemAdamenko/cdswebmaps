@@ -244,7 +244,7 @@ a.close {
   width: 100%; 
 } 
  
-#modal_window { 
+#null_bus_window,#null_coord_window { 
   display: none; 
   z-index: 9999; 
   border: 1px solid #444; 

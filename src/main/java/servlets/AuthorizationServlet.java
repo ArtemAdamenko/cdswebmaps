@@ -35,7 +35,7 @@ public class AuthorizationServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         PrintWriter out = response.getWriter();
-        manager.initFactory("development", "Projects");
+        manager.initDBFactory("development", "Projects");
         SqlSession session = manager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         

@@ -45,7 +45,7 @@ public class Report extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         /*инициализация объектов*/
-        manager.initFactory("development", "Projects");
+        manager.initDBFactory("development", "Projects");
         SqlSession session = manager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         Cookie[] cookies = request.getCookies();

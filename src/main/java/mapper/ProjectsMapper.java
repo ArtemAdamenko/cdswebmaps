@@ -27,7 +27,7 @@ public interface ProjectsMapper {
     public List<Map> selectProjsAndRoutes(int userId);
     
     /*Запрос на объекты по маршруту*/
-    @Select("SELECT name_, last_lon_, last_lat_, last_time_, obj_id_, proj_id_ FROM objects WHERE disp_route_ = #{route} ORDER BY last_time_ ASC")
+    @Select("SELECT name_, last_lon_, last_lat_, last_time_, obj_id_, proj_id_, last_speed_, last_station_time_, last_rout_ FROM objects WHERE disp_route_ = #{route} ORDER BY last_time_ ASC")
     public List<BusObject> selectObjects(int route);
     
     /*Проверка пользователя*/

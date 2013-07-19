@@ -42,7 +42,7 @@ public class GetBusesServlet extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        manager.initFactory("development", "Projects");
+        manager.initDBFactory("development", "Projects");
         SqlSession session = manager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         Cookie[] cookies = request.getCookies();

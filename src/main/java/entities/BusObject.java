@@ -14,6 +14,34 @@ public class BusObject {
     Date last_time_;
     int obj_id_;
     int proj_id_;
+    Date last_station_time_;
+    int last_rout_;
+
+    public void setLast_rout_(int last_rout_) {
+        this.last_rout_ = last_rout_;
+    }
+
+    public int getLast_rout_() {
+        return last_rout_;
+    }
+
+    public void setLast_station_time_(Date last_station_time_) {
+        this.last_station_time_ = last_station_time_;
+    }
+
+    public Date getLast_station_time_() {
+        return last_station_time_;
+    }
+    int last_speed_;
+
+
+    public void setLast_speed_(int last_speed_) {
+        this.last_speed_ = last_speed_;
+    }
+
+    public int getLast_speed_() {
+        return last_speed_;
+    }
 
     public void setObj_id_(int obj_id_) {
         this.obj_id_ = obj_id_;

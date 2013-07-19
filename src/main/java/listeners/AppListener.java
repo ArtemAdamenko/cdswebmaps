@@ -18,8 +18,8 @@ public class AppListener implements ServletContextListener{
         @Override
 	public void contextInitialized(ServletContextEvent contextEvent) {
             try {
-                manager.initFactory("development", "Projects");
-                manager.initFactory("development", "Data");
+                manager.initDBFactory("development", "Projects");
+                manager.initDBFactory("development", "Data");
             } catch (Exception ex) {
                 Logger.getLogger(AppListener.class.getName()).log(Level.SEVERE, null, ex);
             }
