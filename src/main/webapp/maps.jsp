@@ -125,7 +125,12 @@
             url: "GetBusesServlet",  
             success: function(result){
                 var list = document.getElementsByClassName('dropdown-menu')[0];
-                var routes =  JSON.parse(result);               
+                
+                var routes =  JSON.parse(result);  
+                routes = routes.sort(function(obj1, obj2) {
+                                        // Сортировка по возрастанию
+                                        return obj1.last_rout_-obj2.last_rout_;
+                                        });
                 ymaps.ready(init);
                     function init(){
                     myMap = new ymaps.Map("map-canvas", {
