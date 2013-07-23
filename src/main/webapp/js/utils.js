@@ -22,6 +22,20 @@ function fresh() {
     location.reload();
 }
 
+       /*форматирование даты под запрос*/
+        function parseDate(date){
+            var parts = date.split(" ");
+            var calendarDate = parts[0].split(".");
+            if (parts[1] === undefined || parts[1] === ""){
+                var dt = new Date();
+                parts[1] = dt.getHours() + ":" + dt.getMinutes();
+            }
+            var dayTime = parts[1].split(":");
+            var newDate = calendarDate[1] + "-" + calendarDate[0] + " " + dayTime[0] + ":" + dayTime[1] + ":00";
+            newDate = calendarDate[2] + "-" + newDate;
+            return newDate;
+        }
+
 function convTime(date){
     var half = date.substring(date.length-2, date.length);
     
@@ -29,7 +43,7 @@ function convTime(date){
         var parts = date.split(" ");
         var time = parts[3].split(":");
         var newHour;
-        if (time[0] == "0")
+        if (time[0] == "12")
             newHour = "12";
         if (time[0] == "1")
             newHour = "13";

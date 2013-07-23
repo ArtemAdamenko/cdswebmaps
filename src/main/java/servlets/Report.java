@@ -30,6 +30,12 @@ public class Report extends HttpServlet {
 
     /*Менеджер подключений к БД*/
      private static MyBatisManager manager = new MyBatisManager();
+          /*Среда запуска приложения*/
+     final String environment = "development";
+     /*База данных для подключения*/
+     final String DB = "Projects";
+     /*сообщение об ошибке*/
+     final String SERVLET_ERROR = "Ошибка обработки данных Report Servlet";
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -45,7 +51,7 @@ public class Report extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         /*инициализация объектов*/
-        manager.initDBFactory("development", "Projects");
+        manager.initDBFactory(environment, DB);
         SqlSession session = manager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         Cookie[] cookies = request.getCookies();
@@ -102,7 +108,7 @@ public class Report extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, "Ошибка обработки данных Report Servlet", ex);
+             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
          }
     }
 
@@ -121,7 +127,7 @@ public class Report extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, "Ошибка обработки данных Report Servlet", ex);
+             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
          }
     }
 

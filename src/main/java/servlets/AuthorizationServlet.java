@@ -22,6 +22,12 @@ public class AuthorizationServlet extends HttpServlet {
 
     /*Менеджер подключений к БД*/
      private static MyBatisManager manager = new MyBatisManager();
+     /*Среда запуска приложения*/
+     final String environment = "development";
+     /*База данных для подключения*/
+     final String DB = "Projects";
+     /*сообщение об ошибке*/
+     final String SERVLET_ERROR = "Ошибка авторизации";
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -35,7 +41,7 @@ public class AuthorizationServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         PrintWriter out = response.getWriter();
-        manager.initDBFactory("development", "Projects");
+        manager.initDBFactory(environment, DB);
         SqlSession session = manager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         
@@ -75,7 +81,7 @@ public class AuthorizationServlet extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(AuthorizationServlet.class.getName()).log(Level.SEVERE, "Ошибка авторизации", ex);
+             Logger.getLogger(AuthorizationServlet.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
          }
     }
 
@@ -94,7 +100,7 @@ public class AuthorizationServlet extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(AuthorizationServlet.class.getName()).log(Level.SEVERE, "Ошибка авторизации", ex);
+             Logger.getLogger(AuthorizationServlet.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
          }
     }
 

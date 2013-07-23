@@ -15,7 +15,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -31,7 +30,8 @@ import org.json.JSONObject;
  * Сервлет для прямого и обратного геокодирования
  */
 public class GeocodeServlet extends HttpServlet {
-
+     /*сообщение об ошибке*/
+     final String SERVLET_ERROR = "Ошибка геокодирования";
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -50,7 +50,10 @@ public class GeocodeServlet extends HttpServlet {
             String lat = request.getParameter("lat");
             String lng = request.getParameter("lng");
             String address = getReverseGeoCode(Double.parseDouble(lng), Double.parseDouble(lat));
-            out.print(address);
+            if (address == null)
+                out.print("Адрес не получен");
+            else
+                out.print(address);
         } finally {            
             out.close();
         }
@@ -72,7 +75,7 @@ public class GeocodeServlet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (JSONException ex) {
-            Logger.getLogger(GeocodeServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GeocodeServlet.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
         }
     }
 
@@ -89,13 +92,16 @@ public class GeocodeServlet extends HttpServlet {
         // текстовое значение широты/долготы, для которого следует получить ближайший понятный человеку адрес, долгота и
         params.put("latlng", lat.toString()+","+lng.toString());
         final String url = baseUrl + '?' + encodeParams(params);// генерируем путь с параметрами
-        System.out.println(url);// Путь, что бы можно было посмотреть в браузере ответ службы
-        final JSONObject response = GeocodeServlet.read(url);// делаем запрос к вебсервису и получаем от него ответ
-        // как правило, наиболее подходящий ответ первый и данные об адресе можно получить по пути
-        // //results[0]/formatted_address
-        final JSONObject location = response.getJSONArray("results").getJSONObject(0);
-        final String formattedAddress = location.getString("formatted_address");
-        System.out.println(formattedAddress);// итоговый адрес
+        String formattedAddress = null;
+        try{
+            final JSONObject response = GeocodeServlet.read(url);// делаем запрос к вебсервису и получаем от него ответ
+            // как правило, наиболее подходящий ответ первый и данные об адресе можно получить по пути
+            // //results[0]/formatted_address
+            final JSONObject location = response.getJSONArray("results").getJSONObject(0);
+            formattedAddress = location.getString("formatted_address");
+        }catch(Exception e){
+            //Logger.getLogger(GeocodeServlet.class.getName()).log(Level.SEVERE, null, "Ошибка получения адреса");
+        }
         return formattedAddress;
     }
     
@@ -167,7 +173,7 @@ public class GeocodeServlet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (JSONException ex) {
-            Logger.getLogger(GeocodeServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GeocodeServlet.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
         }
     }
 
@@ -178,6 +184,6 @@ public class GeocodeServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Модуль геокодинга";
     }// </editor-fold>
 }

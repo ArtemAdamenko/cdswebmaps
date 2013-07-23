@@ -13,28 +13,12 @@
     <script src="js/utils.js" type="text/javascript"></script>
     <script src="bootstrap/js/bootstrap.js" type="text/javascript"></script>  
     <script>   
-        /*форматирование даты под запрос*/
-        function parseDate(date){
-            var parts = date.split(" ");
-            var calendarDate = parts[0].split(".");
-            if (parts[1] === undefined || parts[1] === ""){
-                var dt = new Date();
-                parts[1] = dt.getHours() + ":" + dt.getMinutes();
-            }
-            var dayTime = parts[1].split(":");
-            var newDate = calendarDate[1] + "-" + calendarDate[0] + " " + dayTime[0] + ":" + dayTime[1] + ":00";
-            newDate = calendarDate[2] + "-" + newDate;
-            return newDate;
-        }
-
         /*хранение маршрута, для его дальнейшего удаления с карты*/
         var router;
         var mass = new Array();
         var Placemarks = new Array();
         var routes;
         function route(){
-            //очищаем карту
-            
             var check = jQuery("input[type='radio']").filter(":checked");
             var fromTime = jQuery("input[type='text']")[0].value;
             var toTime = jQuery("input[type='text']")[1].value;
@@ -129,7 +113,7 @@
                 var routes =  JSON.parse(result);  
                 routes = routes.sort(function(obj1, obj2) {
                                         // Сортировка по возрастанию
-                                        return obj1.last_rout_-obj2.last_rout_;
+                                        return obj1.route_name_ < obj2.route_name_;
                                         });
                 ymaps.ready(init);
                     function init(){
@@ -145,12 +129,42 @@
                         .add('typeSelector')
                         // Стандартный набор кнопок
                         .add('mapTools', { left: 35, top: 5 });
+                    var route_name_ = routes[0].route_name_;
+                    
+                    var li = document.createElement('li');
+                    li.className = 'dropdown-submenu';
+                    var a = document.createElement('a');
+                    a.tabindex = '-1';
+                    a.href = '#';
+                    li.appendChild(a);
+                    a.innerHTML = "Маршрут "+route_name_;
+                    
+                    var ul = document.createElement("ul");
+                    ul.className = 'dropdown-menu';
+                    li.appendChild(ul);
+                    
+                    
                     for (var i = 0; i <= routes.length-1; i++)
                     {
+                        if (route_name_ !== routes[i].route_name_){
+                            route_name_ = routes[i].route_name_;
+                            li = document.createElement('li');
+                            li.className = 'dropdown-submenu';
+                            var a = document.createElement('a');
+                            a.tabindex = '-1';
+                            a.href = '#';
+                            li.appendChild(a);
+                            a.innerHTML = "Маршрут " + route_name_;
+
+                            ul = document.createElement("ul");
+                            ul.className = 'dropdown-menu';
+                            li.appendChild(ul);
+                        }
                         var lng = convert(routes[i].last_lon_);
                         var lat = convert(routes[i].last_lat_);
-                        var li = document.createElement('LI');
-                        li.innerHTML = "<input type='radio' name='"+routes[i].proj_id_+"' value="+routes[i].obj_id_+">"+routes[i].name_;
+                        var liRadio = document.createElement('LI');
+                        liRadio.innerHTML = "<input type='radio' name='"+routes[i].proj_id_+"' value="+routes[i].obj_id_+">"+routes[i].name_;
+                        ul.appendChild(liRadio);
                         list.appendChild(li);
                         
                         /**/
@@ -174,8 +188,9 @@
                             properties: {
                                 iconContent: routes[i].name_,
                                 balloonContent: newDate + "<br>Долгота: " + lng.toFixed(6) + " Широта: " + lat.toFixed(6) + 
-                                        "<br> Скорость: " + routes[i].last_speed_ + " КМ/Ч<br>Время последней остановки: " + newDatest + 
-                                        "<br>Местоположение: " + address
+                                        "<br> Скорость: " + routes[i].last_speed_ + " КМ/Ч<br>Время последней остановки: " + newDatest +
+                                        "<br> Последняя остановка: " + routes[i].bus_station_ +
+                                        "<br>Местоположение: " + address + "<br>Маршрут " + route_name_
                             }
                         }, {
                                 preset: 'twirl#redStretchyIcon'
@@ -186,7 +201,17 @@
             }
             });
         }
-        
+            $(document).ready(function()
+              {   $('li').hover(function(){
+                        var timer = $(this).data('timer');
+                        if(timer) clearTimeout(timer);
+                        $(this).addClass('hover');
+                      },function(){
+                        var li = $(this);
+                        li.data('timer', setTimeout(function(){ li.removeClass('hover'); }, 700));
+                      });
+              });
+
         function getGeoLocation(lat,lng) {
         var res;
             var xhr = new XMLHttpRequest();
@@ -207,7 +232,7 @@
                 Автобусы
                 <span class="caret"></span>
             </a>
-            <ul class="dropdown-menu">             
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">             
             </ul>
             <button class="btn" onclick="redirect('report.jsp');">Отчет</button>
             <button class="btn" onclick="route();">Посмотреть маршрут</button>

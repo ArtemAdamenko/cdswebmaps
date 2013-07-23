@@ -1,15 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package servlets;
 
 import com.google.gson.Gson;
 import entities.Route;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +24,12 @@ public class GetRoute extends HttpServlet {
 
     /*Менеджер подключений к БД*/
      private static MyBatisManager manager = new MyBatisManager();
+     /*Среда запуска приложения*/
+     final String environment = "development";
+     /*База данных для подключения*/
+     final String DB = "Data";
+     /*сообщение об ошибке*/
+     final String SERVLET_ERROR = "Ошибка в GetRouteServlet";
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -45,7 +45,7 @@ public class GetRoute extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         /*инициализация объектов*/
-        manager.initDBFactory("development", "Data");
+        manager.initDBFactory(environment, DB);
         SqlSession session = manager.getDataSessionFactory().openSession();
         DataMapper mapper = session.getMapper(DataMapper.class);
         String projectId = request.getParameter("proj");
@@ -79,7 +79,7 @@ public class GetRoute extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(GetRoute.class.getName()).log(Level.SEVERE, "Ошибка в GetRouteServlet", ex);
+             Logger.getLogger(GetRoute.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
          }
     }
 
@@ -98,7 +98,7 @@ public class GetRoute extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(GetRoute.class.getName()).log(Level.SEVERE, "Ошибка в GetRouteServlet", ex);
+             Logger.getLogger(GetRoute.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
          }
     }
 

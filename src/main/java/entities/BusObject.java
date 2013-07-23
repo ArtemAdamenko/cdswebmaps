@@ -15,14 +15,23 @@ public class BusObject {
     int obj_id_;
     int proj_id_;
     Date last_station_time_;
-    int last_rout_;
+    String route_name_;
+    String bus_station_;
 
-    public void setLast_rout_(int last_rout_) {
-        this.last_rout_ = last_rout_;
+    public void setBus_station_(String bus_station_) {
+        this.bus_station_ = bus_station_;
     }
 
-    public int getLast_rout_() {
-        return last_rout_;
+    public String getBus_station_() {
+        return bus_station_;
+    }
+
+    public void setRoute_name_(String route_name_) {
+        this.route_name_ = route_name_;
+    }
+
+    public String getRoute_name_() {
+        return route_name_;
     }
 
     public void setLast_station_time_(Date last_station_time_) {
@@ -93,7 +102,7 @@ public class BusObject {
 
     @Override
     public String toString() {
-        return "Object{" + "name_=" + name_ + ", last_lon_=" + last_lon_ + ", last_lat_=" + last_lat_ + ", last_time_=" + last_time_ + '}';
+        return "BusObject{" + "name_=" + name_ + ", last_lon_=" + last_lon_ + ", last_lat_=" + last_lat_ + ", last_time_=" + last_time_ + ", obj_id_=" + obj_id_ + ", proj_id_=" + proj_id_ + ", last_station_time_=" + last_station_time_ + ", route_name_=" + route_name_ + ", last_speed_=" + last_speed_ + '}';
     }
     
     

@@ -8,7 +8,6 @@ package entities;
 public class Route {
     public double LON_;
     public double LAT_;
-    public int SPEED_;
 
     public double getLON_() {
         return LON_;
@@ -16,10 +15,6 @@ public class Route {
 
     public double getLAT_() {
         return LAT_;
-    }
-
-    public int getSPEED_() {
-        return SPEED_;
     }
 
     public void setLON_(double LON_) {
@@ -30,13 +25,10 @@ public class Route {
         this.LAT_ = LAT_;
     }
 
-    public void setSPEED_(int SPEED_) {
-        this.SPEED_ = SPEED_;
-    }
 
     @Override
     public String toString() {
-        return "Route{" + "LON_=" + LON_ + ", LAT_=" + LAT_ + ", SPEED_=" + SPEED_ + '}';
+        return "Route{" + "LON_=" + LON_ + ", LAT_=" + LAT_ + "}";
     }
     
     

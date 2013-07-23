@@ -2,6 +2,7 @@ package mybatis;
 
 import mapper.ProjectsMapper;
 import java.io.Reader;
+import java.util.logging.Level;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -20,6 +21,11 @@ public class MyBatisManager {
     private SqlSessionFactory sqlDataSessionFactory;
     /*Запись в лог*/
     private final static Logger Log = Logger.getLogger(MyBatisManager.class.getName());
+    /*сообщение об ошибке в бд Data*/
+     final String ERROR_DB_DATA = "Ошибка подключения к БД Data";
+     /*сообщение об ошибке в бд Project*/
+     final String ERROR_DB_PROJECT = "Ошибка подключения к БД Project";
+    
     
     /*
      * Инициализация подключения к БД
@@ -36,7 +42,7 @@ public class MyBatisManager {
                     sqlProjectSessionFactory.getConfiguration().addMapper(ProjectsMapper.class);
                 }            
             }catch(Exception e){
-                Log.info("Ошибка подключения к БД Projects: " + e); 
+                Log.log(Level.SEVERE, ERROR_DB_DATA, e);
             }
         }if (db.equals("Data")){
             try{          
@@ -48,7 +54,7 @@ public class MyBatisManager {
                     sqlDataSessionFactory.getConfiguration().addMapper(DataMapper.class);
                 }
             }catch(Exception e){
-                Log.info("Ошибка подключения к БД Data: " + e); 
+                Log.log(Level.SEVERE, ERROR_DB_PROJECT, e);
             }
         }
     }

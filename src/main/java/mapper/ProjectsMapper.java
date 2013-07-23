@@ -19,15 +19,18 @@ public interface ProjectsMapper {
     int selectUserId(String name);
     
     /*Запрос на проекты и маршруты к каждому из них*/
-    @Select("select up.proj_id_ as proj, pr.rout_id_ as route\n" +
-            "from users_projs up\n" +
-            "right join proj_routs pr on pr.proj_id_= up.proj_id_\n" +
-            "where up.user_ = #{userId}")
+    @Select("select up.proj_id_ as proj, pr.rout_id_ as route\n" 
+            + "from users_projs up\n" 
+            + "right join proj_routs pr on pr.proj_id_= up.proj_id_\n" 
+            + "where up.user_ = #{userId}")
     @MapKey("proj")
     public List<Map> selectProjsAndRoutes(int userId);
     
     /*Запрос на объекты по маршруту*/
-    @Select("SELECT name_, last_lon_, last_lat_, last_time_, obj_id_, proj_id_, last_speed_, last_station_time_, last_rout_ FROM objects WHERE disp_route_ = #{route} ORDER BY last_time_ ASC")
+    @Select("SELECT o.name_, o.last_lon_, o.last_lat_, o.last_time_, o.obj_id_, o.proj_id_, o.last_speed_, o.last_station_time_, o.last_rout_,o.last_station_,\n" 
+            + "(SELECT rt.name_ as route_name_ FROM routs rt where rt.id_ = o.last_rout_),"
+            + "(SELECT bs.name_ as bus_station_ FROM bus_stations bs where bs.number_ = o.last_station_ AND bs.rout_ = o.last_rout_)"
+            + " FROM objects o WHERE disp_route_ = #{route} ORDER BY o.last_time_ ASC")
     public List<BusObject> selectObjects(int route);
     
     /*Проверка пользователя*/
