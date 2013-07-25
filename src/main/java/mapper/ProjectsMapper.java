@@ -44,7 +44,6 @@ public interface ProjectsMapper {
             + ", (select r.name_ from routs r where r.id_=o.last_rout_)  as rname_\n"
             + ", o.LAST_TIME_\n"
             + ", o.LAST_STATION_TIME_\n"
-            + ", (select bs.NAME_ from BUS_STATIONS bs where bs.ROUT_ = o.LAST_ROUT_ and bs.NUMBER_=o.LAST_STATION_) as bsname_\n"
             + ", (select pv.name_ from providers pv where pv.id_ = o.provider_) as pvname"
             + " FROM OBJECTS o\n"
             + " WHERE o.PROJ_ID_ in (select up.PROJ_ID_ from USERS_PROJS up left join USERS u on up.USER_=u.ID_ where u.NAME_= #{name})\n"

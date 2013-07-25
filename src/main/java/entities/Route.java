@@ -25,7 +25,6 @@ public class Route {
         this.LAT_ = LAT_;
     }
 
-
     @Override
     public String toString() {
         return "Route{" + "LON_=" + LON_ + ", LAT_=" + LAT_ + "}";

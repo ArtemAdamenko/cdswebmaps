@@ -9,7 +9,7 @@
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">   
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
     <script src="http://code.jquery.com/jquery-1.9.1.js" type="text/javascript"></script>
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" type="text/javascript"></script>
+    <script src="jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.js" type="text/javascript"></script>
     <script src="js/utils.js" type="text/javascript"></script>
     <script src="bootstrap/js/bootstrap.js" type="text/javascript"></script>  
     <script>   
@@ -19,6 +19,8 @@
         var Placemarks = new Array();
         var routes;
         function route(){
+            var currentDate = $( "#datepicker" ).datepicker( "getDate" );
+            var myDate = getMyDate(currentDate);
             var check = jQuery("input[type='radio']").filter(":checked");
             var fromTime = jQuery("input[type='text']")[0].value;
             var toTime = jQuery("input[type='text']")[1].value;
@@ -176,7 +178,7 @@
                         liRadio.appendChild(span);
                         ul.appendChild(liRadio);
                         list.appendChild(li);
-                        
+
                         var address = getGeoLocation(lat,lng);
                         myGeoObject = new ymaps.GeoObject({
                             geometry: {
@@ -185,11 +187,11 @@
                             },
                             properties: {
                                 iconContent: routes[i].name_,
-                                balloonContent: routes[i].last_time_.replace(/-/g, ".").substring(0, routes[i].last_time_.length-2) + 
+                                balloonContent: myTime(routes[i].last_time_) + 
                                         "<br>Долгота: " + lng.toFixed(6) + 
                                         " Широта: " + lat.toFixed(6) + 
                                         "<br> Скорость: " + routes[i].last_speed_ + 
-                                        " КМ/Ч<br>Время последней остановки: " + routes[i].last_station_time_.replace(/-/g,".").substring(0, routes[i].last_station_time_.length-2) +
+                                        " КМ/Ч<br>Время последней остановки: " + myTime(routes[i].last_station_time_) +
                                         "<br> Последняя остановка: " + routes[i].bus_station_ +
                                         "<br>Местоположение: " + address + 
                                         "<br>Маршрут " + route_name_
@@ -204,6 +206,11 @@
             });
         }
 
+        function myTime(date){
+            var tempTime = date.split(" ")[0].split("-");
+            return tempTime = tempTime[2] + "."+tempTime[1] + "." + tempTime[0] + " " + date.split(" ")[1].substring(0, date.length-2);
+        }
+
         function getGeoLocation(lat,lng) {
         var res;
             var xhr = new XMLHttpRequest();
@@ -216,6 +223,11 @@
             return res;
         }
 
+    </script>
+    <script>
+         $(function() {
+            $( "#datepicker" ).datepicker();
+         });
     </script>
   </head>
   <body onload="initialize();">
@@ -247,6 +259,7 @@
       <div id="routeTimes">
         <br><p>Промежуток времени:</p><br>
         С <input id ="fromTime" type="text" value="" size="17"><br> до <input type="text" value="" id="toTime" size="17">
+        <div id="datepicker"></div>
         <div>
           <p> Вы можете перетаскивать ползунок с помощью указателя мыши или с помощью стрелок на клавиатуре когда ползунок активен.</p>            
         </div>

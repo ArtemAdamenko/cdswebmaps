@@ -8,12 +8,17 @@ import java.util.Date;
  * Класс для работы с объектами для отчета
  */
 public class ReportObject {
+    /*гос. номер*/
     public String NAME_;
+    /*марка т.с.*/
     public String CBNAME_;
+    /*маршрут*/
     public String RNAME_;
+    /*Время последнего отклика*/
     public Date LAST_TIME_;
+    /*Время прохождения последней остановки*/
     public Date LAST_STATION_TIME_;
-    public String BSNAME_;
+    /*установщик*/
     public String PVNAME;
 
     public String getNAME_() {
@@ -34,10 +39,6 @@ public class ReportObject {
 
     public Date getLAST_STATION_TIME() {
         return LAST_STATION_TIME_;
-    }
-
-    public String getBSNAME_() {
-        return BSNAME_;
     }
 
     public String getPVNAME() {
@@ -64,17 +65,13 @@ public class ReportObject {
         this.LAST_STATION_TIME_ = LAST_STATION_TIME_;
     }
 
-    public void setBSNAME_(String BSNAME_) {
-        this.BSNAME_ = BSNAME_;
-    }
-
     public void setPVNAME(String PVNAME) {
         this.PVNAME = PVNAME;
     }
 
     @Override
     public String toString() {
-        return "ReportObjectList{" + "NAME_=" + NAME_ + ", CBNAME_=" + CBNAME_ + ", RNAME_=" + RNAME_ + ", LAST_TIME_=" + LAST_TIME_ + ", LAST_STATION_TIME=" + LAST_STATION_TIME_ + ", BSNAME_=" + BSNAME_ + ", PVNAME=" + PVNAME + '}';
+        return "ReportObjectList{" + "NAME_=" + NAME_ + ", CBNAME_=" + CBNAME_ + ", RNAME_=" + RNAME_ + ", LAST_TIME_=" + LAST_TIME_ + ", LAST_STATION_TIME=" + LAST_STATION_TIME_ + ",PVNAME=" + PVNAME + '}';
     }
     
     

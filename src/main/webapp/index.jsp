@@ -11,6 +11,15 @@
         <script src="js/jquery-1.10.2.js" type="text/javascript"></script> 
         <script src="js/utils.js" type="text/javascript"></script>
         <script type="text/javascript">      
+            $(document).ready(function() { 
+              /* Позиционируем блочный элемент окна по центру страницы: */
+              $.fn.centered_popup = function() { 
+                this.css('position', 'absolute'); 
+                this.css('top', ($(window).height() - this.height()) / 2 + $(window).scrollTop() + 'px'); 
+                this.css('left', ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + 'px'); 
+              } 
+
+            });
             $(document).ready(function() {	
                 $(document).mouseup(function() {
                     $("#loginform").mouseup(function() {

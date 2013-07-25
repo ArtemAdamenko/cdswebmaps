@@ -8,15 +8,27 @@ import java.util.Date;
  * Класс хранящий данные об автобусах
  */
 public class BusObject {
-    String name_;
-    double last_lon_;
-    double last_lat_;
-    String last_time_;
+    /*идентификатор объекта*/
     int obj_id_;
+    /*идентификатор проекта*/
     int proj_id_;
+    /*текущая скорость*/
+    int last_speed_;
+    /*долгота*/
+    double last_lon_;
+    /*широта*/
+    double last_lat_;
+    /*номер*/
+    String name_;
+    /*время последнего отклика*/
+    String last_time_;
+    /*последняя остановка*/
     String last_station_time_;
+    /*название маршрута*/
     String route_name_;
+    /*остановка*/
     String bus_station_;
+
 
     public void setBus_station_(String bus_station_) {
         this.bus_station_ = bus_station_;
@@ -41,8 +53,6 @@ public class BusObject {
     public String getLast_station_time_() {
         return last_station_time_;
     }
-    int last_speed_;
-
 
     public void setLast_speed_(int last_speed_) {
         this.last_speed_ = last_speed_;
@@ -102,8 +112,6 @@ public class BusObject {
 
     @Override
     public String toString() {
-        return "BusObject{" + "name_=" + name_ + ", last_lon_=" + last_lon_ + ", last_lat_=" + last_lat_ + ", last_time_=" + last_time_ + ", obj_id_=" + obj_id_ + ", proj_id_=" + proj_id_ + ", last_station_time_=" + last_station_time_ + ", route_name_=" + route_name_ + ", last_speed_=" + last_speed_ + '}';
+        return "BusObject{" + "obj_id_=" + obj_id_ + ", proj_id_=" + proj_id_ + ", last_speed_=" + last_speed_ + ", last_lon_=" + last_lon_ + ", last_lat_=" + last_lat_ + ", name_=" + name_ + ", last_time_=" + last_time_ + ", last_station_time_=" + last_station_time_ + ", route_name_=" + route_name_ + ", bus_station_=" + bus_station_ + '}';
     }
-    
-    
 }
