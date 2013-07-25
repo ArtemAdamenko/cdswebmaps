@@ -11,6 +11,7 @@
     <script src="http://code.jquery.com/jquery-1.9.1.js" type="text/javascript"></script>
     <script src="jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.js" type="text/javascript"></script>
     <script src="js/utils.js" type="text/javascript"></script>
+    <script src="js/timeaddon.js" type="text/javascript"></script>
     <script src="bootstrap/js/bootstrap.js" type="text/javascript"></script>  
     <script>   
         /*хранение маршрута, для его дальнейшего удаления с карты*/
@@ -226,7 +227,8 @@
     </script>
     <script>
          $(function() {
-            $( "#datepicker" ).datepicker();
+            $( "#datepicker" ).datetimepicker();
+            
          });
     </script>
   </head>
@@ -260,6 +262,7 @@
         <br><p>Промежуток времени:</p><br>
         С <input id ="fromTime" type="text" value="" size="17"><br> до <input type="text" value="" id="toTime" size="17">
         <div id="datepicker"></div>
+        <div id="timepicker"></div>
         <div>
           <p> Вы можете перетаскивать ползунок с помощью указателя мыши или с помощью стрелок на клавиатуре когда ползунок активен.</p>            
         </div>
