@@ -19,7 +19,7 @@ public interface ProjectsMapper {
     int selectUserId(String name);
     
     /*Запрос на проекты и маршруты к каждому из них*/
-    @Select("select up.proj_id_ as proj, pr.rout_id_ as route\n" 
+    @Select("select distinct up.proj_id_ as proj, pr.rout_id_ as route\n" 
             + "from users_projs up\n" 
             + "right join proj_routs pr on pr.proj_id_= up.proj_id_\n" 
             + "where up.user_ = #{userId}")

@@ -113,7 +113,7 @@
                 var routes =  JSON.parse(result);  
                 routes = routes.sort(function(obj1, obj2) {
                                         // Сортировка по возрастанию
-                                        return obj1.route_name_ < obj2.route_name_;
+                                        return obj1.route_name_.localeCompare(obj2.route_name_);
                                         });
                 ymaps.ready(init);
                     function init(){
@@ -130,7 +130,6 @@
                         // Стандартный набор кнопок
                         .add('mapTools', { left: 35, top: 5 });
                     var route_name_ = routes[0].route_name_;
-                    
                     var li = document.createElement('li');
                     li.className = 'dropdown-submenu';
                     var a = document.createElement('a');
@@ -162,22 +161,21 @@
                         }
                         var lng = convert(routes[i].last_lon_);
                         var lat = convert(routes[i].last_lat_);
-                        var liRadio = document.createElement('LI');
-                        liRadio.innerHTML = "<input type='radio' name='"+routes[i].proj_id_+"' value="+routes[i].obj_id_+">"+routes[i].name_;
+                        /*create li for radiobutton*/
+                        var liRadio = document.createElement('li');
+                        /*create radiobutton*/
+                        var radio = document.createElement("input");
+                        radio.type = 'radio';
+                        radio.name = routes[i].proj_id_;
+                        radio.value = routes[i].obj_id_;
+                        /*create description for radiobutton*/
+                        var span = document.createElement("span");
+                        span.innerHTML = routes[i].name_;
+                        /*append elements*/
+                        liRadio.appendChild(radio);
+                        liRadio.appendChild(span);
                         ul.appendChild(liRadio);
                         list.appendChild(li);
-                        
-                        /**/
-                        var month = routes[i].last_time_.substring(0,3);
-                        month = convDate(month);
-                        var times = month + routes[i].last_time_.substring(3,routes[i].last_time_.length);
-                        var newDate = convTime(times);
-                        /**/
-                        
-                        var monthst = routes[i].last_station_time_.substring(0,3);
-                        monthst = convDate(monthst);
-                        var timesst = monthst + routes[i].last_station_time_.substring(3,routes[i].last_station_time_.length);
-                        var newDatest = convTime(timesst);
                         
                         var address = getGeoLocation(lat,lng);
                         myGeoObject = new ymaps.GeoObject({
@@ -187,10 +185,14 @@
                             },
                             properties: {
                                 iconContent: routes[i].name_,
-                                balloonContent: newDate + "<br>Долгота: " + lng.toFixed(6) + " Широта: " + lat.toFixed(6) + 
-                                        "<br> Скорость: " + routes[i].last_speed_ + " КМ/Ч<br>Время последней остановки: " + newDatest +
+                                balloonContent: routes[i].last_time_.replace(/-/g, ".").substring(0, routes[i].last_time_.length-2) + 
+                                        "<br>Долгота: " + lng.toFixed(6) + 
+                                        " Широта: " + lat.toFixed(6) + 
+                                        "<br> Скорость: " + routes[i].last_speed_ + 
+                                        " КМ/Ч<br>Время последней остановки: " + routes[i].last_station_time_.replace(/-/g,".").substring(0, routes[i].last_station_time_.length-2) +
                                         "<br> Последняя остановка: " + routes[i].bus_station_ +
-                                        "<br>Местоположение: " + address + "<br>Маршрут " + route_name_
+                                        "<br>Местоположение: " + address + 
+                                        "<br>Маршрут " + route_name_
                             }
                         }, {
                                 preset: 'twirl#redStretchyIcon'
@@ -201,16 +203,6 @@
             }
             });
         }
-            $(document).ready(function()
-              {   $('li').hover(function(){
-                        var timer = $(this).data('timer');
-                        if(timer) clearTimeout(timer);
-                        $(this).addClass('hover');
-                      },function(){
-                        var li = $(this);
-                        li.data('timer', setTimeout(function(){ li.removeClass('hover'); }, 700));
-                      });
-              });
 
         function getGeoLocation(lat,lng) {
         var res;

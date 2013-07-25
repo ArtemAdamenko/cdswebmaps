@@ -11,10 +11,10 @@ public class BusObject {
     String name_;
     double last_lon_;
     double last_lat_;
-    Date last_time_;
+    String last_time_;
     int obj_id_;
     int proj_id_;
-    Date last_station_time_;
+    String last_station_time_;
     String route_name_;
     String bus_station_;
 
@@ -34,11 +34,11 @@ public class BusObject {
         return route_name_;
     }
 
-    public void setLast_station_time_(Date last_station_time_) {
+    public void setLast_station_time_(String last_station_time_) {
         this.last_station_time_ = last_station_time_;
     }
 
-    public Date getLast_station_time_() {
+    public String getLast_station_time_() {
         return last_station_time_;
     }
     int last_speed_;
@@ -80,7 +80,7 @@ public class BusObject {
         return last_lat_;
     }
 
-    public Date getLast_time_() {
+    public String getLast_time_() {
         return last_time_;
     }
 
@@ -96,7 +96,7 @@ public class BusObject {
         this.last_lat_ = last_lat_;
     }
 
-    public void setLast_time_(Date last_time_) {
+    public void setLast_time_(String last_time_) {
         this.last_time_ = last_time_;
     }
 
