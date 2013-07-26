@@ -22,19 +22,6 @@ function fresh() {
     location.reload();
 }
 
-/*форматирование даты под запрос*/
-function parseDate(date){
-    var parts = date.split(" ");
-    var calendarDate = parts[0].split(".");
-    if (parts[1] === undefined || parts[1] === ""){
-        var dt = new Date();
-        parts[1] = dt.getHours() + ":" + dt.getMinutes();
-    }
-    var dayTime = parts[1].split(":");
-    var newDate = calendarDate[1] + "-" + calendarDate[0] + " " + dayTime[0] + ":" + dayTime[1] + ":00";
-    newDate = calendarDate[2] + "-" + newDate;
-    return newDate;
-}
 
 /*конвертирование радиан в градусы*/
 function convert(radian){
@@ -46,26 +33,6 @@ function convert(radian){
     var sec = sec.toString() + "." + sec2.toString();       
     var deg = (parseInt(hour) + (parseInt(min) + parseFloat(sec)/60)/60);
     return deg;
-}
-        
-/*Функция преобразования даты*/
-function getMyDate(date){
-    var converted = Date.parse(date);
-    var myDate = new Date(converted);
-    var year = myDate.getFullYear();
-    var month = myDate.getMonth();
-    if (month < 10)
-        month = "0"+(parseInt(month)+1);
-    var day = myDate.getDay();
-    if (day < 10)
-        day = "0" + day;
-    var hour = myDate.getHours();
-    if (hour < 10)
-        hour = "0" + hour;
-    var min = myDate.getMinutes();
-    if (min < 10)
-        min = "0" + min;
-    return day + "." + month + "." + year + " " + hour + ":" + min;
 }
 
 /* Открываем модальное окно: */
@@ -80,6 +47,15 @@ function close_popup(box) {
     $(box).hide(); 
    $("#background").delay(100).hide(1); 
 } 
+
+$(document).ready(function() { 
+/* Позиционируем блочный элемент окна по центру страницы: */
+    $.fn.centered_popup = function() { 
+        this.css('position', 'absolute'); 
+        this.css('top', ($(window).height() - this.height()) / 2 + $(window).scrollTop() + 'px'); 
+        this.css('left', ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + 'px'); 
+    } 
+});
 
 
 

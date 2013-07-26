@@ -4,10 +4,11 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Отчет</title>
-        <link rel="stylesheet" type="text/css" href="css/reportStyle.css">
-        <script src="http://code.jquery.com/jquery-1.9.1.js" type="text/javascript"></script> 
-        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="css/reportStyle.css" rel="stylesheet" type="text/css" >
+        <link href="css/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <script src="js/jquery-ui-1.10.3.custom/js/jquery-1.9.1.js" type="text/javascript"></script> 
         <script src="js/utils.js" type="text/javascript"></script>  
+        <script src="js/datef.js" type="text/javascript"></script>
         <script>
         function report(){
         $.ajax({
@@ -18,7 +19,7 @@
                var headData = JSON.parse(parseData[0]);
                var currentDate = new Date();
                var reportData = JSON.parse(parseData[1]);
-               var header = "Отчет по перевозчику «" + headData.NAME_ + "» по состоянию на «"+getMyDate(currentDate)+"»<br>Всего записей " + reportData.length;
+               var header = "Отчет по перевозчику «" + headData.NAME_ + "» по состоянию на «"+datef("YYYY.MM.dd hh:mm", currentDate)+"»<br>Всего записей " + reportData.length;
                var id = document.getElementById("report_header");
                id.innerHTML=header;
                /*основной контент отчета*/           
@@ -35,12 +36,12 @@
                     view += "<td  id=\"obj_rname\">" + reportData[i].RNAME_ +"</td>";
                     
                     if (reportData[i].LAST_STATION_TIME_ !== undefined)
-                        lastStationTime = getMyDate(reportData[i].LAST_STATION_TIME_);
+                        lastStationTime = datef("YYYY.MM.dd hh:mm",reportData[i].LAST_STATION_TIME_);
                     else
                         lastStationTime = "Дата неизвестна";
                     view += "<td id=\"obj_lastStationTime\">" + lastStationTime +"</td>";
                     if (reportData[i].LAST_TIME_ !== undefined)
-                        lastTime = getMyDate(reportData[i].LAST_TIME_);
+                        lastTime = datef("YYYY.MM.dd hh:mm",reportData[i].LAST_TIME_);
                     else
                         lastTime = "Дата неизвестна";   
                     view += "<td id=\"obj_lastTime\">" + lastTime +"</td>";

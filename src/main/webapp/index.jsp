@@ -6,20 +6,10 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Главная</title>
-        <link rel="stylesheet" type="text/css" href="css/style.css">   
-        
-        <script src="js/jquery-1.10.2.js" type="text/javascript"></script> 
+        <link href="css/style.css" rel="stylesheet" type="text/css">      
+        <script src="js/jquery-ui-1.10.3.custom/js/jquery-1.9.1.js" type="text/javascript"></script> 
         <script src="js/utils.js" type="text/javascript"></script>
         <script type="text/javascript">      
-            $(document).ready(function() { 
-              /* Позиционируем блочный элемент окна по центру страницы: */
-              $.fn.centered_popup = function() { 
-                this.css('position', 'absolute'); 
-                this.css('top', ($(window).height() - this.height()) / 2 + $(window).scrollTop() + 'px'); 
-                this.css('left', ($(window).width() - this.width()) / 2 + $(window).scrollLeft() + 'px'); 
-              } 
-
-            });
             $(document).ready(function() {	
                 $(document).mouseup(function() {
                     $("#loginform").mouseup(function() {

@@ -21,9 +21,9 @@ public class BusObject {
     /*номер*/
     String name_;
     /*время последнего отклика*/
-    String last_time_;
+    Date last_time_;
     /*последняя остановка*/
-    String last_station_time_;
+    Date last_station_time_;
     /*название маршрута*/
     String route_name_;
     /*остановка*/
@@ -46,11 +46,11 @@ public class BusObject {
         return route_name_;
     }
 
-    public void setLast_station_time_(String last_station_time_) {
+    public void setLast_station_time_(Date last_station_time_) {
         this.last_station_time_ = last_station_time_;
     }
 
-    public String getLast_station_time_() {
+    public Date getLast_station_time_() {
         return last_station_time_;
     }
 
@@ -90,7 +90,7 @@ public class BusObject {
         return last_lat_;
     }
 
-    public String getLast_time_() {
+    public Date getLast_time_() {
         return last_time_;
     }
 
@@ -106,7 +106,7 @@ public class BusObject {
         this.last_lat_ = last_lat_;
     }
 
-    public void setLast_time_(String last_time_) {
+    public void setLast_time_(Date last_time_) {
         this.last_time_ = last_time_;
     }
 
