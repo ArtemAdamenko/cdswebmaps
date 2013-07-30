@@ -27,7 +27,7 @@
                var lastStationTime = "";
                var lastTime = "";
                for (var i = 0; i <= reportData.length-1; i++){
-                   view += "<tr>";
+                    view += "<tr>";
                     var j = i;
                     view += "<td  id=\"obj_num\">" + ++j +"</td>";
                     view += "<td  id=\"obj_name\">" + reportData[i].NAME_ +"</td>";
