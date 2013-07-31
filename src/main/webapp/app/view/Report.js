@@ -48,6 +48,7 @@ Ext.define('CWM.view.Report', {
         //me.Id.update("ddddd");
         me.callParent(arguments);
     },
+    /*Формирование таблицы отчета*/
     createReport:function(data){
                var parseData = data.split("@");
                var headData = JSON.parse(parseData[0]);
@@ -58,7 +59,7 @@ Ext.define('CWM.view.Report', {
                //id.innerHTML=header;
                /*основной контент отчета*/  
                var view = header; 
-               view += '<table id="report_content"><tr id="table_header"><td>№ п/п</td><td>ГосНомерТС</td><td>Марка ТС</td><td>Установщик</td><td>Маршрут следования</td><td>Время прохождения последней остановки</td><td>Время последнего отклика</td> </tr>';
+               view += '<table id="report_content" align="center" BORDER="1" cellpadding="0" cellspacing="0"><tr id="table_header"><td>№ п/п</td><td>ГосНомерТС</td><td>Марка ТС</td><td>Установщик</td><td>Маршрут следования</td><td>Время прохождения последней остановки</td><td>Время последнего отклика</td> </tr>';
                var lastStationTime = "";
                var lastTime = "";
                for (var i = 0; i <= reportData.length-1; i++){

@@ -1,7 +1,7 @@
 Ext.define('CWM.controller.Main', {
     extend: 'Ext.app.Controller',
     
-    views: ['CWM.view.Main','CWM.view.Report'],
+    views: ['CWM.view.Main','CWM.view.Report','CWM.view.RouteOptions'],
     refs: [
         {ref: 'MainView', selector: 'main'} // Reference to main view
     ],
@@ -13,7 +13,10 @@ Ext.define('CWM.controller.Main', {
                             click: me.openReport
                         }
                  });
-                 
+        me.control({'button[action=getRoute]':{
+                            click: me.getRoute
+                        }
+                 });
         /*запрос на автобусы для отображения на карте*/
         Ext.Ajax.request({
             url: 'GetBusesServlet',
@@ -62,5 +65,11 @@ Ext.define('CWM.controller.Main', {
         win.show();
     },
     onPanelRendered: function() {        
+    },
+    
+    getRoute: function(){
+        //alert("ddd");
+        var win = Ext.widget('routeOptions');
+        win.show();
     }
 });
