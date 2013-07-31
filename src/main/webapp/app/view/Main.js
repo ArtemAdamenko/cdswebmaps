@@ -50,18 +50,23 @@ Ext.define('CWM.view.Main', {
 
             createYMap: function () {
                 var me = this;
-
+                    
                 me.update('<div style="width: ' + me.getEl().getWidth() + 'px; height: ' + me.getEl().getHeight() + 'px;" id="' + me.yMapId + '"></div>');
-                ymaps.ready(function () {
-                    me.yMap = new ymaps.Map(document.getElementById(me.yMapId), me.ymapConfig);
-                    console.log('Map created: ', me.yMap);
-                    me.yMap.controls
-                        // Кнопка изменения масштаба.
-                        .add('zoomControl', { left: 5, top: 5 })
-                        // Список типов карты
-                        .add('typeSelector')
-                        // Стандартный набор кнопок
-                        .add('mapTools', { left: 35, top: 5 });
-                });
+                Ext.Ajax.request({
+                    url: 'GetBusesServlet',
+                    success: function(response){
+                        ymaps.ready(function () {
+                        me.yMap = new ymaps.Map(document.getElementById(me.yMapId), me.ymapConfig);
+                        console.log('Map created: ', me.yMap);
+                        me.yMap.controls
+                            // Кнопка изменения масштаба.
+                            .add('zoomControl', { left: 5, top: 5 })
+                            // Список типов карты
+                            .add('typeSelector')
+                            // Стандартный набор кнопок
+                            .add('mapTools', { left: 35, top: 5 });
+                        });
+                    }
+                })
             }
 });

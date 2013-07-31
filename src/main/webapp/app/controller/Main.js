@@ -12,10 +12,7 @@ Ext.define('CWM.controller.Main', {
         me.control({'button[action=openReport]':{
                             click: me.openReport
                         }
-                 },{'panel > window':{
-                            click: me.printReport
-                        }
-                    });
+                 });
                  
         /*запрос на автобусы для отображения на карте*/
         Ext.Ajax.request({
@@ -61,15 +58,9 @@ Ext.define('CWM.controller.Main', {
 
     /*Открытие окна с отчетом*/
     openReport: function(btn){
-        
-        var me = this;
-        var action = btn.action;
         var win = Ext.widget('report');
         win.show();
     },
-    printReport: function(){
-        alert("print");
-   },
     onPanelRendered: function() {        
     }
 });
