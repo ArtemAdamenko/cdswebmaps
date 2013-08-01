@@ -2,8 +2,8 @@
 Ext.define('CWM.view.Main', {
     alias: 'widget.main', // alias (xtype)
     extend: 'Ext.panel.Panel',
-    title: 'Панель управления МБУ ЦДС "Веб карты"',
-    
+    title: 'Панель управления МБУ ЦДС "Веб карты" BETA',
+    id:'main',
    // map instance
             yMap: null,
 
@@ -36,12 +36,18 @@ Ext.define('CWM.view.Main', {
                                 action: 'openReport',
                         },{
                                 xtype:'button',
-                                text:'Отчет 2',
+                                text:'Рейсы',
                                 action: 'openReport',
                         }]
                     },{
                         itemId: 'ExitItem',
                         text: 'Выход',
+                        listeners:{
+                            click:function(){
+                                logout('session_id');
+                                redirect('index.html');
+                            }
+                        }
                     }
                 ];
                 me.yMapId = Ext.id();

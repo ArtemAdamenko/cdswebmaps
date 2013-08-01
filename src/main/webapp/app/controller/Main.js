@@ -68,7 +68,6 @@ Ext.define('CWM.controller.Main', {
     },
     
     getRoute: function(){
-        //alert("ddd");
         var win = Ext.widget('routeOptions');
         win.show();
     }
