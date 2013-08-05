@@ -22,11 +22,6 @@ Ext.define('CWM.view.Main', {
                         text: 'Маршруты',
                         menu:[]
                     },{
-                        //itemId: 'RouteItem',
-                        text: 'Отобразить траекторию',
-                        action: 'getRoute',
-                        xtype:'button'
-                    },{
                         itemId: 'ReportItem',
                         text: 'Отчеты',
                         //action: 'openReport',
@@ -50,7 +45,7 @@ Ext.define('CWM.view.Main', {
                         }
                     }
                 ];
-                me.yMapId = Ext.id();
+                me.yMapId = "map-canvas";
                 me.on('boxready', me.createYMap);
                 me.callParent(arguments);
             },

@@ -3,7 +3,7 @@ Ext.define('CWM.view.Report', {
     extend: 'Ext.window.Window',
     title: 'Отчет',
     width: 900,
-    height: 800,
+    height: 700,
     
     initComponent: function () {
         var me = this; 
@@ -16,12 +16,13 @@ Ext.define('CWM.view.Report', {
                 }
                 var view = me.createReport(response.responseText);
                 me.add({
-                   //title       : 'Child number ',
-                   //frame       : true,
-                  // collapsible : true,
+                   title       : 'Отчет по выходу ТС на маршрут',
+                   frame       : true,
+                   collapsible : true,
                    //collapsed   : true,
-                   autoScroll: true,
-                   html        : view
+                   autoScroll : true,
+                   html        : view,
+                   height:600,
                 });
                 me.doLayout();
 

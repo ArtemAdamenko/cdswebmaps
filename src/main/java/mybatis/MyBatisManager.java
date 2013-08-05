@@ -74,5 +74,9 @@ public class MyBatisManager {
     public SqlSessionFactory getDataSessionFactory() throws Exception{
         return sqlDataSessionFactory;
     }
+    
+    public void closeConnections(){
+       // sqlDataSessionFactory.
+    }
 }
 

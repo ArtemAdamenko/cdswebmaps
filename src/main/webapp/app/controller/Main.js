@@ -1,6 +1,5 @@
 Ext.define('CWM.controller.Main', {
     extend: 'Ext.app.Controller',
-    
     views: ['CWM.view.Main','CWM.view.Report','CWM.view.RouteOptions'],
     refs: [
         {ref: 'MainView', selector: 'main'} // Reference to main view
@@ -8,6 +7,8 @@ Ext.define('CWM.controller.Main', {
 
     init: function() {        
         var me = this;
+        var itemId = '';
+        var name = '';
         /*регистрация кнокпи на функцию*/
         me.control({'button[action=openReport]':{
                             click: me.openReport
@@ -47,7 +48,11 @@ Ext.define('CWM.controller.Main', {
                     }
                     item.menu.push({text: routes[i].name_,
                                     checked: false,
-                                    group: route_name_         
+                                    group: route_name_,
+                                    handler:me.getRoute,
+                                    itemId:routes[i].obj_id_,
+                                    name:routes[i].proj_id_
+                                    
                     });
                     if (i === routes.length-1)
                          t.menu.add(item);
@@ -67,8 +72,9 @@ Ext.define('CWM.controller.Main', {
     onPanelRendered: function() {        
     },
     
-    getRoute: function(){
-        var win = Ext.widget('routeOptions');
+    getRoute: function(btn){
+        var me = this;
+        var win = Ext.widget('routeOptions',{proj:btn.name, obj:btn.itemId});
         win.show();
-    }
+    },
 });
