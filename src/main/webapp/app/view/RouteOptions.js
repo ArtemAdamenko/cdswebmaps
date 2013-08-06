@@ -6,7 +6,12 @@ Ext.define('CWM.view.RouteOptions', {
     height: 200,
     items: [],
     id: 'routes',
-    config:{proj:'',obj:'',fromTime:'',toTime:''},
+    config:{
+        proj:'',
+        obj:'',
+        fromTime:'',
+        toTime:''
+    },
 
       constructor: function() {
         this.callParent(arguments);
@@ -73,9 +78,8 @@ Ext.define('CWM.view.RouteOptions', {
             },
             listeners:{
                 changecomplete:function( slider, newValue, thumb, eOpts ){
-                   // me.setToTime(me.convertTime(newValue));debugger;
-                    var time = me.convertTime(newValue);debugger;
-                    me.setToTime(time);debugger;
+                    var time = me.convertTime(newValue);
+                    me.setToTime(time);
                 }
             }
                     
@@ -97,10 +101,10 @@ Ext.define('CWM.view.RouteOptions', {
         //конец интервала
         var to_date = datef("YYYY-MM-dd", Ext.getCmp('to_date').getValue());
         if (widget.getToTime() === 0)
-            widget.setToTime('00:00');debugger;
-        var to_time = widget.getToTime() + ":00";  debugger;
+            widget.setToTime('00:00');
+        var to_time = widget.getToTime() + ":00";
         //создаем даты со временем
-        var fullDateFrom = from_date + " " + from_time;debugger;
+        var fullDateFrom = from_date + " " + from_time;
         var fullDateTo = to_date + " " + to_time;
         
         var myRoute;

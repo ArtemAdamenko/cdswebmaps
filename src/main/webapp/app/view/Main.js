@@ -24,15 +24,14 @@ Ext.define('CWM.view.Main', {
                     },{
                         itemId: 'ReportItem',
                         text: 'Отчеты',
-                        //action: 'openReport',
                         menu:[{
                                 xtype:'button',
-                                text:'Отчет 1',
+                                text:'Отчет по перевозчикам',
                                 action: 'openReport',
                         },{
                                 xtype:'button',
-                                text:'Рейсы',
-                                action: 'openReport',
+                                text:'Отчет по выходу ТС на маршрут',
+                                action: 'openReportRoute',
                         }]
                     },{
                         itemId: 'ExitItem',

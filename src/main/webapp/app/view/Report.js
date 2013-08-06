@@ -16,13 +16,13 @@ Ext.define('CWM.view.Report', {
                 }
                 var view = me.createReport(response.responseText);
                 me.add({
-                   title       : 'Отчет по выходу ТС на маршрут',
+                   title       : 'Отчет по перевозчикам',
                    frame       : true,
                    collapsible : true,
                    //collapsed   : true,
                    autoScroll : true,
                    html        : view,
-                   height:600,
+                   height:600
                 });
                 me.doLayout();
 
@@ -45,8 +45,6 @@ Ext.define('CWM.view.Report', {
                 ];
         // add items to view
         me.items = [];
-        //me.Id = Ext.id();
-        //me.Id.update("ddddd");
         me.callParent(arguments);
     },
     /*Формирование таблицы отчета*/

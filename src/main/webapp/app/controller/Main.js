@@ -1,24 +1,29 @@
 Ext.define('CWM.controller.Main', {
     extend: 'Ext.app.Controller',
-    views: ['CWM.view.Main','CWM.view.Report','CWM.view.RouteOptions'],
+    views: ['CWM.view.Main','CWM.view.Report','CWM.view.RouteOptions', 'CWM.view.ReportRoute'],
     refs: [
         {ref: 'MainView', selector: 'main'} // Reference to main view
     ],
 
     init: function() {        
         var me = this;
-        var itemId = '';
-        var name = '';
-        /*регистрация кнокпи на функцию*/
+        //регистрация кнокпи на функцию
+        //Отчет по перевозчикам
         me.control({'button[action=openReport]':{
                             click: me.openReport
-                        }
-                 });
+                }
+        });
+        //отслеживание маршрута
         me.control({'button[action=getRoute]':{
                             click: me.getRoute
-                        }
-                 });
-        /*запрос на автобусы для отображения на карте*/
+                }
+        });
+        //отчет по рейсам
+        me.control({'button[action=openReportRoute]':{
+                            click: me.openReportRoute
+                }
+        })
+        //запрос на автобусы для отображения на карте
         Ext.Ajax.request({
             url: 'GetBusesServlet',
             success: function(response){
@@ -32,7 +37,6 @@ Ext.define('CWM.controller.Main', {
                                         return obj1.route_name_.localeCompare(obj2.route_name_);
                                         });
                 var w = me.getMainView(),
-                   // get test menu button
                 t = w.down('#MainMenuItem');
                 
                 // add menu items
@@ -64,17 +68,27 @@ Ext.define('CWM.controller.Main', {
         });
     },
 
-    /*Открытие окна с отчетом*/
-    openReport: function(btn){
+    //Открытие окна с отчетом по перевозчикам
+    openReport: function(){
         var win = Ext.widget('report');
         win.show();
     },
-    onPanelRendered: function() {        
-    },
     
     getRoute: function(btn){
-        var me = this;
         var win = Ext.widget('routeOptions',{proj:btn.name, obj:btn.itemId});
         win.show();
     },
+    //вызов компонента отчета по рейсам
+    openReportRoute: function(){
+        var me = this;
+        var w = me.getMainView(),
+        menu = w.down('#MainMenuItem');
+        var items = new Array();
+        //Формируем все маршруты текущего перевозчика
+        for (var i = 0; i <= menu.menu.items.items.length-1; i++)
+            items.push({route:menu.menu.items.items[i].text});
+        var reportWin = Ext.widget('reportRoute', {routes:items});
+        reportWin.show();
+        
+    }
 });
