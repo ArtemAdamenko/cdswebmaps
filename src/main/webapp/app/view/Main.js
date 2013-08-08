@@ -2,14 +2,14 @@
 Ext.define('CWM.view.Main', {
     alias: 'widget.main', // alias (xtype)
     extend: 'Ext.panel.Panel',
-    title: 'Панель управления МБУ ЦДС "Веб карты" BETA',
+    title: 'Панель управления МБУ ЦДС "Веб карты" BETA версия Текущий пользователь: ' + document.cookie.split(";")[0].split("=")[1],
     id:'main',
    // map instance
             yMap: null,
 
             // map cfg
             ymapConfig: {
-                center: [51.7038, 39.1833], // default Москва
+                center: [51.7038, 39.1833],
                 zoom: 12,
                 type: 'yandex#hybrid'
             },
@@ -27,12 +27,16 @@ Ext.define('CWM.view.Main', {
                         menu:[{
                                 xtype:'button',
                                 text:'Отчет по перевозчикам',
-                                action: 'openReport',
+                                action: 'openReport'
                         },{
                                 xtype:'button',
                                 text:'Отчет по выходу ТС на маршрут',
-                                action: 'openReportRoute',
+                                action: 'openReportRoute'
                         }]
+                    },{
+                        itemId: 'lineChart',
+                        text: 'Диаграмма',
+                        action: 'openChart'
                     },{
                         itemId: 'ExitItem',
                         text: 'Выход',
@@ -51,7 +55,6 @@ Ext.define('CWM.view.Main', {
 
             createYMap: function () {
                 var me = this;
-                    
                 me.update('<div style="width: ' + me.getEl().getWidth() + 'px; height: ' + me.getEl().getHeight() + 'px;" id="' + me.yMapId + '"></div>');
                 Ext.Ajax.request({
                     url: 'GetBusesServlet',
@@ -59,6 +62,7 @@ Ext.define('CWM.view.Main', {
                         var routes =  JSON.parse(response.responseText);
                         ymaps.ready(function () {
                             me.yMap = new ymaps.Map(document.getElementById(me.yMapId), me.ymapConfig);
+                            me.yMap.copyrights.add("Разработчик сервиса Адаменко Артем. МБУ ЦДС 'Веб карты'.");
                             console.log('Map created: ', me.yMap);
                             me.yMap.controls
                                 // Кнопка изменения масштаба.
@@ -93,11 +97,11 @@ Ext.define('CWM.view.Main', {
                                     }, {
                                             preset: 'twirl#redStretchyIcon'
                                         });
-                                    me.yMap.geoObjects.add( myGeoObject);
+                                    me.yMap.geoObjects.add(myGeoObject);
                                 }
                         });
                     }
-                })
+                });
             },
             getGeoLocation:function getGeoLocation(lat,lng) {
             var res;

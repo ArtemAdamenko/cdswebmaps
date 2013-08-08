@@ -187,7 +187,7 @@ Ext.define('CWM.view.RouteOptions', {
                                                     }
                                                });
                          var win1 = Ext.create('widget.window', { 
-                                                    height: 100,
+                                                    height: 130,
                                                     width: 500,
                                                     autoScroll: true,          
                                                     closeAction: 'hide',     

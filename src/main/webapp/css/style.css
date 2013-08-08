@@ -11,6 +11,9 @@ html, body, #bg, #bg table, #bg td, #cont {
     width:100%;
     overflow:hidden;
 }
+.cls{
+    font-weight: bold
+}
 h2 {
 	font-size: 15px;
 	line-height: 43px;
