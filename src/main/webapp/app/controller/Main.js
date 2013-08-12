@@ -1,6 +1,6 @@
 Ext.define('CWM.controller.Main', {
     extend: 'Ext.app.Controller',
-    views: ['CWM.view.Main','CWM.view.Report','CWM.view.RouteOptions', 'CWM.view.ReportRoute', 'CWM.view.Chart'],
+    views: ['CWM.view.Main','CWM.view.Report','CWM.view.RouteOptions', 'CWM.view.ReportRoute', 'CWM.view.MyChart'],
     refs: [
         {ref: 'MainView', selector: 'main'} // Reference to main view
     ],
@@ -24,11 +24,11 @@ Ext.define('CWM.controller.Main', {
                 }
         });
         me.control({'main': {
-                afterrender: me.updateMap,
+                afterrender: me.updateMap
             }
         });
         me.control({'button[action=openChart]': {
-                click: me.openChart,
+                click: me.openChart
             }
         });
          
@@ -92,14 +92,6 @@ Ext.define('CWM.controller.Main', {
     //обновление маркеров на карте без перезагрузки
     updateMap: function (main) {
         var me = this;
-        var timer = {
-                    xtype:'label',
-                    forId: 'myFieldId',
-                    text: 'My Awesome Field',
-                }
-        console.log(main);
-        main.add(timer);
-       // main.items.push(timer);
         function func() {
             ymaps.ready(function(){
                 
@@ -134,7 +126,6 @@ Ext.define('CWM.controller.Main', {
                             }, {
                                     preset: 'twirl#redStretchyIcon'
                                });
-                               //main.yMap.geoObjects.remove(myGeoObject);
                                objects.push(myGeoObject);
                             
                         }
@@ -190,7 +181,7 @@ Ext.define('CWM.controller.Main', {
     },
             
     openChart: function(){
-        var win = Ext.widget('chart');
-        //win.show();
+        var win = Ext.widget('mychart');
+        win.show();
     }
 });

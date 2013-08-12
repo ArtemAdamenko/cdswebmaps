@@ -56,4 +56,6 @@ public interface ProjectsMapper {
                     + "WHERE a.ID_ in (select up.PROJ_ID_ from USERS_PROJS up left join USERS u on up.USER_=u.ID_ where u.NAME_=#{name})")
     public Map<Integer,String> getUserProject(String user);
     
+    @Select("SELECT LAST_SPEED_ FROM OBJECTS WHERE OBJ_ID_ = #{objId} AND PROJ_ID_ = #{projId} AND LAST_TIME_ BETWEEN #{fromTime} AND #{toTime}")
+    public List<Integer> getSpeedBus(@Param("objId")Integer objId, @Param("projId")Integer projId, @Param("fromTime")String fromTime, @Param("toTime")String toTime);
 }
