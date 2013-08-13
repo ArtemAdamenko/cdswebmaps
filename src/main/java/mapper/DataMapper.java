@@ -2,6 +2,7 @@ package mapper;
 
 import entities.Route;
 import entities.RouteReportObject;
+import entities.SpeedBus;
 import java.util.List;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
@@ -31,4 +32,8 @@ public interface DataMapper {
     /*route id*/
     @Select("SELECT ID_ FROM ROUTS WHERE NAME_ = #{name}")
     public int getRouteId(String name);
+    
+    /*запрос на скорость по времени*/
+    @Select("SELECT SPEED_, TIME_ FROM BASEDATA WHERE OBJ_ID_ = #{objId} AND PROJ_ID_ = #{projId} AND TIME_ BETWEEN #{fromTime} AND #{toTime}")
+    public List<SpeedBus> getSpeedBus(@Param("objId")Integer objId, @Param("projId")Integer projId, @Param("fromTime")String fromTime, @Param("toTime")String toTime);
 }

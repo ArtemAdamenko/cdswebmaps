@@ -2,7 +2,8 @@ package entities;
 
 /**
  *
- * @author Администратор
+ * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Класс хранящий данные о рейсах тс
  */
 public class RouteReportObject {
     public String obj_name_;

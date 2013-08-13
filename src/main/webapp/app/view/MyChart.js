@@ -3,7 +3,7 @@ Ext.define('CWM.view.MyChart', {
     extend: 'Ext.window.Window',
     title: 'Диаграмма',
     id:'chart',
-    width: 950,
+    width: 1050,
     height: 600,
     initComponent: function(){
         var me = this;
@@ -130,14 +130,89 @@ Ext.define('CWM.view.MyChart', {
                     Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
                     return 0;
                 }
-                var routes =  JSON.parse(response.responseText);debugger;
-                
+                var routes =  JSON.parse(response.responseText);
+                if (routes.length === 0){
+                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
+                    return 0;
+                }
+                var data = new Array();
+                if (routes.length-1 < 100)
+                    var temp = 1;
+                else
+                    var temp = Math.floor((routes.length-1) / 100);
+                for (var i = 0; i <= routes.length-1; i = i + temp){
+                    data.push(new Object({
+                            name: datef("MM.dd hh:mm", routes[i].time_), 
+                            data: routes[i].speed_
+                        })
+                    );
+                }
+                var store = Ext.create('Ext.data.JsonStore', {
+                    fields: ['name', 'data'],
+                    data: data
+                });
+                var chart = Ext.create('Ext.chart.Chart', {
+                                        renderTo: Ext.getBody(),
+                                        width: 1050,
+                                        height: 550,
+                                        animate: true,
+                                        itemId:'speedChart',
+                                        id:'speedChart',
+                                        store: store,
+                                        axes: [
+                                            {
+                                                type: 'Numeric',
+                                                position: 'left',
+                                                fields: ['data'],
+                                                /*label: {
+                                                    renderer: Ext.util.Format.numberRenderer('0,0')
+                                                }*/
+                                                title: 'Скорость',
+                                                grid: true,
+                                                minimum: 0
+                                            },{
+                                                type: 'Category',
+                                                position: 'bottom',
+                                                fields: ['name'],
+                                                title: 'Дата'
+                                            }
+                                        ],
+                                        series: [
+                                            {
+                                                type: 'line',
+                                                highlight: {
+                                                    size: 7,
+                                                    radius: 7
+                                                },
+                                                axis: 'left',
+                                                smooth: true,
+                                                fill: true,
+                                                xField: 'name',
+                                                yField: 'data',
+                                                markerConfig: {
+                                                    type: 'circle',
+                                                    size: 4,
+                                                    radius: 4,
+                                                    'stroke-width': 0
+                                                },
+                                                listener:{
+                                                    click:function(el){
+                                                        console.log("ddd");
+                                                }
+                                            }
+                                            }]
+                });
+                var window = Ext.getCmp('chart');
+                var oldChart = Ext.getCmp('speedChart');debugger;
+                //oldChart.destroy();
+                window.add(chart);
+                window.doLayout();
             },
             failure: function () {
                 Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');
             }
         });
     }
-})
+});
 
 

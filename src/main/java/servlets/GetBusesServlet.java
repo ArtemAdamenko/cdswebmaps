@@ -95,12 +95,10 @@ public class GetBusesServlet extends HttpServlet {
                 List<Integer> value = routes.getValue();
                 /*Проход по всем маршрутам*/
                 for (int i = 0; i <= value.size()-1; i++){
-                    //if (routes.get(i) != 0){
                         //Объекты-автобусы по каждому маршруту
                         buses = mapper.selectObjects(value.get(i), key);
                         if (!buses.isEmpty())
                             allJsonBuses += gson.toJson(buses).replaceAll("\\[|\\]", "") +",";
-                    //}
                 }     
             }
             /*стирание лишних символов дял валидности json*/

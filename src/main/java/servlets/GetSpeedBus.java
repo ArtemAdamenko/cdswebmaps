@@ -1,10 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package servlets;
 
 import com.google.gson.Gson;
+import entities.SpeedBus;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -14,13 +11,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import mapper.ProjectsMapper;
+import mapper.DataMapper;
 import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
  *
- * @author Администратор
+ * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Обработка данных скорости по времени
  */
 public class GetSpeedBus extends HttpServlet {
 
@@ -29,7 +27,7 @@ public class GetSpeedBus extends HttpServlet {
      /*Среда запуска приложения*/
      final String environment = "development";
      /*База данных для подключения*/
-     final String DB = "Projects";
+     final String DB = "Data";
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка получения данных по скорости";
     /**
@@ -47,16 +45,14 @@ public class GetSpeedBus extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         manager.initDBFactory(environment, DB);
-        SqlSession session = manager.getProjectSessionFactory().openSession();
-        ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
-        //String proj = request.getParameter("proj");
-        //String obj = request.getParameter("obj");
+        SqlSession session = manager.getDataSessionFactory().openSession();
+        DataMapper mapper = session.getMapper(DataMapper.class);
         Integer objId = Integer.valueOf(request.getParameter("obj"));
         Integer projId = Integer.valueOf(request.getParameter("proj"));
         String fromTime = request.getParameter("from_");
         String toTime = request.getParameter("to_");
         try {
-           List<Integer> speed = mapper.getSpeedBus(objId, projId, fromTime, toTime);
+           List<SpeedBus> speed = mapper.getSpeedBus(objId, projId, fromTime, toTime);
            Gson gson = new Gson();
            out.print(gson.toJson(speed));
            session.commit();
@@ -112,6 +108,6 @@ public class GetSpeedBus extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Получение данных скорости ТС по дате для диаграммы";
     }// </editor-fold>
 }

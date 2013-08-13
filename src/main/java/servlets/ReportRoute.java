@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import entities.RouteReportObject;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,7 +19,8 @@ import org.apache.ibatis.session.SqlSession;
 
 /**
  *
- * @author Администратор
+ * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Обработка данных для отчета по рейсам
  */
 public class ReportRoute extends HttpServlet {
      /*Менеджер подключений к БД*/
@@ -69,8 +68,8 @@ public class ReportRoute extends HttpServlet {
         }
     }
 
+    /*получение уникального id*/
     private String getSid(){
-        //DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date();
         int h = date.getHours();
         int m = date.getMinutes();
@@ -128,6 +127,6 @@ public class ReportRoute extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Отчет по рейсам";
     }// </editor-fold>
 }
