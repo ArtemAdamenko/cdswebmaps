@@ -1,13 +1,16 @@
 Ext.define('CWM.view.MyChart', {
     alias: 'widget.mychart', // alias (xtype)
     extend: 'Ext.window.Window',
-    title: 'Диаграмма',
+    title: 'Диаграмма скорости',
     id:'chart',
     width: 1050,
     height: 600,
     initComponent: function(){
         var me = this;
         var date = new Date();
+        date.getHours() < 10? hour = "0" + date.getHours() : hour = date.getHours();
+        date.getMinutes() < 10? min = "0" + date.getMinutes() : min = date.getMinutes();
+        var time = hour + ":" + min;
         me.tbar = [{
                 xtype: 'button',
                 text: 'Построить',
@@ -21,14 +24,16 @@ Ext.define('CWM.view.MyChart', {
                 id: 'from_time',
                 fieldLabel: 'Время',
                 minValue: '00:00',
-                maxValue: '23:00',
+                maxValue: '23:30',
+                format: 'H:i',
                 increment: 30
         },{
                 xtype: 'timefield',
                 id: 'to_time',
                 minValue: '00:00',
-                maxValue: '23:00',
-                //value: date.getHours() + ":" + date.getMinutes(),
+                format: 'H:i',
+                maxValue: '23:30',
+                value: time,
                 increment: 30
         },{
                 xtype: 'datefield',
@@ -99,7 +104,9 @@ Ext.define('CWM.view.MyChart', {
         me.callParent(arguments);
     },
     
+    //Построение диаграммы
     constructChart: function(){
+        //получение интервала даты и времени
         var fromTime = Ext.getCmp('from_time').value;
         fromTime.getHours() < 10? hour = "0" + fromTime.getHours() : hour = fromTime.getHours();
         fromTime.getMinutes() < 10? min = "0" + fromTime.getMinutes() : min = fromTime.getMinutes();
@@ -117,14 +124,19 @@ Ext.define('CWM.view.MyChart', {
         var from = fromDate + " " + fromTime;
         var to = toDate + " " + toTime;
         
-        
+        //поиск выбранного автобуса из списка radio
         var projId = Ext.ComponentQuery.query('menucheckitem[checked=true]')[0].name;
-        var objId = Ext.ComponentQuery.query('menucheckitem[checked=true]')[0].itemId;debugger;
+        var objId = Ext.ComponentQuery.query('menucheckitem[checked=true]')[0].itemId;
         
         Ext.Ajax.request({
             url: 'GetSpeedBus',
             method: 'POST',
-            params:{proj: projId, obj: objId, from_: from, to_: to},
+            params:{
+                proj: projId, 
+                obj: objId, 
+                from_: from, 
+                to_: to
+            },
             success: function(response){
                 if (response.responseText === undefined || response.responseText === null){
                     Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
@@ -142,31 +154,28 @@ Ext.define('CWM.view.MyChart', {
                     var temp = Math.floor((routes.length-1) / 100);
                 for (var i = 0; i <= routes.length-1; i = i + temp){
                     data.push(new Object({
-                            name: datef("MM.dd hh:mm", routes[i].time_), 
+                            name: datef("dd.MM hh:mm", routes[i].time_), 
                             data: routes[i].speed_
                         })
                     );
-                }
+                };
                 var store = Ext.create('Ext.data.JsonStore', {
                     fields: ['name', 'data'],
                     data: data
                 });
                 var chart = Ext.create('Ext.chart.Chart', {
-                                        renderTo: Ext.getBody(),
                                         width: 1050,
                                         height: 550,
                                         animate: true,
                                         itemId:'speedChart',
                                         id:'speedChart',
                                         store: store,
+                                        
                                         axes: [
                                             {
                                                 type: 'Numeric',
                                                 position: 'left',
                                                 fields: ['data'],
-                                                /*label: {
-                                                    renderer: Ext.util.Format.numberRenderer('0,0')
-                                                }*/
                                                 title: 'Скорость',
                                                 grid: true,
                                                 minimum: 0
@@ -184,6 +193,14 @@ Ext.define('CWM.view.MyChart', {
                                                     size: 7,
                                                     radius: 7
                                                 },
+                                                tips: {
+                                                    trackMouse: true,
+                                                    width: 140,
+                                                    height: 28,
+                                                    renderer: function(storeItem, item) {
+                                                      this.setTitle(storeItem.get('name') + ' ' + storeItem.get('data') + "КМ/Ч");
+                                                    }
+                                                  },
                                                 axis: 'left',
                                                 smooth: true,
                                                 fill: true,
@@ -194,17 +211,10 @@ Ext.define('CWM.view.MyChart', {
                                                     size: 4,
                                                     radius: 4,
                                                     'stroke-width': 0
-                                                },
-                                                listener:{
-                                                    click:function(el){
-                                                        console.log("ddd");
                                                 }
-                                            }
                                             }]
                 });
                 var window = Ext.getCmp('chart');
-                var oldChart = Ext.getCmp('speedChart');debugger;
-                //oldChart.destroy();
                 window.add(chart);
                 window.doLayout();
             },

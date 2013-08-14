@@ -2,15 +2,13 @@ Ext.define('CWM.view.RouteOptions', {
     alias: 'widget.routeOptions', // alias (xtype)
     extend: 'Ext.window.Window',
     title: 'Параметры маршрута',
-    width: 300,
+    width: 200,
     height: 200,
     items: [],
     id: 'routes',
     config:{
         proj:'',
-        obj:'',
-        fromTime:'',
-        toTime:''
+        obj:''
     },
 
       constructor: function() {
@@ -18,10 +16,11 @@ Ext.define('CWM.view.RouteOptions', {
     },
 
     initComponent: function () {
-        
+        var date = new Date();
+        date.getHours() < 10? hour = "0" + date.getHours() : hour = date.getHours();
+        date.getMinutes() < 10? min = "0" + date.getMinutes() : min = date.getMinutes();
+        date = hour + ":" + min;
         var me = this; 
-        me.from_time=0;
-        me.to_time=0;
         me.tbar=[{
             xtype:'button',
             text:'Проложить маршрут',
@@ -29,80 +28,73 @@ Ext.define('CWM.view.RouteOptions', {
                     click: me.routing
             }
         }];
+        var labelStart = {
+            xtype: 'label',
+            forId: 'myFieldId',
+            text: 'Начало',
+            margin: '0 0 0 10'
+        };
+        var labelEnd = {
+            xtype: 'label',
+            forId: 'myFieldId',
+            text: 'Конец',
+            margin: '0 0 0 10'
+        };
         var datefieldFrom = {
             xtype: 'datefield',
             anchor: '100%',
-            fieldLabel: 'Начало',
             id: 'from_date',
             maxValue: new Date()
         };
         var datefieldTo = {
             xtype: 'datefield',
             anchor: '100%',
-            fieldLabel: 'Конец',
             id: 'to_date',
             value: new Date(),
             maxValue: new Date()
         };
-        
-        var timeFrom = Ext.create('Ext.slider.Single', {
-            renderTo: Ext.getBody(),
-            hideLabel: true,
-            width: 250,
-            increment: 1,
-            minValue: 0,
-            id: 'from_time',
-            maxValue: 1440,
-            value: 0,
-            tipText: function(thumb){
-                return Ext.String.format('<b>{0}</b>', me.convertTime(thumb.value));
-            },
-            listeners:{
-                changecomplete:function(slider, newValue, thumb, eOpts){
-                    me.setFromTime(me.convertTime(newValue));
-                }
-            }
+        var timeFrom = Ext.create('Ext.form.field.Time', {
+                id: 'from_time',
+                minValue: '00:00',
+                maxValue: '23:30',
+                format: 'H:i',
+                increment: 30
         });
-        
-        var timeTo = Ext.create('Ext.slider.Single', {
-            renderTo: Ext.getBody(),
-            labelEl:'Интервал времени',
-            width: 250,
-            increment: 1,
-            minValue: 0,
-            id: 'to_time',
-            maxValue: 1440,
-            value: "00:00",
-            tipText: function(thumb){   
-                return Ext.String.format('<b>{0}</b>', me.convertTime(thumb.value));
-            },
-            listeners:{
-                changecomplete:function( slider, newValue, thumb, eOpts ){
-                    var time = me.convertTime(newValue);
-                    me.setToTime(time);
-                }
-            }
-                    
+        var timeTo = Ext.create('Ext.form.field.Time', {
+                id: 'to_time',
+                minValue: '00:00',
+                maxValue: '23:30',
+                format: 'H:i',
+                increment: 30,
+                value: date,
         });
+        me.items.push(labelStart);
         me.items.push(datefieldFrom);
         me.items.push(timeFrom);
+        me.items.push(labelEnd);
         me.items.push(datefieldTo);
         me.items.push(timeTo);
         me.callParent(arguments);
 
     },
     
+    
+    
     routing: function(){
         //Собираем данные для запроса 
         var widget = Ext.getCmp('routes');
         //начало интервала времени
         var from_date = datef("YYYY-MM-dd", Ext.getCmp('from_date').getValue());
-        var from_time = widget.getFromTime() + ":00";
+        var from_time = Ext.getCmp('from_time').value;
+        from_time.getHours() < 10? hour = "0" + from_time.getHours() : hour = from_time.getHours();
+        from_time.getMinutes() < 10? min = "0" + from_time.getMinutes() : min = from_time.getMinutes();
+        from_time = hour + ":" + min + ":00";debugger;
         //конец интервала
         var to_date = datef("YYYY-MM-dd", Ext.getCmp('to_date').getValue());
-        if (widget.getToTime() === 0)
-            widget.setToTime('00:00');
-        var to_time = widget.getToTime() + ":00";
+        var to_time = Ext.getCmp('to_time').value;
+        to_time.getHours() < 10? hour = "0" + to_time.getHours() : hour = to_time.getHours();
+        to_time.getMinutes() < 10? min = "0" + to_time.getMinutes() : min = to_time.getMinutes();
+        to_time = hour + ":" + min + ":00";debugger;
         //создаем даты со временем
         var fullDateFrom = from_date + " " + from_time;
         var fullDateTo = to_date + " " + to_time;
@@ -114,7 +106,12 @@ Ext.define('CWM.view.RouteOptions', {
         Ext.Ajax.request({
             url:'GetRoute',
             method: 'POST',
-            params: { proj:widget.getProj(),bus:widget.getObj(),fromTime:fullDateFrom, toTime:fullDateTo},
+            params: { 
+                proj:widget.getProj(),
+                bus:widget.getObj(),
+                fromTime:fullDateFrom, 
+                toTime:fullDateTo
+            },
             success:function(response){
                 routes = JSON.parse(response.responseText);
                 if (routes.length === 0){
