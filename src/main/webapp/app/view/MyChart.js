@@ -1,13 +1,26 @@
 Ext.define('CWM.view.MyChart', {
     alias: 'widget.mychart', // alias (xtype)
     extend: 'Ext.window.Window',
-    title: 'Диаграмма скорости',
+    title: 'График скорости',
     id:'chart',
     width: 1050,
     height: 600,
+    layout: 'border',
+    bodyBorder: false,
+    config:{
+        projId:'',
+        objId:''
+    },
+    defaults: {
+        collapsible: true,
+        split: true,
+        bodyPadding: 15
+    },
     initComponent: function(){
         var me = this;
         var date = new Date();
+        //var projId;
+        //var objId;
         date.getHours() < 10? hour = "0" + date.getHours() : hour = date.getHours();
         date.getMinutes() < 10? min = "0" + date.getMinutes() : min = date.getMinutes();
         var time = hour + ":" + min;
@@ -15,11 +28,11 @@ Ext.define('CWM.view.MyChart', {
                 xtype: 'button',
                 text: 'Построить',
                 handler: me.constructChart
-        },{
+        },/*{
                 itemId: 'buses',
                 text: 'Автобусы',
                 menu:[]
-        },{
+        },*/{
                 xtype: 'timefield',
                 id: 'from_time',
                 fieldLabel: 'Время',
@@ -62,8 +75,64 @@ Ext.define('CWM.view.MyChart', {
                                         // Сортировка по возрастанию
                                         return obj1.route_name_.localeCompare(obj2.route_name_);
                                         });
+                                        
+                /*формируем объекты для дерева*/
+                var tree = new Array();
+                var childrens = new Array();
+                var route_name_ = routes[0].route_name_;
+                var parent = new Object({
+                            text: route_name_, 
+                            expanded: false
+                        });
+                for (var i=0; i<= routes.length-1; i++) {
+                    if (route_name_ !== routes[i].route_name_){
+                        route_name_ = routes[i].route_name_;
+                        parent.children = childrens;
+                        childrens = new Array();
+                        tree.push(parent);
+                        parent = new Object({
+                            text: route_name_, 
+                            expanded: false
+                        });
+                    }
+                    childrens.push(new Object({
+                        text: routes[i].name_,
+                        itemId:routes[i].obj_id_,
+                        name:routes[i].proj_id_,
+                        leaf: true
+                    }));
+                    if (i === routes.length-1){
+                        parent.children = childrens;
+                        tree.push(parent);
+                    }                  
+                }
+                /*store для дерева*/
+                var store = Ext.create('Ext.data.TreeStore', {
+                    root: {
+                        expanded: true,
+                        children: tree
+                    }
+                });
+                /*Само дерево*/
+                var panel = Ext.create('Ext.tree.Panel', {
+                    title: 'Автобусы',
+                    width: 200,
+                    height: 350,
+                    store: store,
+                    rootVisible: false,
+                    region:'west',
+                    listeners: {
+                            itemclick: function(view,rec,item,index,eventObj){
+                                Ext.getCmp('chart').setProjId(rec.raw.name);
+                                Ext.getCmp('chart').setObjId(rec.raw.itemId);
+                            }
+                        }
+                });
+                var window = Ext.getCmp('chart');
+                window.add(panel);
+                window.doLayout();
 
-                var tbar = this.getDockedItems();
+                /*var tbar = this.getDockedItems();
                 // add menu items
                 var route_name_ = routes[0].route_name_;
                 var item = {text: route_name_};
@@ -95,7 +164,7 @@ Ext.define('CWM.view.MyChart', {
                                     });
                     if (i === routes.length-1)
                          tbar[1].items.items[1].menu.add(item);
-                }
+                }*/
             },
             failure: function () {
                 Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');
@@ -125,9 +194,10 @@ Ext.define('CWM.view.MyChart', {
         var to = toDate + " " + toTime;
         
         //поиск выбранного автобуса из списка radio
-        var projId = Ext.ComponentQuery.query('menucheckitem[checked=true]')[0].name;
-        var objId = Ext.ComponentQuery.query('menucheckitem[checked=true]')[0].itemId;
-        
+        //var projId = Ext.ComponentQuery.query('menucheckitem[checked=true]')[0].name;
+        //var objId = Ext.ComponentQuery.query('menucheckitem[checked=true]')[0].itemId;
+        var projId = Ext.getCmp('chart').getProjId();
+        var objId = Ext.getCmp('chart').getObjId();
         Ext.Ajax.request({
             url: 'GetSpeedBus',
             method: 'POST',
@@ -215,7 +285,14 @@ Ext.define('CWM.view.MyChart', {
                                             }]
                 });
                 var window = Ext.getCmp('chart');
-                window.add(chart);
+                var panel = Ext.create('Ext.panel.Panel', {
+                    width: 200,
+                    layout: 'fit',
+                    region: 'center',
+                    margins: '5 0 0 0',
+                });
+                panel.add(chart);
+                window.add(panel);
                 window.doLayout();
             },
             failure: function () {

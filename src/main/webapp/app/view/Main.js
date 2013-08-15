@@ -35,7 +35,7 @@ Ext.define('CWM.view.Main', {
                         }]
                     },{
                         itemId: 'lineChart',
-                        text: 'Диаграмма',
+                        text: 'График',
                         action: 'openChart'
                     },{
                         itemId: 'ExitItem',
