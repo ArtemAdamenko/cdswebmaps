@@ -44,7 +44,7 @@ Ext.define('CWM.view.ReportRoute', {
     
     getReportRoute: function(combo, records, eOpts){
         var date = datef("YYYY-MM-dd", Ext.getCmp('date').getValue());
-        var route = records[0].data.route
+        var route = records[0].data.route;
         Ext.Ajax.request({
                 url:'ReportRoute',
                 method: 'POST',

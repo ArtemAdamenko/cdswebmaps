@@ -32,6 +32,10 @@ Ext.define('CWM.view.Main', {
                                 xtype:'button',
                                 text:'Отчет по выходу ТС на маршрут',
                                 action: 'openReportRoute'
+                        },{
+                                xtype:'button',
+                                text:'Подробный отчет',
+                                action: 'openDetailReport'
                         }]
                     },{
                         itemId: 'lineChart',

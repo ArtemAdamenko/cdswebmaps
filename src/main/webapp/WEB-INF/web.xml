@@ -45,6 +45,14 @@
         <servlet-name>GetSpeedBus</servlet-name>
         <servlet-class>servlets.GetSpeedBus</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DetailReport</servlet-name>
+        <servlet-class>servlets.DetailReport</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetRouteBuses</servlet-name>
+        <servlet-class>servlets.GetRouteBuses</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>GetBusesServlet</servlet-name>
         <url-pattern>/GetBusesServlet</url-pattern>
@@ -72,6 +80,14 @@
     <servlet-mapping>
         <servlet-name>GetSpeedBus</servlet-name>
         <url-pattern>/GetSpeedBus</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DetailReport</servlet-name>
+        <url-pattern>/DetailReport</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetRouteBuses</servlet-name>
+        <url-pattern>/GetRouteBuses</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

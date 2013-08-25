@@ -54,7 +54,5 @@ public interface ProjectsMapper {
     @Select("SELECT FIRST 1 SKIP 0 a.NAME_\n"
                     + "FROM PROJECTS a\n"
                     + "WHERE a.ID_ in (select up.PROJ_ID_ from USERS_PROJS up left join USERS u on up.USER_=u.ID_ where u.NAME_=#{name})")
-    public Map<Integer,String> getUserProject(String user);
-    
-    
+    public Map<Integer,String> getUserProject(String user);    
 }

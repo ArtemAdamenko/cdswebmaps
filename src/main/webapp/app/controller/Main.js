@@ -1,6 +1,6 @@
 Ext.define('CWM.controller.Main', {
     extend: 'Ext.app.Controller',
-    views: ['CWM.view.Main','CWM.view.Report','CWM.view.RouteOptions', 'CWM.view.ReportRoute', 'CWM.view.MyChart'],
+    views: ['CWM.view.Main','CWM.view.Report','CWM.view.RouteOptions', 'CWM.view.ReportRoute', 'CWM.view.MyChart', 'CWM.view.DetailReport'],
     refs: [
         {ref: 'MainView', selector: 'main'} // Reference to main view
     ],
@@ -29,6 +29,10 @@ Ext.define('CWM.controller.Main', {
         });
         me.control({'button[action=openChart]': {
                 click: me.openChart
+            }
+        });
+        me.control({'button[action=openDetailReport]': {
+                click: me.openDetailReport
             }
         });
          
@@ -60,7 +64,8 @@ Ext.define('CWM.controller.Main', {
                     if (route_name_ !== routes[i].route_name_){
                         t.menu.add(item);
                         route_name_ = routes[i].route_name_;
-                        var item = {text: route_name_};    
+                        var item = {text: route_name_,
+                                    name:routes[i].proj_id_};    
                         item.menu = [];
                     }
                     
@@ -180,8 +185,27 @@ Ext.define('CWM.controller.Main', {
         
     },
             
+     openDetailReport: function(){
+        var me = this;
+        var w = me.getMainView(),
+        menu = w.down('#MainMenuItem');
+        var items = new Array();
+        //Формируем все маршруты текущего перевозчика для передачи отчету
+        for (var i = 0; i <= menu.menu.items.items.length-1; i++)
+            //console.log(menu.menu.items.items[i]);
+            items.push({route:menu.menu.items.items[i].text,
+                        itemId:menu.menu.items.items[i].name});
+        var reportWin = Ext.widget('detailReport', {routes:items});
+        reportWin.show();
+        
+    },
+            
     openChart: function(){
         var win = Ext.widget('mychart');
         win.show();
-    }
+    },
+    /*openDetailReport: function(){
+        var win = Ext.widget('detailReport');
+        win.show();
+    }*/
 });
