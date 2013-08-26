@@ -47,12 +47,13 @@ public class GetRouteBuses extends HttpServlet {
         manager.initDBFactory(environment, DB);
         SqlSession session = manager.getDataSessionFactory().openSession();
         DataMapper mapper = session.getMapper(DataMapper.class);
-        Integer route = Integer.valueOf(request.getParameter("route"));
+        String routeName = request.getParameter("route");
+        int routeId = mapper.getRouteId(routeName);
         String fromTime = request.getParameter("from");
         String toTime = request.getParameter("to");
         try {
             //Получение списка автобусов
-            List<BusObject> buses = mapper.getBuses(route, fromTime, toTime);
+            List<BusObject> buses = mapper.getBuses(routeId, fromTime, toTime);
             List<BusObject> resultBuses = new  ArrayList<BusObject>();
             //получение по каждому автобусу имени
             for (int i = 0 ; i <= buses.size()-1; i++){

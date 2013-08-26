@@ -67,7 +67,7 @@ Ext.define('CWM.view.Main', {
                         ymaps.ready(function () {
                             me.yMap = new ymaps.Map(document.getElementById(me.yMapId), me.ymapConfig);
                             me.yMap.copyrights.add("Разработчик сервиса Адаменко Артем. МБУ ЦДС 'Веб карты'.");
-                            console.log('Map created: ', me.yMap);
+                            //console.log('Map created: ', me.yMap);
                             me.yMap.controls
                                 // Кнопка изменения масштаба.
                                 .add('zoomControl', { left: 5, top: 5 })

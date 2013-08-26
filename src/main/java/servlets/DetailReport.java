@@ -5,7 +5,9 @@ import entities.BusObject;
 import entities.DetailReportObject;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -17,11 +19,15 @@ import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
 import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
  * @author Adamenko Artem <adamenko.artem@gmail.com>
- * Формирования подробного отчета
+ * Формирование подробного отчета
  */
 public class DetailReport extends HttpServlet {
     /*Менеджер подключений к БД*/
@@ -48,30 +54,40 @@ public class DetailReport extends HttpServlet {
         PrintWriter out = response.getWriter();
         manager.initDBFactory(environment, DB);
         SqlSession session = manager.getDataSessionFactory().openSession();
-        DataMapper mapper = session.getMapper(DataMapper.class);
-        Gson gson = new Gson();
-        String objects = gson.fromJson(request.getParameter("objects"), null);
+        DataMapper mapper = session.getMapper(DataMapper.class);         
+        //парсим выбранные в клиентском окне автобусы
+        String objects = request.getParameter("objects");  
+        JSONArray buses = new JSONArray();
+        try{
+            JSONParser parser = new JSONParser();
+            buses = (JSONArray)parser.parse(objects);
+        }catch(ParseException pe){
+            Logger.getLogger(DetailReport.class.getName()).log(Level.SEVERE, null, pe);
+        }
         String fromTime = request.getParameter("from");
         String toTime = request.getParameter("to");
-        Integer route = Integer.valueOf(request.getParameter("route"));
+        String routeName = request.getParameter("route");
+        int routeID = mapper.getRouteId(routeName);
         try {
             String sid = getSid();
             //выполняем триггер
-            mapper.getRepDetailMovObjects(fromTime, toTime, route, sid);
+            mapper.getRepDetailMovObjects(fromTime, toTime, routeID, sid);
             session.commit();
             session.close();
             SqlSession session1 = manager.getDataSessionFactory().openSession();
             DataMapper mapper1 = session1.getMapper(DataMapper.class);
-            //парсим выбранные в клиентском окне автобусы
-            List<BusObject> buses = (List<BusObject>) gson.fromJson(request.getParameter("objects"), BusObject.class);
-            String wsql = "(";
+            String wsql = " (";
             for(int i = 0; i <= buses.size()-1; i++){
-                wsql += "a.PID = " + buses.get(i).getProj_id_() + " and " + "a.OID = " + buses.get(i).getObj_id_();
+                JSONObject bus = (JSONObject)buses.get(i);
+                wsql += "(a.PID = " + bus.get("proj_id_") + " and " + "a.OID = " + bus.get("obj_id_") + ")";
+                if (i < buses.size()-1)
+                    wsql += " or ";
             }
             wsql += ")";
             //забираем сформировавшиеся данные
             List<DetailReportObject> resultObjects = mapper1.getDetailReport(sid, wsql);
             session1.close(); 
+            Gson gson = new Gson();  
             out.print(gson.toJson(resultObjects));
         } finally {         
             out.close();

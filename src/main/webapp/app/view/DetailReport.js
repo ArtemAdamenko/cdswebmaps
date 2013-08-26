@@ -2,7 +2,7 @@ Ext.define('CWM.view.DetailReport', {
     alias: 'widget.detailReport', // alias (xtype)
     extend: 'Ext.window.Window',
     title: 'Подробный отчет',
-    width: 900,
+    width: 1000,
     height: 700,
     id: 'detailReport',
     config:{
@@ -30,35 +30,37 @@ Ext.define('CWM.view.DetailReport', {
                         fieldLabel: 'Маршруты',
                         listeners:{
                             select: me.openTree
-                        }
+                        },
+                        labelWidth: 55,
+                        id: 'combobox_routes'
                     },
                     {   
                         xtype: 'datefield',
-                        fieldLabel:'Начало',
+                        fieldLabel:'Дата',
+                        labelWidth: 35,
                         name: 'startDate',
                         id: 'startDate',
                        // vtype: 'daterange',
                         endDateField: 'endDate'
-                    },{
-                        xtype: 'timefield',
-                        id: 'startTime',
-                        //fieldLabel: 'Время',
-                        minValue: '00:00',
-                        maxValue: '23:30',
-                        format: 'H:i',
-                        increment: 30
                     },{   
-                        xtype: 'datefield',
-                        fieldLabel:'Конец',
+                        xtype: 'datefield',              
                         name: 'endDate',
                         id: 'endDate',
                        // vtype: 'daterange',
                         startDateField: 'startDate',
-                        //value: new Date()
+                        value: new Date()
                     },{
                         xtype: 'timefield',
+                        id: 'startTime',
+                        fieldLabel:'Время',  
+                        labelWidth: 30,
+                        minValue: '00:00',
+                        maxValue: '23:30',
+                        format: 'H:i',
+                        increment: 30
+                    },,{
+                        xtype: 'timefield',
                         id: 'endTime',
-                        //fieldLabel: 'Время',
                         minValue: '00:00',
                         maxValue: '23:30',
                         format: 'H:i',
@@ -72,7 +74,7 @@ Ext.define('CWM.view.DetailReport', {
     
     //Построение списка автобусов с комбобоксами
     openTree: function(combo, records, eOpts){
-        var route = records[0].data.route;debugger;
+        var route = records[0].data.route;
         var fromTime = Ext.getCmp('startTime').value;
         fromTime.getHours() < 10? hour = "0" + fromTime.getHours() : hour = fromTime.getHours();
         fromTime.getMinutes() < 10? min = "0" + fromTime.getMinutes() : min = fromTime.getMinutes();
@@ -121,6 +123,9 @@ Ext.define('CWM.view.DetailReport', {
                         children: objects
                     }
                 });
+                
+                var window = Ext.getCmp('detailReport');
+                var treePanel = Ext.getCmp('tree_panel');
                 /*Само дерево*/
                 var panel = Ext.create('Ext.tree.Panel', {
                     title: 'Автобусы',
@@ -128,48 +133,63 @@ Ext.define('CWM.view.DetailReport', {
                     height: 350,
                     store: store,
                     rootVisible: false,
-                    region:'west',
+                    region: 'west',
+                    id: 'tree_panel'
                 });
-                var window = Ext.getCmp('chart');
+                if (treePanel !== undefined){
+                    window.remove('tree_panel');
+                    window.doLayout();
+                }
                 window.add(panel);
                 window.doLayout();
             }
-    })},
+    });},
     
+    //Получение данных для подробного отчета
     constructDetailReport: function(){
-        var win = Ext.getCmp('treePanel');
+        var win = Ext.getCmp('tree_panel');
         var records = win.getChecked(),
             names = new Array();
-                   
+    
+        //запись выбранных автобусов в массив
         Ext.Array.each(records, function(rec){
             names.push(new Object({
-                            obj_id_: rec.get('itemId'),
-                            proj_id_: rec.get('name')
+                            obj_id_: rec.raw.itemId,
+                            proj_id_: rec.raw.name
                         }));
         });
+        //записываем название маршрута
+        var route = Ext.getCmp('combobox_routes').value;
+        //выбранный интервл времени
+        //начало по времени
         var fromTime = Ext.getCmp('startTime').value;
         fromTime.getHours() < 10? hour = "0" + fromTime.getHours() : hour = fromTime.getHours();
         fromTime.getMinutes() < 10? min = "0" + fromTime.getMinutes() : min = fromTime.getMinutes();
         fromTime = hour + ":" + min + ":00";
-        
+        //конец по времени
         var toTime = Ext.getCmp('endTime').value;
         toTime.getHours() < 10? hour = "0" + toTime.getHours() : hour = toTime.getHours();
         toTime.getMinutes() < 10? min = "0" + toTime.getMinutes() : min = toTime.getMinutes();
         toTime = hour + ":" + min + ":00";
-        
-        
+        //начало по дате
         var fromDate = datef("YYYY-MM-dd",Ext.getCmp('startDate').value);
+        //конец по дате
         var toDate = datef("YYYY-MM-dd",Ext.getCmp('endDate').value);
+        
+        //дата и время интервалов
         var from = fromDate + " " + fromTime;
         var to = toDate + " " + toTime;
+        
+        //выбранные автобусы
+        var objects = Ext.JSON.encode(names);
         Ext.Ajax.request({
             url: 'DetailReport',
             method: 'POST',
             params:{
-                objects: JSON.create(names), 
+                objects: objects, 
                 from: from, 
                 to: to,
-                route: names.projId
+                route: route
             },
             success: function(response){
                 if (response.responseText === undefined || response.responseText === null){
@@ -177,7 +197,7 @@ Ext.define('CWM.view.DetailReport', {
                     return 0;
                 }
                 var routes =  JSON.parse(response.responseText);
-                if (routes.length === 0){
+                if (routes.length === 0){debugger;
                     Ext.Msg.alert('Предупреждение', 'Данные пусты');
                     return 0;
                 }

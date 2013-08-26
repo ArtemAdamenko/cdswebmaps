@@ -55,7 +55,8 @@ Ext.define('CWM.controller.Main', {
                 
                 // add menu items
                 var route_name_ = routes[0].route_name_;
-                var item = {text: route_name_};
+                var item = {text: route_name_,
+                            name: routes[0].proj_id_};
                 item.menu = [];
                 //интервал времени для выделения активных автобусов
                 var now = new Date().valueOf() - 600000;
@@ -191,10 +192,10 @@ Ext.define('CWM.controller.Main', {
         menu = w.down('#MainMenuItem');
         var items = new Array();
         //Формируем все маршруты текущего перевозчика для передачи отчету
-        for (var i = 0; i <= menu.menu.items.items.length-1; i++)
-            //console.log(menu.menu.items.items[i]);
+        for (var i = 0; i <= menu.menu.items.items.length-1; i++){
             items.push({route:menu.menu.items.items[i].text,
                         itemId:menu.menu.items.items[i].name});
+        }
         var reportWin = Ext.widget('detailReport', {routes:items});
         reportWin.show();
         

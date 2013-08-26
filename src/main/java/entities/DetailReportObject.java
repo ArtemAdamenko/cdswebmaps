@@ -3,6 +3,7 @@ package entities;
 /**
  *
  * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Класс данных для подробного отчета
  */
 public class DetailReportObject {
     public String oname_;
