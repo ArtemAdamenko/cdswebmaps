@@ -2,9 +2,11 @@ Ext.define('CWM.view.DetailReport', {
     alias: 'widget.detailReport', // alias (xtype)
     extend: 'Ext.window.Window',
     title: 'Подробный отчет',
-    width: 1000,
-    height: 700,
+    width: "60%",
+    height: "70%",
     id: 'detailReport',
+    layout: 'border',
+    bodyBorder: false,
     config:{
         routes:''
     },
@@ -15,6 +17,7 @@ Ext.define('CWM.view.DetailReport', {
             
     initComponent: function () {
         var me = this; 
+        var date = new Date();
         me.tbar = [
                     {   
                         xtype: 'button',
@@ -41,14 +44,8 @@ Ext.define('CWM.view.DetailReport', {
                         name: 'startDate',
                         id: 'startDate',
                        // vtype: 'daterange',
-                        endDateField: 'endDate'
-                    },{   
-                        xtype: 'datefield',              
-                        name: 'endDate',
-                        id: 'endDate',
-                       // vtype: 'daterange',
-                        startDateField: 'startDate',
-                        value: new Date()
+                        endDateField: 'endDate',
+                        value: date
                     },{
                         xtype: 'timefield',
                         id: 'startTime',
@@ -57,14 +54,23 @@ Ext.define('CWM.view.DetailReport', {
                         minValue: '00:00',
                         maxValue: '23:30',
                         format: 'H:i',
-                        increment: 30
-                    },,{
+                        increment: 30,
+                        value: date.getHours()-1 + ":" + date.getMinutes()
+                    },{   
+                        xtype: 'datefield',              
+                        name: 'endDate',
+                        id: 'endDate',
+                       // vtype: 'daterange',
+                        startDateField: 'startDate',
+                        value: date
+                    },{
                         xtype: 'timefield',
                         id: 'endTime',
                         minValue: '00:00',
                         maxValue: '23:30',
                         format: 'H:i',
-                        increment: 30
+                        increment: 30,
+                        value: date.getHours() + ":" + date.getMinutes()
                     }
                 ];
         // add items to view
@@ -197,10 +203,27 @@ Ext.define('CWM.view.DetailReport', {
                     return 0;
                 }
                 var routes =  JSON.parse(response.responseText);
-                if (routes.length === 0){debugger;
+                if (routes.length === 0){
                     Ext.Msg.alert('Предупреждение', 'Данные пусты');
                     return 0;
                 }
+                var detailReportCmp = Ext.getCmp("detailReport");
+                var resultViewReport = detailReportCmp.createReport(routes, route, from, to);
+                var reportViewCmp = Ext.getCmp('report');
+                if (reportViewCmp !== undefined)
+                    //очищаем предыдущий компонент отчета
+                    reportViewCmp.destroy();
+                var panel = Ext.create('Ext.panel.Panel', {
+                    width: 200,
+                    layout: 'fit',
+                    region: 'center',
+                    autoScroll : true,
+                    margins: '5 0 0 0',
+                    html: resultViewReport,
+                    id: 'report'
+                });
+                detailReportCmp.add(panel);
+                detailReportCmp.doLayout();
 
             },
             failure: function () {
@@ -209,40 +232,36 @@ Ext.define('CWM.view.DetailReport', {
         });
     },
     /*Формирование таблицы отчета*/
-    createReport:function(data){
-               var parseData = data.split("@");
-               var headData = JSON.parse(parseData[0]);
-               var currentDate = new Date();
-               var reportData = JSON.parse(parseData[1]);
-               var header = "<div id='report_header'>Отчет по перевозчику «" + headData.NAME_ + "» по состоянию на «"+datef("YYYY.MM.dd hh:mm", currentDate)+"»<br>Всего записей " + reportData.length + "</div>";
+    createReport:function(data, route, from, to){
+               var header = "<div id='report_header'>Подробный отчет о движении транспорта по маршруту №" + route + " за период времени с " + from + " по " + to + "</div>";
                /*основной контент отчета*/  
-               var view = header; 
-               view += '<table id="report_content" align="center" BORDER="1" cellpadding="0" cellspacing="0"><tr id="table_header"><td>№ п/п</td><td>ГосНомерТС</td><td>Марка ТС</td><td>Установщик</td><td>Маршрут следования</td><td>Время прохождения последней остановки</td><td>Время последнего отклика</td> </tr>';
-               var lastStationTime = "";
-               var lastTime = "";
-               for (var i = 0; i <= reportData.length-1; i++){
-                    view += "<tr>";
-                    var j = i;
-                    view += "<td  id=\"obj_num\">" + ++j +"</td>";
-                    view += "<td  id=\"obj_name\">" + reportData[i].NAME_ +"</td>";
-                    view += "<td  id=\"obj_cbname\">" + reportData[i].CBNAME_ +"</td>";
-                    view += "<td  id=\"obj_pvname\">" + reportData[i].PVNAME +"</td>";
-                    view += "<td  id=\"obj_rname\">" + reportData[i].RNAME_ +"</td>";
-                    
-                    if (reportData[i].LAST_STATION_TIME_ !== undefined)
-                        lastStationTime = datef("YYYY.MM.dd hh:mm",reportData[i].LAST_STATION_TIME_);
-                    else
-                        lastStationTime = "Дата неизвестна";
-                    view += "<td id=\"obj_lastStationTime\">" + lastStationTime +"</td>";
-                    if (reportData[i].LAST_TIME_ !== undefined)
-                        lastTime = datef("YYYY.MM.dd hh:mm",reportData[i].LAST_TIME_);
-                    else
-                        lastTime = "Дата неизвестна";   
-                    view += "<td id=\"obj_lastTime\">" + lastTime +"</td>";
-                   view += "</tr>";
+               var view = header;
+               var bus = data[0].oname_;
+               var j = 1;
+               view += "<table id='report_content' align='center' BORDER='1' cellpadding='0' cellspacing='0'><tr><td colspan='4'>Данные о прохождении остановок транспортным средством с ГосНомером : " + bus + "</td></tr>";
+               view += "<tr id='table_header'><td>№ п/п</td><td>Название остановки</td><td>Дата/время</td><td>Примечание</td></tr>";
+               for (var i = 0; i <= data.length-1; i++){
+                   if (data[i].oname_ !== bus){
+                       view +="</table>";
+                       bus = data[i].oname_;
+                       view += "<table id='report_content' align='center' BORDER='1' cellpadding='0' cellspacing='0'><tr><td colspan='4'>Данные о прохождении остановок транспортным средством с ГосНомером : " + bus + "</td></tr>";
+                       view += "<tr id='table_header'><td>№ п/п</td><td>Название остановки</td><td>Дата/время</td><td>Примечание</td></tr>";
+                       j = 1;
+                   }
+                   view += "<tr>";
+                   view += "<td  id=\"obj_num\">" + j++ +"</td>";
+                   view += "<td  id=\"obj_name\">" + data[i].bsname_ +"</td>";
+                   var myDate = data[i].dt.replace(/(\d+)-(\d+)-(\d+)/, '$1/$2/$3');
+                   var date = new Date(myDate.substring(0, myDate.length - 2));
+                   view += "<td  id=\"obj_cbname\">" +  datef("YYYY.MM.dd hh:mm:ss",date) +"</td>";
+                   var bscontrol = "";
+                   if (data[i].bscontrol_ === "1")
+                       bscontrol = "Конечная";
+                   else
+                       bscontrol = "";
+                   view += "<td  id=\"obj_pvname\">" + bscontrol + "</td>";
+                   view +="</tr>";
                }
-               view +="</table>";
                return view;
-    }
-    
+    } 
 });

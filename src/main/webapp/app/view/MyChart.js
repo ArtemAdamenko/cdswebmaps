@@ -3,8 +3,8 @@ Ext.define('CWM.view.MyChart', {
     extend: 'Ext.window.Window',
     title: 'График скорости',
     id:'chart',
-    width: 1050,
-    height: 600,
+    width: "60%",
+    height: "70%",
     layout: 'border',
     bodyBorder: false,
     config:{

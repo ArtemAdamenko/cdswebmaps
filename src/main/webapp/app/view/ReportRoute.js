@@ -2,8 +2,8 @@ Ext.define('CWM.view.ReportRoute', {
     alias: 'widget.reportRoute', // alias (xtype)
     extend: 'Ext.window.Window',
     title: 'Отчет по выходу ТС на маршрут',
-    width: 900,
-    height: 700,
+    width: "50%",
+    height: "70%",
     id: 'reportRoute',
     config:{
         routes:''

@@ -2,8 +2,8 @@ Ext.define('CWM.view.Report', {
     alias: 'widget.report', // alias (xtype)
     extend: 'Ext.window.Window',
     title: 'Отчет',
-    width: 900,
-    height: 700,
+    width: "50%",
+    height: "70%",
     
     initComponent: function () {
         var me = this; 

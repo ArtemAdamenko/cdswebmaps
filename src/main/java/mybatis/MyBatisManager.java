@@ -42,7 +42,7 @@ public class MyBatisManager {
                     sqlProjectSessionFactory.getConfiguration().addMapper(ProjectsMapper.class);
                 }            
             }catch(Exception e){
-                Log.log(Level.SEVERE, ERROR_DB_DATA, e);
+                Log.log(Level.SEVERE, ERROR_DB_PROJECT, e);
             }
         }if (db.equals("Data")){
             try{          
@@ -54,7 +54,7 @@ public class MyBatisManager {
                     sqlDataSessionFactory.getConfiguration().addMapper(DataMapper.class);
                 }
             }catch(Exception e){
-                Log.log(Level.SEVERE, ERROR_DB_PROJECT, e);
+                Log.log(Level.SEVERE, ERROR_DB_DATA, e);
             }
         }
     }

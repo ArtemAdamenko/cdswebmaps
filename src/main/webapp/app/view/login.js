@@ -1,6 +1,4 @@
 Ext.onReady(function(){
-
-
 /*
  *  Создаем форму для входа
  */
@@ -28,10 +26,8 @@ var loginForm = new Ext.FormPanel({
   buttons: [
       {
         text: 'Вход',
-        handler: function() {
-            
-            loginForm.getForm().submit({
-                   
+        handler: function() {         
+            loginForm.getForm().submit({                 
                 waitTitle: 'пожалуйста подождите...',
                 waitMsg: 'вход в систему выполняется'
             });
@@ -48,7 +44,10 @@ var loginForm = new Ext.FormPanel({
                             Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');
                         },
                         method: 'POST',
-                        params: { username:login.getValue(), pass: pass.getValue() }
+                        params: { 
+                                  username:login.getValue(), 
+                                  pass: pass.getValue() 
+                                }
                     });
         }
       }

@@ -9,8 +9,10 @@ import java.util.List;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.mapping.StatementType;
+import servlets.DetailReport;
 
 /**
  *
@@ -60,4 +62,7 @@ public interface DataMapper {
     /*имя автобуса*/
     @Select("SELECT NAME_ FROM OBJECTS WHERE PROJ_ID_ = #{projID} AND OBJ_ID_ = #{objID}")
     public String getNameofBus(@Param("projID")int projID, @Param("objID")int objID);
+    
+    @SelectProvider(type = DetailReport.class, method = "selectPersonSql")
+    public List<DetailReportObject> selectPersonSql(@Param("sid")String sid,@Param("wsql")String wsql);
 }
