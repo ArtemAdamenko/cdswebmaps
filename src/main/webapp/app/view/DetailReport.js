@@ -18,6 +18,7 @@ Ext.define('CWM.view.DetailReport', {
     initComponent: function () {
         var me = this; 
         var date = new Date();
+        var time = parseTime(date);
         me.tbar = [
                     {   
                         xtype: 'button',
@@ -39,7 +40,7 @@ Ext.define('CWM.view.DetailReport', {
                     },
                     {   
                         xtype: 'datefield',
-                        fieldLabel:'Дата',
+                        fieldLabel:'Начало',
                         labelWidth: 35,
                         name: 'startDate',
                         id: 'startDate',
@@ -49,15 +50,15 @@ Ext.define('CWM.view.DetailReport', {
                     },{
                         xtype: 'timefield',
                         id: 'startTime',
-                        fieldLabel:'Время',  
                         labelWidth: 30,
                         minValue: '00:00',
                         maxValue: '23:30',
-                        format: 'H:i',
+                        format: 'H:i:s',
                         increment: 30,
-                        value: date.getHours()-1 + ":" + date.getMinutes()
+                        value: time
                     },{   
-                        xtype: 'datefield',              
+                        xtype: 'datefield',
+                        fieldLabel:'Конец',
                         name: 'endDate',
                         id: 'endDate',
                        // vtype: 'daterange',
@@ -66,11 +67,11 @@ Ext.define('CWM.view.DetailReport', {
                     },{
                         xtype: 'timefield',
                         id: 'endTime',
-                        minValue: '00:00',
-                        maxValue: '23:30',
-                        format: 'H:i',
+                        minValue: '00:00:00',
+                        maxValue: '23:30:00',
+                        format: 'H:i:s',
                         increment: 30,
-                        value: date.getHours() + ":" + date.getMinutes()
+                        value: time
                     }
                 ];
         // add items to view
@@ -81,17 +82,10 @@ Ext.define('CWM.view.DetailReport', {
     //Построение списка автобусов с комбобоксами
     openTree: function(combo, records, eOpts){
         var route = records[0].data.route;
-        var fromTime = Ext.getCmp('startTime').value;
-        fromTime.getHours() < 10? hour = "0" + fromTime.getHours() : hour = fromTime.getHours();
-        fromTime.getMinutes() < 10? min = "0" + fromTime.getMinutes() : min = fromTime.getMinutes();
-        fromTime = hour + ":" + min + ":00";
         
-        var toTime = Ext.getCmp('endTime').value;
-        toTime.getHours() < 10? hour = "0" + toTime.getHours() : hour = toTime.getHours();
-        toTime.getMinutes() < 10? min = "0" + toTime.getMinutes() : min = toTime.getMinutes();
-        toTime = hour + ":" + min + ":00";
-        
-        
+        var fromTime = parseTime(Ext.getCmp('startTime').value);      
+        var toTime = parseTime(Ext.getCmp('endTime').value);
+                
         var fromDate = datef("YYYY-MM-dd",Ext.getCmp('startDate').value);
         var toDate = datef("YYYY-MM-dd",Ext.getCmp('endDate').value);
 
@@ -166,23 +160,13 @@ Ext.define('CWM.view.DetailReport', {
         });
         //записываем название маршрута
         var route = Ext.getCmp('combobox_routes').value;
-        //выбранный интервл времени
-        //начало по времени
-        var fromTime = Ext.getCmp('startTime').value;
-        fromTime.getHours() < 10? hour = "0" + fromTime.getHours() : hour = fromTime.getHours();
-        fromTime.getMinutes() < 10? min = "0" + fromTime.getMinutes() : min = fromTime.getMinutes();
-        fromTime = hour + ":" + min + ":00";
-        //конец по времени
-        var toTime = Ext.getCmp('endTime').value;
-        toTime.getHours() < 10? hour = "0" + toTime.getHours() : hour = toTime.getHours();
-        toTime.getMinutes() < 10? min = "0" + toTime.getMinutes() : min = toTime.getMinutes();
-        toTime = hour + ":" + min + ":00";
-        //начало по дате
+        //выбранный интервал времени
+        var fromTime = parseTime(Ext.getCmp('startTime').value);
+        var toTime = parseTime(Ext.getCmp('endTime').value);
+        
         var fromDate = datef("YYYY-MM-dd",Ext.getCmp('startDate').value);
-        //конец по дате
         var toDate = datef("YYYY-MM-dd",Ext.getCmp('endDate').value);
         
-        //дата и время интервалов
         var from = fromDate + " " + fromTime;
         var to = toDate + " " + toTime;
         
@@ -224,7 +208,6 @@ Ext.define('CWM.view.DetailReport', {
                 });
                 detailReportCmp.add(panel);
                 detailReportCmp.doLayout();
-
             },
             failure: function () {
                 Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');
@@ -253,7 +236,7 @@ Ext.define('CWM.view.DetailReport', {
                    view += "<td  id=\"obj_name\">" + data[i].bsname_ +"</td>";
                    var myDate = data[i].dt.replace(/(\d+)-(\d+)-(\d+)/, '$1/$2/$3');
                    var date = new Date(myDate.substring(0, myDate.length - 2));
-                   view += "<td  id=\"obj_cbname\">" +  datef("YYYY.MM.dd hh:mm:ss",date) +"</td>";
+                   view += "<td  id=\"obj_cbname\">" +  datef("hh:mm:ss dd.MM.YYYY",date) +"</td>";
                    var bscontrol = "";
                    if (data[i].bscontrol_ === "1")
                        bscontrol = "Конечная";

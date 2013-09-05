@@ -35,6 +35,13 @@ function convert(radian){
     return deg;
 }
 
+//приводит время к правильному виду
+function parseTime(time){
+    time.getHours() < 10? hour = "0" + time.getHours() : hour = time.getHours();
+    time.getMinutes() < 10? min = "0" + time.getMinutes() : min = time.getMinutes();
+    time = hour + ":" + min + ":00";
+    return time;
+}
 
 
 

@@ -19,33 +19,26 @@ Ext.define('CWM.view.MyChart', {
     initComponent: function(){
         var me = this;
         var date = new Date();
-        //var projId;
-        //var objId;
-        date.getHours() < 10? hour = "0" + date.getHours() : hour = date.getHours();
-        date.getMinutes() < 10? min = "0" + date.getMinutes() : min = date.getMinutes();
-        var time = hour + ":" + min;
+        var time = parseTime(date);
         me.tbar = [{
                 xtype: 'button',
                 text: 'Построить',
                 handler: me.constructChart
-        },/*{
-                itemId: 'buses',
-                text: 'Автобусы',
-                menu:[]
-        },*/{
+        },{
                 xtype: 'timefield',
                 id: 'from_time',
                 fieldLabel: 'Время',
-                minValue: '00:00',
-                maxValue: '23:30',
-                format: 'H:i',
+                minValue: '00:00:00',
+                maxValue: '23:30:00',
+                format: 'H:i:s',
+                value: time,
                 increment: 30
         },{
                 xtype: 'timefield',
                 id: 'to_time',
-                minValue: '00:00',
-                format: 'H:i',
-                maxValue: '23:30',
+                minValue: '00:00:00',
+                format: 'H:i:s',
+                maxValue: '23:30:00',
                 value: time,
                 increment: 30
         },{
@@ -131,40 +124,6 @@ Ext.define('CWM.view.MyChart', {
                 var window = Ext.getCmp('chart');
                 window.add(panel);
                 window.doLayout();
-
-                /*var tbar = this.getDockedItems();
-                // add menu items
-                var route_name_ = routes[0].route_name_;
-                var item = {text: route_name_};
-                item.menu = [];
-                //интервал времени для выделения активных автобусов
-                var now = new Date().valueOf() - 600000;
-                
-                for (var i=0; i<= routes.length-1; i++) {
-                    if (route_name_ !== routes[i].route_name_){
-                        tbar[1].items.items[1].menu.add(item);
-                        route_name_ = routes[i].route_name_;
-                        var item = {text: route_name_};    
-                        item.menu = [];
-                    }
-                    
-                    var style = "";
-                    var lastBusDate = new Date(routes[i].last_time_).valueOf();
-                    if (lastBusDate > now){
-                        //жирный шрифт для выделения активных автобусов
-                        style = "cls";
-                    }
-                    item.menu.push({
-                                    text: routes[i].name_,
-                                    checked: false,
-                                    group: route_name_,
-                                    itemId:routes[i].obj_id_,
-                                    name:routes[i].proj_id_,
-                                    cls: style
-                                    });
-                    if (i === routes.length-1)
-                         tbar[1].items.items[1].menu.add(item);
-                }*/
             },
             failure: function () {
                 Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');
@@ -176,17 +135,9 @@ Ext.define('CWM.view.MyChart', {
     //Построение диаграммы
     constructChart: function(){
         //получение интервала даты и времени
-        var fromTime = Ext.getCmp('from_time').value;
-        fromTime.getHours() < 10? hour = "0" + fromTime.getHours() : hour = fromTime.getHours();
-        fromTime.getMinutes() < 10? min = "0" + fromTime.getMinutes() : min = fromTime.getMinutes();
-        fromTime = hour + ":" + min + ":00";
-        
-        var toTime = Ext.getCmp('to_time').value;
-        toTime.getHours() < 10? hour = "0" + toTime.getHours() : hour = toTime.getHours();
-        toTime.getMinutes() < 10? min = "0" + toTime.getMinutes() : min = toTime.getMinutes();
-        toTime = hour + ":" + min + ":00";
-        
-        
+        var fromTime = parseTime(Ext.getCmp('from_time').value);
+        var toTime = parseTime(Ext.getCmp('to_time').value);
+
         var fromDate = datef("YYYY-MM-dd",Ext.getCmp('from_date').value);
         var toDate = datef("YYYY-MM-dd",Ext.getCmp('to_date').value);
         
@@ -194,8 +145,6 @@ Ext.define('CWM.view.MyChart', {
         var to = toDate + " " + toTime;
         
         //поиск выбранного автобуса из списка radio
-        //var projId = Ext.ComponentQuery.query('menucheckitem[checked=true]')[0].name;
-        //var objId = Ext.ComponentQuery.query('menucheckitem[checked=true]')[0].itemId;
         var projId = Ext.getCmp('chart').getProjId();
         var objId = Ext.getCmp('chart').getObjId();
         Ext.Ajax.request({
