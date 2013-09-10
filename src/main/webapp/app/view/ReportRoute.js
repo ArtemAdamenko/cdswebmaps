@@ -88,10 +88,10 @@ Ext.define('CWM.view.ReportRoute', {
                     view += "<td  id=\"obj_cbname\">" + reportData[i].proj_name_ +"</td>";
                     var myDate = reportData[i].start_.replace(/(\d+)-(\d+)-(\d+)/, '$1/$2/$3');
                     var date = new Date(myDate.substring(0, myDate.length - 2));
-                    view += "<td  id=\"obj_pvname\">" + datef("hh:mm dd.MM.YYYY", date) +"</td>";
+                    view += "<td  id=\"obj_pvname\">" + datef("dd.MM.YYYY hh:mm", date) +"</td>";
                     myDate = reportData[i].end_.replace(/(\d+)-(\d+)-(\d+)/, '$1/$2/$3');
                     date = new Date(myDate.substring(0, myDate.length - 2));
-                    view += "<td  id=\"obj_rname\">" + datef("hh:mm dd.MM.YYYY", date) +"</td>";
+                    view += "<td  id=\"obj_rname\">" + datef("dd.MM.YYYY hh:mm", date) +"</td>";
                     view += "<td  id=\"obj_rname\">" + reportData[i].rcount_ +"</td>";
                    view += "</tr>";
                }

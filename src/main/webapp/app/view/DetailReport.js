@@ -236,7 +236,7 @@ Ext.define('CWM.view.DetailReport', {
                    view += "<td  id=\"obj_name\">" + data[i].bsname_ +"</td>";
                    var myDate = data[i].dt.replace(/(\d+)-(\d+)-(\d+)/, '$1/$2/$3');
                    var date = new Date(myDate.substring(0, myDate.length - 2));
-                   view += "<td  id=\"obj_cbname\">" +  datef("hh:mm:ss dd.MM.YYYY",date) +"</td>";
+                   view += "<td  id=\"obj_cbname\">" +  datef("dd.MM.YYYY hh:mm:ss",date) +"</td>";
                    var bscontrol = "";
                    if (data[i].bscontrol_ === "1")
                        bscontrol = "Конечная";

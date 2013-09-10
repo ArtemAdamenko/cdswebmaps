@@ -80,7 +80,16 @@ Ext.define('CWM.view.Main', {
 
                                     var lng = convert(routes[i].last_lon_);
                                     var lat = convert(routes[i].last_lat_);
-
+                                    
+                                    //проверка тс на активность и соответствующий маркер
+                                    var now = new Date().valueOf() - 600000;
+                                    var marker = "twirl#blackStretchyIcon";
+                                    var lastBusDate = new Date(routes[i].last_time_).valueOf();
+                                    if (lastBusDate > now){
+                                        //жирный шрифт для выделения активных автобусов
+                                        marker = "twirl#greenStretchyIcon";
+                                    }
+                                    
                                     var address = me.getGeoLocation(lat,lng);
                                     myGeoObject = new ymaps.GeoObject({
                                         geometry: {
@@ -99,7 +108,7 @@ Ext.define('CWM.view.Main', {
                                                     "<br>Маршрут " + routes[i].route_name_
                                         }
                                     }, {
-                                            preset: 'twirl#redStretchyIcon'
+                                            preset: marker
                                         });
                                     me.yMap.geoObjects.add(myGeoObject);
                                 }

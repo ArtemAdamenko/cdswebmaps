@@ -27,26 +27,26 @@ Ext.define('CWM.view.MyChart', {
         },{
                 xtype: 'timefield',
                 id: 'from_time',
-                fieldLabel: 'Время',
+                fieldLabel: 'Начало',
                 minValue: '00:00:00',
                 maxValue: '23:30:00',
                 format: 'H:i:s',
-                value: time,
-                increment: 30
-        },{
-                xtype: 'timefield',
-                id: 'to_time',
-                minValue: '00:00:00',
-                format: 'H:i:s',
-                maxValue: '23:30:00',
                 value: time,
                 increment: 30
         },{
                 xtype: 'datefield',
                 anchor: '100%',
-                fieldLabel: 'Дата',
                 id: 'from_date',
                 maxValue: date
+        },{
+                xtype: 'timefield',
+                id: 'to_time',
+                fieldLabel: 'Конец',
+                minValue: '00:00:00',
+                format: 'H:i:s',
+                maxValue: '23:30:00',
+                value: time,
+                increment: 30
         },{
                 xtype: 'datefield',
                 anchor: '100%',

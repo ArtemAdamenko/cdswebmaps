@@ -68,12 +68,12 @@ Ext.define('CWM.view.Report', {
                     view += "<td  id=\"obj_pvname\">" + reportData[i].PVNAME +"</td>";
                     view += "<td  id=\"obj_rname\">" + reportData[i].RNAME_ +"</td>";
                     if (reportData[i].LAST_STATION_TIME_ !== undefined)
-                        lastStationTime = datef("hh:mm dd.MM.YYYY",reportData[i].LAST_STATION_TIME_);
+                        lastStationTime = datef("dd.MM.YYYY hh:mm",reportData[i].LAST_STATION_TIME_);
                     else
                         lastStationTime = "Дата неизвестна";
                     view += "<td id=\"obj_lastStationTime\">" + lastStationTime +"</td>";
                     if (reportData[i].LAST_TIME_ !== undefined)
-                        lastTime = datef("hh:mm dd.MM.YYYY",reportData[i].LAST_TIME_);
+                        lastTime = datef("dd.MM.YYYY hh:mm",reportData[i].LAST_TIME_);
                     else
                         lastTime = "Дата неизвестна";   
                     view += "<td id=\"obj_lastTime\">" + lastTime +"</td>";
