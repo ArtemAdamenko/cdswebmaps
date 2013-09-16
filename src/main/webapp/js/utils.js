@@ -25,13 +25,27 @@ function fresh() {
 
 /*конвертирование радиан в градусы*/
 function convert(radian){
+    
+    
+    
     var radian = radian.toString();
     var hour = radian.substr(0,2);
     var min = radian.substr(2,2);
     var sec = radian.substr(5,2);
-    var sec2 = radian.substr(7,2);
-    var sec = sec.toString() + "." + sec2.toString();       
-    var deg = (parseInt(hour) + (parseInt(min) + parseFloat(sec)/60)/60);
+    var sec2 = radian.substr(7,10);
+    var sec = sec.toString() + "." + sec2.toString();  
+    /*radian = hour + min + sec;
+    console.log(radian);*/
+    var deg = ((parseInt(hour) + (parseInt(min) + parseFloat(sec)/60)/60));
+    
+    /*var dec = hour + (min + sec/60)/60;
+    if ( dec>360 ) {
+            var m = Math.floor(dec/360);
+            dec-=m*360;
+    }*/
+    //decdeg.SetValue(dec);
+    //rads.SetValue(dec*(Math.PI/180));
+    
     return deg;
 }
 

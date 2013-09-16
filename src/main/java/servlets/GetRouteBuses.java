@@ -13,23 +13,34 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
+import mapper.ProjectsMapper;
 import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
  * @author Adamenko Artem <adamenko.artem@gmail.com>
- * Получение автобусов по маршуту с условием
+ * Получение автобусов по маршуту с условием и по маршрутам без условия 
  */
 public class GetRouteBuses extends HttpServlet {
     /*Менеджер подключений к БД*/
      private static MyBatisManager manager = new MyBatisManager();
      /*Среда запуска приложения*/
      final String environment = "development";
-     /*База данных для подключения*/
-     final String DB = "Data";
+     /*База данных Project для подключения*/
+     final String DBProjects = "Projects";
+     /*База данных Data для подключения*/
+     final String DBData = "Data";
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка получения автобусов по маршруту";
+     /*Промежуточный список автобусов*/
+     private List<BusObject> buses = new  ArrayList<BusObject>();
+     /*Обработка JSON*/
+     private Gson gson = new Gson();
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -44,18 +55,47 @@ public class GetRouteBuses extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        manager.initDBFactory(environment, DB);
+        
+        String routeName = request.getParameter("route");
+        String routesNames = request.getParameter("routes");   
+         
+        try {
+            //пришел запрос на автобусы по конкретным маршрутам
+            if (routesNames != null){
+                out.print(getBusesOfManyRoutes(routesNames));            
+            //запрос на автобусы с одного маршрута
+            }else{ 
+                //получаем интервал времени
+                String fromTime = request.getParameter("from");
+                String toTime = request.getParameter("to");
+                out.print(getBusesOfOneRoute(routeName, fromTime, toTime));
+            }
+        }catch(Exception e){
+             Logger.getLogger(GetRouteBuses.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    
+    /*
+     * Обработка запроса на автобусы с одного маршрута по интервалу времени
+     * @param String routeName название маршрута
+     * @param String from начало интервала времени
+     * @param String to конец интервала времени
+     * @return String автобусы с информацией по каждому в json
+     */
+    private String getBusesOfOneRoute(String routeName, String from, String to) throws Exception{
+        //Инициализация подключения к БД Data
+        manager.initDBFactory(environment, DBData);
         SqlSession session = manager.getDataSessionFactory().openSession();
         DataMapper mapper = session.getMapper(DataMapper.class);
-        String routeName = request.getParameter("route");
-        int routeId = mapper.getRouteId(routeName);
-        String fromTime = request.getParameter("from");
-        String toTime = request.getParameter("to");
-        try {
+        
+        //результирующий список
+        List<BusObject> resultBuses = new  ArrayList<BusObject>();
+        try{
             //Получение списка автобусов
-            List<BusObject> buses = mapper.getBuses(routeId, fromTime, toTime);
-            List<BusObject> resultBuses = new  ArrayList<BusObject>();
-            //получение по каждому автобусу имени
+            int routeId = mapper.getRouteId(routeName);
+            buses = mapper.getBuses(routeId, from, to);     
+
+            //получение по каждому автобусу информации
             for (int i = 0 ; i <= buses.size()-1; i++){
                 BusObject bus = new BusObject();
                 bus.setName_(mapper.getNameofBus(buses.get(i).getProj_id_(), buses.get(i).getObj_id_()));
@@ -63,16 +103,56 @@ public class GetRouteBuses extends HttpServlet {
                 bus.setProj_id_(buses.get(i).getProj_id_());
                 resultBuses.add(bus);
             }
-            Gson gson = new Gson();
-            String jsonBuses = gson.toJson(resultBuses);
-            session.commit();
-            out.print(jsonBuses);
-        } finally {     
+            session.commit();     
+        }finally{
             session.close();
-            out.close();
         }
+        return gson.toJson(resultBuses);     
     }
+    
+    /*
+     * Обработка запроса по конкретным маршрутам
+     * @param String routesNames список названия маршрутов
+     * @param String список автобусов с информацией
+     */
+    private String getBusesOfManyRoutes(String routesNames) throws Exception{
+        //результирующий список
+        String allRoutesBuses = "[";
 
+        //инициализация подключений к бд Data и Projects
+        manager.initDBFactory(environment, DBProjects);    
+        SqlSession session = manager.getProjectSessionFactory().openSession();
+        
+        //инициализация мапперов
+        ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
+        
+        //парсим пришедший список маршрутов
+        JSONArray routes = new JSONArray();
+        try{
+            JSONParser parser = new JSONParser();
+            routes = (JSONArray)parser.parse(routesNames);
+        }catch(ParseException pe){
+            Logger.getLogger(DetailReport.class.getName()).log(Level.SEVERE, null, pe);
+        }
+        
+        //получаем данные автобусов по всем маршрутам
+        try{         
+            for (int i = 0; i <= routes.size()-1; i++){
+                JSONObject obj = (JSONObject)routes.get(i);
+                int routeID = mapper.getRouteId(obj.get("route").toString());
+                int projID = Integer.parseInt(obj.get("proj_ID").toString());
+                buses = mapper.selectObjects(routeID, projID);
+                allRoutesBuses += gson.toJson(buses).replaceAll("\\[|\\]", "") +",";
+            }
+            //валидация json
+            allRoutesBuses = allRoutesBuses.replaceAll(",,", ",");
+            allRoutesBuses = allRoutesBuses.substring(0, allRoutesBuses.length()-1);
+            session.commit();
+        }finally{
+            session.close();     
+        }
+        return allRoutesBuses + "]";         
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP

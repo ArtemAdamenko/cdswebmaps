@@ -2,6 +2,7 @@ package mapper;
 
 import entities.BusObject;
 import entities.DetailReportObject;
+import entities.MoveBusStationDataObject;
 import entities.Route;
 import entities.RouteReportObject;
 import entities.SpeedBus;
@@ -63,6 +64,17 @@ public interface DataMapper {
     @Select("SELECT NAME_ FROM OBJECTS WHERE PROJ_ID_ = #{projID} AND OBJ_ID_ = #{objID}")
     public String getNameofBus(@Param("projID")int projID, @Param("objID")int objID);
     
+    /*выполнение пользовательского динамически составного запроса из класса DetailReport*/
     @SelectProvider(type = DetailReport.class, method = "selectPersonSql")
     public List<DetailReportObject> selectPersonSql(@Param("sid")String sid,@Param("wsql")String wsql);
+    
+    /*Получение данных для отчета по контролю движения транспорта*/
+    @Select("SELECT b.rout_ as Route"
+            + ",(SELECT r.name_ FROM routs r WHERE r.id_ = b.rout_) as routeName"
+            + ",(SELECT s.name_ FROM bus_stations s WHERE s.number_ = b.station_ AND s.rout_ = b.rout_) as currStationName"
+            + ",(SELECT o.name_ FROM objects o WHERE o.obj_id_ = b.obj_id_ AND o.proj_id_ = b.proj_id_) as objectName"
+            + ",(SELECT FIRST 1 s.name_ FROM bus_stations s WHERE s.number_ > b.station_ AND s.rout_ = b.rout_ AND s.control_ <> 0 ORDER BY s.number_ ASC) as trendName"
+            + ",b.time_ FROM busdata as b WHERE (b.time_ >= #{from} AND b.time_ <= #{to}) AND (b.rout_ = #{routeID} AND b.station_ = #{stationID})")
+    public List<MoveBusStationDataObject> getMoveBusControlReportData(@Param("from")String from, @Param("to")String to, @Param("routeID")int routeID, @Param("stationID")int stationID); 
+            
 }

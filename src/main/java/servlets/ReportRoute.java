@@ -45,9 +45,11 @@ public class ReportRoute extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        
         manager.initDBFactory(environment, DB);
         SqlSession session = manager.getDataSessionFactory().openSession();
         DataMapper mapper = session.getMapper(DataMapper.class);
+        
         String routeName = request.getParameter("route");
         int routeId = mapper.getRouteId(routeName);
         String from_date = request.getParameter("date") + " 00:00:00";

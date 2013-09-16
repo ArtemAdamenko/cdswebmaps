@@ -44,10 +44,12 @@ public class GetRoute extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        
         /*инициализация объектов*/
         manager.initDBFactory(environment, DB);
         SqlSession session = manager.getDataSessionFactory().openSession();
         DataMapper mapper = session.getMapper(DataMapper.class);
+        
         String projectId = request.getParameter("proj");
         String busId = request.getParameter("bus");
         String fromTimeStr = request.getParameter("fromTime");
@@ -55,8 +57,7 @@ public class GetRoute extends HttpServlet {
         try {
             List<Route> route = mapper.getRoute(Integer.parseInt(busId), Integer.parseInt(projectId), fromTimeStr, toTimeStr);
             Gson gson = new Gson();
-            String jsonRoutes = gson.toJson(route);
-            out.print(jsonRoutes);
+            out.print(gson.toJson(route));
         } finally {            
             session.commit();
             session.close();

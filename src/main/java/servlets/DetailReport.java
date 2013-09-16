@@ -1,13 +1,10 @@
 package servlets;
 
 import com.google.gson.Gson;
-import entities.BusObject;
 import entities.DetailReportObject;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -19,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
 import mybatis.MyBatisManager;
-import org.apache.ibatis.jdbc.SqlBuilder;
 import org.apache.ibatis.session.SqlSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

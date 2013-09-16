@@ -1,6 +1,7 @@
 package mapper;
 
 import entities.BusObject;
+import entities.BusStationObject;
 import entities.ReportObject;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,10 @@ import org.apache.ibatis.annotations.Select;
  */
 public interface ProjectsMapper {
 
+    /*route id*/
+    @Select("SELECT ID_ FROM ROUTS WHERE NAME_ = #{name}")
+    public int getRouteId(String name);
+    
     @Select("SELECT ID_ FROM USERS WHERE NAME_ = #{name}")
     int selectUserId(String name);
     
@@ -54,5 +59,16 @@ public interface ProjectsMapper {
     @Select("SELECT FIRST 1 SKIP 0 a.NAME_\n"
                     + "FROM PROJECTS a\n"
                     + "WHERE a.ID_ in (select up.PROJ_ID_ from USERS_PROJS up left join USERS u on up.USER_=u.ID_ where u.NAME_=#{name})")
-    public Map<Integer,String> getUserProject(String user);    
+    public Map<Integer,String> getUserProject(String user);  
+    
+    /*Достаем время последнего отклика, маршрут и название проекта по названию маршрута*/
+    @Select("SELECT last_time_, "
+            + "(SELECT name_ FROM projects pr WHERE pr.id_ = o.proj_id_) as name_, "
+            + "(SELECT name_ FROM routs rt WHERE rt.id_ = o.last_rout_) as route_name_ "
+            + "FROM objects o WHERE o.name_ = #{busName}")
+    public BusObject getBusInfo(String busName);
+    
+    /*Достаем остановки по маршруту*/
+    @Select("SELECT NUMBER_ as Number, NAME_ as name, CONTROL_ as Control FROM BUS_STATIONS WHERE ROUT_ = #{routeID}")
+    public List<BusStationObject> getBusStations(int routeID); 
 }

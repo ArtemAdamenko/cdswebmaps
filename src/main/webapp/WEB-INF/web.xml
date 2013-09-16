@@ -53,6 +53,18 @@
         <servlet-name>GetRouteBuses</servlet-name>
         <servlet-class>servlets.GetRouteBuses</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetInfoOfBus</servlet-name>
+        <servlet-class>servlets.GetInfoOfBus</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetBusStations</servlet-name>
+        <servlet-class>servlets.GetBusStations</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetMoveBusStationReport</servlet-name>
+        <servlet-class>servlets.GetMoveBusStationReport</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>GetBusesServlet</servlet-name>
         <url-pattern>/GetBusesServlet</url-pattern>
@@ -88,6 +100,18 @@
     <servlet-mapping>
         <servlet-name>GetRouteBuses</servlet-name>
         <url-pattern>/GetRouteBuses</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetInfoOfBus</servlet-name>
+        <url-pattern>/GetInfoOfBus</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetBusStations</servlet-name>
+        <url-pattern>/GetBusStations</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetMoveBusStationReport</servlet-name>
+        <url-pattern>/GetMoveBusStationReport</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
