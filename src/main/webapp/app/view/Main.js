@@ -139,8 +139,8 @@ Ext.define('CWM.view.Main', {
                                         properties: {
                                             iconContent: routes[i].name_,
                                             balloonContent: datef("dd.MM.YYYY hh:mm:ss", routes[i].last_time_) + 
-                                                    "<br>Долгота: " + lng.toFixed(6) + 
-                                                    " Широта: " + lat.toFixed(6) + 
+                                                    "<br>Долгота: " + lng + 
+                                                    " Широта: " + lat + 
                                                     "<br> Скорость: " + routes[i].last_speed_ + 
                                                     " КМ/Ч<br>Время последней остановки: " + datef("dd.MM.YYYY hh:mm:ss", routes[i].last_station_time_) +
                                                     "<br> Последняя остановка: " + routes[i].bus_station_ +

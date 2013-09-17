@@ -22,7 +22,7 @@ import servlets.DetailReport;
  */
 public interface DataMapper {
     /*запрос на траекторию пути по заданному времени*/
-    @Select("SELECT FIRST 190 LON_, LAT_, TIME_ FROM BASEDATA WHERE OBJ_ID_ = #{objId} AND PROJ_ID_ = #{projId} AND TIME_ BETWEEN #{fromTime} AND #{toTime}")
+    @Select("SELECT LON_, LAT_, TIME_ FROM BASEDATA WHERE OBJ_ID_ = #{objId} AND PROJ_ID_ = #{projId} AND TIME_ BETWEEN #{fromTime} AND #{toTime} ORDER BY TIME_ ASC")
     public List<Route> getRoute(@Param("objId")Integer objId, @Param("projId")Integer projId, @Param("fromTime")String fromTime, @Param("toTime")String toTime);
     
     /*Вызов процедуры для отчета по выходу ТС на маршрут*/

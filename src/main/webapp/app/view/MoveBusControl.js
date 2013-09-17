@@ -77,24 +77,13 @@ Ext.define('CWM.view.MoveBusControl', {
                     }
                 ];
         // add items to view
-        me.items = [{
-                        xtype: 'toolbar'
-                    }];
         me.callParent(arguments);
     },
     
     //Построение списка автобусов с комбобоксами
     openTree: function(combo, records, eOpts){
         var routeName = records[0].data.route;
-        
-        var fromTime = parseTime(Ext.getCmp('startTime').value);      
-        var toTime = parseTime(Ext.getCmp('endTime').value);
-                
-        var fromDate = datef("YYYY-MM-dd",Ext.getCmp('startDate').value);
-        var toDate = datef("YYYY-MM-dd",Ext.getCmp('endDate').value);
 
-        var from = fromDate + " " + fromTime;
-        var to = toDate + " " + toTime;
         Ext.Ajax.request({
             url: 'GetBusStations',
             method: 'POST',
@@ -230,24 +219,20 @@ Ext.define('CWM.view.MoveBusControl', {
     },
     /*Формирование таблицы отчета*/
     createReport:function(data, route, from, to, stationName){
-        console.log(stationName);
                var header = "<div id='report_header'>Отчет о прохождении остановки " + stationName + " маршрутным транспортом за период времени с " + from + " по " + to + "</div>";
                /*основной контент отчета*/  
                var view = header;
                var j = 1;
                
                view += "<table id='report_content' align='center' BORDER='1' cellpadding='0' cellspacing='0'><tr><td colspan='5'>Маршрут '" + route + "' ('" + stationName + "')</td></tr>";
-               view += "<tr id='table_header'><td>№ п/п</td><td>ГосНомер ТС</td><td>Направление движения</td><td>Время прохождения</td><td>Примечание</td></tr>";
+               view += "<tr id='table_header'><td>№ п/п</td><td>ГосНомер ТС</td><td>Время прохождения</td></tr>";
                for (var i = 0; i <= data.length-1; i++){
                    view += "<tr>";
                    view += "<td  id=\"obj_num\">" + j++ +"</td>";
                    view += "<td  id=\"obj_name\">" + data[i].ObjectName +"</td>";
                    var myDate = data[i].Time_.replace(/(\d+)-(\d+)-(\d+)/, '$1/$2/$3');
                    var date = new Date(myDate.substring(0, myDate.length - 2));
-                   view +="<td></td>";
                    view += "<td  id=\"obj_cbname\">" +  datef("dd.MM.YYYY hh:mm:ss",date) +"</td>";
-                   
-                   view += "<td></td>";
                    view +="</tr>";
                }
                return view;

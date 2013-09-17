@@ -3,7 +3,7 @@ Ext.define('CWM.view.RouteOptions', {
     extend: 'Ext.window.Window',
     title: 'Параметры маршрута',
     width: 200,
-    height: 200,
+    height: 250,
     items: [],
     id: 'routes',
     config:{
@@ -17,9 +17,11 @@ Ext.define('CWM.view.RouteOptions', {
 
     initComponent: function () {
         var date = new Date();
+        //date = parseTime(date);
         date.getHours() < 10? hour = "0" + date.getHours() : hour = date.getHours();
         date.getMinutes() < 10? min = "0" + date.getMinutes() : min = date.getMinutes();
         date = hour + ":" + min;
+        
         var me = this; 
         me.tbar=[{
             xtype:'button',
@@ -28,78 +30,65 @@ Ext.define('CWM.view.RouteOptions', {
                     click: me.routing
             }
         }];
-        var labelStart = {
-            xtype: 'label',
-            forId: 'myFieldId',
-            text: 'Начало',
-            margin: '0 0 0 10'
-        };
-        var labelEnd = {
-            xtype: 'label',
-            forId: 'myFieldId',
-            text: 'Конец',
-            margin: '0 0 0 10'
-        };
-        var datefieldFrom = {
-            xtype: 'datefield',
-            anchor: '100%',
-            id: 'from_date',
-            maxValue: new Date()
-        };
-        var datefieldTo = {
-            xtype: 'datefield',
-            anchor: '100%',
-            id: 'to_date',
-            value: new Date(),
-            maxValue: new Date()
-        };
-        var timeFrom = Ext.create('Ext.form.field.Time', {
+        me.items=[{
+                xtype: 'label',
+                forId: 'myFieldId',
+                text: 'Начало',
+                margin: '0 0 0 10'
+        },{
+                xtype: 'datefield',
+                anchor: '100%',
+                id: 'from_date',
+                maxValue: new Date()
+        },{
+                xtype: 'textfield',
                 id: 'from_time',
-                minValue: '00:00',
+                /*minValue: '00:00',
                 maxValue: '23:30',
-                format: 'H:i',
+                format: 'H:i',*/
                 increment: 30
-        });
-        var timeTo = Ext.create('Ext.form.field.Time', {
+        },{
+                xtype: 'label',
+                forId: 'myFieldId',
+                text: 'Конец',
+                margin: '0 0 0 10'
+        },{
+                xtype: 'datefield',
+                anchor: '100%',
+                id: 'to_date',
+                value: new Date(),
+                maxValue: new Date()
+        },{
+                xtype: 'textfield',
                 id: 'to_time',
-                minValue: '00:00',
+                /*minValue: '00:00',
                 maxValue: '23:30',
-                format: 'H:i',
+                format: 'H:i',*/
                 increment: 30,
-                value: date,
-        });
-        me.items.push(labelStart);
-        me.items.push(datefieldFrom);
-        me.items.push(timeFrom);
-        me.items.push(labelEnd);
-        me.items.push(datefieldTo);
-        me.items.push(timeTo);
+                value: date
+        }];
+        
         me.callParent(arguments);
 
     },
-    
-    
-    
+            
+    /*прорисовка траектории и прохождение по каждой точке*/    
     routing: function(){
+        Ext.updateMap = false;
         //Собираем данные для запроса 
         var widget = Ext.getCmp('routes');
         //начало интервала времени
         var from_date = datef("YYYY-MM-dd", Ext.getCmp('from_date').getValue());
-        var from_time = Ext.getCmp('from_time').value;
-        from_time.getHours() < 10? hour = "0" + from_time.getHours() : hour = from_time.getHours();
-        from_time.getMinutes() < 10? min = "0" + from_time.getMinutes() : min = from_time.getMinutes();
-        from_time = hour + ":" + min + ":00";debugger;
+        //var from_time = parseTime(Ext.getCmp('from_time').value);
+        var from_time = Ext.getCmp('from_time').value + ":00";
         //конец интервала
         var to_date = datef("YYYY-MM-dd", Ext.getCmp('to_date').getValue());
-        var to_time = Ext.getCmp('to_time').value;
-        to_time.getHours() < 10? hour = "0" + to_time.getHours() : hour = to_time.getHours();
-        to_time.getMinutes() < 10? min = "0" + to_time.getMinutes() : min = to_time.getMinutes();
-        to_time = hour + ":" + min + ":00";debugger;
+        //var to_time = parseTime(Ext.getCmp('to_time').value);
+        var to_time = Ext.getCmp('to_time').value + ":00";
         //создаем даты со временем
         var fullDateFrom = from_date + " " + from_time;
         var fullDateTo = to_date + " " + to_time;
         
-        var myRoute;
         var mass = new Array();
         var routes;
         var Placemarks = new Array();
@@ -113,37 +102,42 @@ Ext.define('CWM.view.RouteOptions', {
                 toTime:fullDateTo
             },
             success:function(response){
-                routes = JSON.parse(response.responseText);
-                if (routes.length === 0){
-                    Ext.MessageBox.alert('Ошибка', 'Данные отсутствуют на данный интервал времени');
+                if (response.responseText === undefined || response.responseText === null){
+                    Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
                     return 0;
-                }else{
-                    document.getElementById("map-canvas").innerHTML = "";
                 }
-                ymaps.ready(function init() {
-                        myMap = new ymaps.Map("map-canvas", {
-                            center: [51.7038, 39.1833],
-                            zoom: 12,
-                            type: 'yandex#hybrid'
+                if (response.responseText.length === 0){
+                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
+                    return 0;
+                }
+                
+                routes = JSON.parse(response.responseText);
+
+                ymaps.ready(function init() {            
+                        var map = Ext.getCmp("main");
+                        map.yMap.geoObjects.each(function(geoObject){
+                                    map.yMap.geoObjects.remove(geoObject);
                         });
-                        myMap.controls
-                        // Кнопка изменения масштаба.
-                        .add('zoomControl', { left: 5, top: 5 })
-                        // Список типов карты
-                        .add('typeSelector')
-                        // Стандартный набор кнопок
-                        .add('mapTools', { left: 35, top: 5 });
-                        
+
                         for (var i = 0; i <= routes.length-1; i++){
-                            mass[i] =  new Object({
-                                point: [convert(routes[i].LON_), convert(routes[i].LAT_)],
-                                type: 'viaPoint'
-                            });
+                            mass[i] =  [convert(routes[i].LON_), convert(routes[i].LAT_)];
                         }
-                        ymaps.route(mass,{ mapStateAutoApply: true}).then(function (route) {
-                            myRoute = route;
-                            myMap.geoObjects.add(route);
+                          var myPolyline = new ymaps.Polyline(mass, {
+                            // Описываем свойства геообъекта.
+                            // Содержимое балуна.
+                            balloonContent: "Ломаная линия"
+                        }, {
+                            // Задаем опции геообъекта.
+                            // Отключаем кнопку закрытия балуна.
+                            balloonHasCloseButton:false,
+                            // Цвет линии.
+                            strokeColor: "#000000",
+                            // Ширина линии.
+                            strokeWidth: 4,
                         });
+ 
+                        map.yMap.geoObjects.add(myPolyline);
+
                         var slider = Ext.create('Ext.slider.Single', {
                                                     width: 480,
                                                     height: 50,
@@ -156,14 +150,14 @@ Ext.define('CWM.view.RouteOptions', {
                                                     },
                                                     listeners:{
                                                         changecomplete:function(slider, value, thumb, eOpts){
-                                                            if (myRoute !== null){
+                                                            if (myPolyline !== null){
                                                                 //Очищаем карту от траектории
-                                                                myRoute && myMap.geoObjects.remove(myRoute);
-                                                                myRoute = null;
+                                                                myPolyline && map.yMap.geoObjects.remove(myPolyline);
+                                                                myPolyline = null;
                                                             }                                                
                                                             if (Placemarks.length !== 0){
                                                                 //удаляем предыдущую метку ТС
-                                                                myMap.geoObjects.remove(Placemarks[0]);
+                                                                map.yMap.geoObjects.remove(Placemarks[0]);
                                                                 Placemarks = new Array();
                                                             }
                                                             var Placemark = new ymaps.Placemark(mass[value].point, {                                 
@@ -179,7 +173,7 @@ Ext.define('CWM.view.RouteOptions', {
                                                             });
                                                             //Ставим метку положения ТС
                                                             Placemarks.push(Placemark);
-                                                            myMap.geoObjects.add(Placemark);
+                                                            map.yMap.geoObjects.add(Placemark);
                                                         }
                                                     }
                                                });
@@ -206,15 +200,16 @@ Ext.define('CWM.view.RouteOptions', {
             }       
         });
     },
-    convertTime: function(time){
-        var hours = parseInt(time / 60);
-        if (hours < 10)
-            hours = "0" + hours;
-        var min = parseInt(time % 60);
-        if (min < 10)
-            min = "0" + min;
-        return hours + ":" + min;
-    }
-    
+    getGeoLocation:function getGeoLocation(lat,lng) {
+            var res;
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'GeocodeServlet?lat=' + lat + "&lng=" + lng, false);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState !== 4) return;
+                        res = xhr.responseText;
+                };
+                xhr.send(null);
+                return res;
+            },
     
 });

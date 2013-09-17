@@ -32,11 +32,17 @@ function convert(radian){
     var hour = radian.substr(0,2);
     var min = radian.substr(2,2);
     var sec = radian.substr(5,2);
-    var sec2 = radian.substr(7,10);
-    var sec = sec.toString() + "." + sec2.toString();  
+    //console.log(sec);
+    //var temp = sec.substr(0,3) + "." + sec.substr(3,1);
+   // console.log(temp);
+    //sec = Math.round(temp);
+   // console.log(sec);
+    //var sec2 = radian.substr(7,10);
+    //var sec = sec.toString() + "." + sec2.toString();  
     /*radian = hour + min + sec;
     console.log(radian);*/
     var deg = ((parseInt(hour) + (parseInt(min) + parseFloat(sec)/60)/60));
+    var temp = deg.toFixed(7);
     
     /*var dec = hour + (min + sec/60)/60;
     if ( dec>360 ) {
@@ -46,7 +52,7 @@ function convert(radian){
     //decdeg.SetValue(dec);
     //rads.SetValue(dec*(Math.PI/180));
     
-    return deg;
+    return temp;
 }
 
 //приводит время к правильному виду
