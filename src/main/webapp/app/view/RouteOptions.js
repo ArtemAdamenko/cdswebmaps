@@ -110,7 +110,6 @@ Ext.define('CWM.view.RouteOptions', {
                     Ext.Msg.alert('Предупреждение', 'Данные пусты');
                     return 0;
                 }
-                
                 routes = JSON.parse(response.responseText);
 
                 ymaps.ready(function init() {            
@@ -160,17 +159,13 @@ Ext.define('CWM.view.RouteOptions', {
                                                                 map.yMap.geoObjects.remove(Placemarks[0]);
                                                                 Placemarks = new Array();
                                                             }
-                                                            var Placemark = new ymaps.Placemark(mass[value].point, {                                 
-                                                                hintContent: routes[value].last_time_
-                                                            }, {
-                                                                // Своё изображение иконки метки.
-                                                                iconImageHref: '/CdsWebMaps/images/car.png',
-                                                                // Размеры метки.
-                                                                iconImageSize: [40, 40],
-                                                                // Смещение левого верхнего угла иконки относительно
-                                                                // её "ножки" (точки привязки).
-                                                                iconImageOffset: [-3, -42]
-                                                            });
+                                                            var Placemark = new ymaps.Placemark(mass[value], {                                 
+                                                                iconContent:routes[value].TIME_.split(" ")[1].substr(0, 8)
+                                                            },  {
+                                                                    preset: "twirl#yellowStretchyIcon",
+                                                                    // Балун будем открывать и закрывать кликом по иконке метки.
+                                                                    hideIconOnBalloonOpen: false
+                                                                });
                                                             //Ставим метку положения ТС
                                                             Placemarks.push(Placemark);
                                                             map.yMap.geoObjects.add(Placemark);

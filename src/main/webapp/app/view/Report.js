@@ -56,7 +56,7 @@ Ext.define('CWM.view.Report', {
                var header = "<div id='report_header'>Отчет по перевозчику «" + headData.NAME_ + "» по состоянию на «"+datef("YYYY.MM.dd hh:mm", currentDate)+"»<br>Всего записей " + reportData.length + "</div>";
                /*основной контент отчета*/  
                var view = header; 
-               view += '<table id="report_content" align="center" BORDER="1" cellpadding="0" cellspacing="0"><tr id="table_header"><td>№ п/п</td><td>ГосНомерТС</td><td>Марка ТС</td><td>Установщик</td><td>Маршрут следования</td><td>Время прохождения последней остановки</td><td>Время последнего отклика</td> </tr>';
+               view += '<table id="report_content" align="center" BORDER="1" cellpadding="0" cellspacing="0"><tr id="table_header"><td>№ п/п</td><td>ГосНомерТС</td><td>Марка ТС</td><td>Установщик</td><td>Маршрут следования</td><td>Время последнего отклика</td><td>Время прохождения последней остановки</td> </tr>';
                var lastStationTime = "";
                var lastTime = "";
                for (var i = 0; i <= reportData.length-1; i++){
@@ -67,16 +67,16 @@ Ext.define('CWM.view.Report', {
                     view += "<td  id=\"obj_cbname\">" + reportData[i].CBNAME_ +"</td>";
                     view += "<td  id=\"obj_pvname\">" + reportData[i].PVNAME +"</td>";
                     view += "<td  id=\"obj_rname\">" + reportData[i].RNAME_ +"</td>";
-                    if (reportData[i].LAST_STATION_TIME_ !== undefined)
-                        lastStationTime = datef("dd.MM.YYYY hh:mm",reportData[i].LAST_STATION_TIME_);
-                    else
-                        lastStationTime = "Дата неизвестна";
-                    view += "<td id=\"obj_lastStationTime\">" + lastStationTime +"</td>";
                     if (reportData[i].LAST_TIME_ !== undefined)
                         lastTime = datef("dd.MM.YYYY hh:mm",reportData[i].LAST_TIME_);
                     else
                         lastTime = "Дата неизвестна";   
                     view += "<td id=\"obj_lastTime\">" + lastTime +"</td>";
+                    if (reportData[i].LAST_STATION_TIME_ !== undefined)
+                        lastStationTime = datef("dd.MM.YYYY hh:mm",reportData[i].LAST_STATION_TIME_);
+                    else
+                        lastStationTime = "Дата неизвестна";
+                    view += "<td id=\"obj_lastStationTime\">" + lastStationTime +"</td>";
                    view += "</tr>";
                }
                view +="</table>";

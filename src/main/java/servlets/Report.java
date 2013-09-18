@@ -65,8 +65,8 @@ public class Report extends HttpServlet {
         try {
             /*подготовка данных для клиентской стороны*/
             List<ReportObject> Objects = mapper.getDataToReport(username);
-            List<ReportObject> busesList = sortDataList(Objects); 
-            String buses = gson.toJson(busesList);
+            //List<ReportObject> busesList = sortDataList(Objects); 
+            String buses = gson.toJson(Objects);
             Map<Integer,String> userProject = mapper.getUserProject(username);
             String jsonUserProject = gson.toJson(userProject) + "@";
             out.println(jsonUserProject);

@@ -39,7 +39,7 @@ public interface DataMapper {
     public int getRouteId(String name);
     
     /*запрос на скорость по времени*/
-    @Select("SELECT SPEED_, TIME_ FROM BASEDATA WHERE OBJ_ID_ = #{objId} AND PROJ_ID_ = #{projId} AND TIME_ BETWEEN #{fromTime} AND #{toTime}")
+    @Select("SELECT SPEED_, TIME_ FROM BASEDATA WHERE OBJ_ID_ = #{objId} AND PROJ_ID_ = #{projId} AND TIME_ BETWEEN #{fromTime} AND #{toTime} ORDER BY TIME_")
     public List<SpeedBus> getSpeedBus(@Param("objId")Integer objId, @Param("projId")Integer projId, @Param("fromTime")String fromTime, @Param("toTime")String toTime);
     
     /*Вызов процедуры для подробного отчета по ТС*/

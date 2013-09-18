@@ -156,7 +156,7 @@ Ext.define('CWM.view.MoveBusControl', {
                 window.add(panel);
                 window.doLayout();
             }
-    })},
+    });},
     
     //Получение данных для подробного отчета
     constructMoveBusControl: function(){

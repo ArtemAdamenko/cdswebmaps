@@ -18,7 +18,7 @@ Ext.define('CWM.view.ReportRoute', {
   
         me.tbar = [{   
                         xtype: 'button',
-                        text: 'Печать',
+                        text: 'Печать'
                     },{
                         xtype: 'combobox',
                         displayField:'route',
@@ -29,11 +29,15 @@ Ext.define('CWM.view.ReportRoute', {
                         fieldLabel: 'Маршруты',
                         listeners:{
                             select: me.getReportRoute
-                        }
+                        },
+                        id: 'routes'
                     },{
                         xtype: 'datefield',
                         anchor: '100%',
                         id: 'date',
+                        listeners:{
+                            select: me.getReportRoute
+                        },
                         value: new Date(),
                         maxValue: new Date()
                     }];
@@ -44,7 +48,7 @@ Ext.define('CWM.view.ReportRoute', {
     
     getReportRoute: function(combo, records, eOpts){
         var date = datef("YYYY-MM-dd", Ext.getCmp('date').getValue());
-        var route = records[0].data.route;
+        var route = Ext.getCmp("routes").rawValue;
         Ext.Ajax.request({
                 url:'ReportRoute',
                 method: 'POST',

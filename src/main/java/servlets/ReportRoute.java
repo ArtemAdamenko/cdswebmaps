@@ -59,9 +59,9 @@ public class ReportRoute extends HttpServlet {
             mapper.getReport4(from_date, to_date, routeId, sid);
             session.commit();
             session.close();
-            SqlSession session1 = manager.getDataSessionFactory().openSession();
-            DataMapper mapper1 = session1.getMapper(DataMapper.class);
-            List<RouteReportObject> report = mapper1.getDataToRouteReport(sid, routeId);
+            session = manager.getDataSessionFactory().openSession();
+            mapper = session.getMapper(DataMapper.class);
+            List<RouteReportObject> report = mapper.getDataToRouteReport(sid, routeId);
             Gson gson = new Gson();
             String jsonReport = gson.toJson(report);
             out.print(jsonReport);

@@ -182,7 +182,10 @@ Ext.define('CWM.view.MyChart', {
                     fields: ['name', 'data'],
                     data: data
                 });
-                var chart = Ext.create('Ext.chart.Chart', {
+                var chart = Ext.getCmp('speedChart');
+                if (chart !== undefined)
+                    chart.destroy();
+                chart = Ext.create('Ext.chart.Chart', {
                                         width: 1050,
                                         height: 550,
                                         animate: true,
@@ -234,11 +237,15 @@ Ext.define('CWM.view.MyChart', {
                                             }]
                 });
                 var window = Ext.getCmp('chart');
-                var panel = Ext.create('Ext.panel.Panel', {
+                var panel = Ext.getCmp('chartPanel');
+                if (panel !== undefined)
+                    panel.destroy();
+                panel = Ext.create('Ext.panel.Panel', {
                     width: 200,
                     layout: 'fit',
                     region: 'center',
                     margins: '5 0 0 0',
+                    id:'chartPanel'
                 });
                 panel.add(chart);
                 window.add(panel);
