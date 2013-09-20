@@ -148,24 +148,35 @@ Ext.define('CWM.controller.Main', {
                             Ext.Msg.alert('Предупреждение', 'Данные пусты');
                             return 0;
                         }
-                        var routes =  JSON.parse(response.responseText);
-                        
+                        var routes =  JSON.parse(response.responseText);                   
                         var objects = new Array();
+                        
+                        //координаты в массив на получение адресов
+                        var coords = new Array();
+                        for (var i = 0; i <= routes.length-1; i++){
+                            coords.push(new Object({
+                                lon: convert(routes[i].last_lon_),
+                                lat: convert(routes[i].last_lat_)
+                            }));
+                        }
+                        //получаем адреса
+                        var addresses = me.getGeoLocation(coords);
                         for (var i = 0; i <= routes.length-1; i++)
                         {
-                            var lng = convert(routes[i].last_lon_);
-                            var lat = convert(routes[i].last_lat_);
+                            var lng = coords[i].lon;
+                            var lat = coords[i].lat;
+                            var address = addresses[i];
+                            var marker = "twirl#blackStretchyIcon";
                             
                             //проверка тс на активность и соответствующий маркер
-                            var now = new Date().valueOf() - 600000;
-                            var marker = "twirl#blackStretchyIcon";
+                            var now = new Date().valueOf() - 600000;                          
                             var lastBusDate = new Date(routes[i].last_time_).valueOf();
                             if (lastBusDate > now){
-                                //жирный шрифт для выделения активных автобусов
+                                //другой маркер для выделения активных автобусов
                                 marker = "twirl#greenStretchyIcon";
                             }
                             
-                            var address = me.getGeoLocation(lat,lng);
+                            //создание маркера
                             myGeoObject = new ymaps.GeoObject({
                                 geometry: {
                                     type: "Point",
@@ -188,9 +199,11 @@ Ext.define('CWM.controller.Main', {
                                objects.push(myGeoObject);
                             
                         }
+                        //удаление старых маркеров
                         main.yMap.geoObjects.each(function(geoObject){
                             main.yMap.geoObjects.remove(geoObject);
                         });
+                        //добавление новых маркеров
                         for (var i = 0; i <= objects.length-1; i++){
                             main.yMap.geoObjects.add(objects[i]);
                         }
@@ -205,17 +218,22 @@ Ext.define('CWM.controller.Main', {
         setInterval(func, 30000);
     },
     /*Получение адреса по координатам*/
-    getGeoLocation:function getGeoLocation(lat,lng) {
-            var res;
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'GeocodeServlet?lat=' + lat + "&lng=" + lng, false);
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState !== 4) return;
-                        res = xhr.responseText;
-                };
-                xhr.send(null);
-                return res;
+    getGeoLocation:function getGeoLocation(coords){
+        var addresses;
+        Ext.Ajax.request({
+            url: 'GeocodeServlet',
+            params: {
+                    coords: JSON.stringify(coords)
             },
+            success: function(response){
+               addresses = JSON.parse(response.responseText);
+               console.log(addresses);
+            }
+            //return addresses;
+     });console.log(addresses);
+     //console.log(addresses);
+     return addresses;
+     },
     //Открытие окна с отчетом по перевозчикам
     openReport: function(){
         var win = Ext.widget('report');
@@ -224,7 +242,9 @@ Ext.define('CWM.controller.Main', {
     
     /*Опции траектории*/
     getRoute: function(btn){
-        var win = Ext.widget('routeOptions',{proj:btn.name, obj:btn.itemId});
+        var win = Ext.widget('routeOptions',{
+                            proj:btn.name, 
+                            obj:btn.itemId});
         win.show();
     },
     //вызов компонента отчета по рейсам

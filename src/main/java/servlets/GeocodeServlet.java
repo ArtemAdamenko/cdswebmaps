@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,8 +24,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+
 
 /**
  *
@@ -46,14 +52,29 @@ public class GeocodeServlet extends HttpServlet {
             throws ServletException, IOException, JSONException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        Gson gson = new Gson(); 
+        
+        String coords = request.getParameter("coords");
+        
         try {
-            String lat = request.getParameter("lat");
-            String lng = request.getParameter("lng");
-            String address = getReverseGeoCode(Double.parseDouble(lng), Double.parseDouble(lat));
-            if (address == null)
-                out.print("Адрес не получен");
-            else
-                out.print(address);
+            //String lat = request.getParameter("lat");
+            //String lng = request.getParameter("lng");
+            
+            JSONArray coordsObjects = new JSONArray();
+            try{
+                
+                //JSONParser parser = new JSONParser();
+                coordsObjects = new JSONArray(coords);
+            }catch(JSONException pe){
+                Logger.getLogger(DetailReport.class.getName()).log(Level.SEVERE, null, pe);
+            }
+            
+            List<String> addresses = new ArrayList<String>();
+            for (int i = 0; i <= coordsObjects.length()-1; i++){
+                JSONObject elem = (JSONObject)coordsObjects.get(i);
+                addresses.add(getReverseGeoCode(Double.parseDouble(elem.get("lon").toString()), Double.parseDouble(elem.get("lat").toString())));
+            }
+            out.print(gson.toJson(addresses));
         } finally {            
             out.close();
         }
@@ -75,8 +96,8 @@ public class GeocodeServlet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (JSONException ex) {
-            Logger.getLogger(GeocodeServlet.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
-        }
+             Logger.getLogger(GeocodeServlet.class.getName()).log(Level.SEVERE, null, ex);
+         }
     }
 
     /*Обратное геокодирование
@@ -102,6 +123,8 @@ public class GeocodeServlet extends HttpServlet {
         }catch(Exception e){
             //Logger.getLogger(GeocodeServlet.class.getName()).log(Level.SEVERE, null, "Ошибка получения адреса");
         }
+        if (formattedAddress == null)
+            formattedAddress = "Адрес не получен";
         return formattedAddress;
     }
     

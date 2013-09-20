@@ -53,7 +53,23 @@ Ext.define('CWM.view.MyChart', {
                 id: 'to_date',
                 value: date,
                 maxValue: date
-            }
+            },{   
+                        xtype: 'button',
+                        //itemId: 'print',
+                        text: 'Печать',
+                        //action: 'printReport',
+                        listeners:{
+                            click:function(){
+                                var data = Ext.getCmp("speedChart");
+                                console.log(data);
+                                newWin=window.open('','printWindow','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0'); 
+                                newWin.document.open(); 
+                                newWin.document.write("<style>div{transform:rotate(90deg);-ms-transform:rotate(90deg);-webkit-transform:rotate(90deg);margin-top:500px;width:100%;height:100%}</style><div>" + data.container.dom.childNodes[0].innerHTML + "</div>"); 
+                                newWin.print();
+                                //newWin.document.close(); 
+                            }
+                        }
+                    }
         ];
         Ext.Ajax.request({
             url: 'GetBusesServlet',

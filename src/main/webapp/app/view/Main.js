@@ -130,7 +130,7 @@ Ext.define('CWM.view.Main', {
                                         marker = "twirl#greenStretchyIcon";
                                     }
                                     
-                                    var address = me.getGeoLocation(lat,lng);
+                                    var address = "aaa";//me.getGeoLocation(lat,lng);
                                     myGeoObject = new ymaps.GeoObject({
                                         geometry: {
                                             type: "Point",

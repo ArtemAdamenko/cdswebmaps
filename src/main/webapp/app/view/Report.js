@@ -4,6 +4,7 @@ Ext.define('CWM.view.Report', {
     title: 'Отчет',
     width: "50%",
     height: "70%",
+    id: 'report',
     
     initComponent: function () {
         var me = this; 
@@ -22,7 +23,8 @@ Ext.define('CWM.view.Report', {
                    //collapsed   : true,
                    autoScroll : true,
                    html        : view,
-                   height:600
+                   height:  600,
+                   id: 'reportData'
                 });
                 me.doLayout();
 
@@ -39,7 +41,14 @@ Ext.define('CWM.view.Report', {
                         text: 'Печать',
                         //action: 'printReport',
                         listeners:{
-                            click:function(){console.log("ddd");}
+                            click:function(){
+                                var data = Ext.getCmp("reportData");
+                                newWin=window.open('','printWindow','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0'); 
+                                newWin.document.open(); 
+                                newWin.document.write(data.body.el.dom.childNodes[0].innerHTML); 
+                                newWin.print();
+                                newWin.document.close(); 
+                            }
                         }
                     }
                 ];
