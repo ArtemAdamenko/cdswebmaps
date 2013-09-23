@@ -15,12 +15,15 @@ Ext.define('CWM.view.Report', {
                     Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
                     return 0;
                 }
+                if (response.responseText.length === 0){
+                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
+                    return 0;
+                }
                 var view = me.createReport(response.responseText);
                 me.add({
                    title       : 'Отчет по перевозчикам',
                    frame       : true,
                    collapsible : true,
-                   //collapsed   : true,
                    autoScroll : true,
                    html        : view,
                    height:  600,
@@ -37,13 +40,11 @@ Ext.define('CWM.view.Report', {
         me.tbar = [
                     {   
                         xtype: 'button',
-                        //itemId: 'print',
                         text: 'Печать',
-                        //action: 'printReport',
                         listeners:{
                             click:function(){
                                 var data = Ext.getCmp("reportData");
-                                newWin=window.open('','printWindow','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0'); 
+                                var newWin = window.open('','printWindow','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0'); 
                                 newWin.document.open(); 
                                 newWin.document.write(data.body.el.dom.childNodes[0].innerHTML); 
                                 newWin.print();

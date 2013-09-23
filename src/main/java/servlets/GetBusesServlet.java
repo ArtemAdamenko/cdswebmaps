@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import entities.BusObject;
+import entities.Geocode;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import mapper.ProjectsMapper;
 import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
+import org.json.JSONException;
 
 /**
  *
@@ -96,7 +98,7 @@ public class GetBusesServlet extends HttpServlet {
                 /*Проход по всем маршрутам*/
                 for (int i = 0; i <= value.size()-1; i++){
                         //Объекты-автобусы по каждому маршруту
-                        buses = mapper.selectObjects(value.get(i), key);
+                        buses = getAddresses(mapper.selectObjects(value.get(i), key));                  
                         if (!buses.isEmpty())
                             allJsonBuses += gson.toJson(buses).replaceAll("\\[|\\]", "") +",";
                 }     
@@ -110,6 +112,19 @@ public class GetBusesServlet extends HttpServlet {
             session.close();
         }
         return allJsonBuses + "]";
+    }
+    
+    /*Получение физического адреса ТС
+     * @param List<BusObject> Тс которым нужен адрес
+     * @return List<BusObject> ТС с адресами
+     */
+    private static List<BusObject> getAddresses(List<BusObject> buses) throws IOException, JSONException{
+        for (int i = 0; i <= buses.size()-1; i++){
+            BusObject bus = buses.get(i);
+            String address = Geocode.getReverseGeoCode(bus.getLast_lat_(), bus.getLast_lon_());
+            buses.get(i).setAddress(address);
+        }
+        return buses;
     }
     
     /*Преобразование в Map из List<Map>

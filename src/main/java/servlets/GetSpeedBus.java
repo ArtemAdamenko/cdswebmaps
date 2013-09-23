@@ -44,13 +44,16 @@ public class GetSpeedBus extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        
         manager.initDBFactory(environment, DB);
         SqlSession session = manager.getDataSessionFactory().openSession();
         DataMapper mapper = session.getMapper(DataMapper.class);
+        
         Integer objId = Integer.valueOf(request.getParameter("obj"));
         Integer projId = Integer.valueOf(request.getParameter("proj"));
         String fromTime = request.getParameter("from_");
         String toTime = request.getParameter("to_");
+        
         try {
            List<SpeedBus> speed = mapper.getSpeedBus(objId, projId, fromTime, toTime);
            Gson gson = new Gson();

@@ -51,6 +51,7 @@ public class DetailReport extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        
         manager.initDBFactory(environment, DB);
         SqlSession session = manager.getDataSessionFactory().openSession();
         DataMapper mapper = session.getMapper(DataMapper.class);         
@@ -63,6 +64,7 @@ public class DetailReport extends HttpServlet {
         }catch(ParseException pe){
             Logger.getLogger(DetailReport.class.getName()).log(Level.SEVERE, null, pe);
         }
+        
         String fromTime = request.getParameter("from");
         String toTime = request.getParameter("to");
         String routeName = request.getParameter("route");
@@ -94,6 +96,7 @@ public class DetailReport extends HttpServlet {
         }
     }
     
+    /*Составной динамический запрос*/
     public String selectPersonSql(Map<String, Object> params) {
       String sid = params.get("sid").toString();
       String wsql = params.get("wsql").toString();
@@ -106,6 +109,7 @@ public class DetailReport extends HttpServlet {
       ORDER_BY("a.PID ASC, a.OID ASC, a.DT ASC");
       return SQL();
     }
+    
     /*получение уникального id*/
     private String getSid(){
         Date date = new Date();
@@ -165,6 +169,6 @@ public class DetailReport extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Подробный отчет";
     }// </editor-fold>
 }

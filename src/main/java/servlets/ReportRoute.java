@@ -31,6 +31,10 @@ public class ReportRoute extends HttpServlet {
      final String DB = "Data";
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка обработки данных ReportRoute Servlet";
+     /*Костыль для начала времени*/
+     final String START_TIME = " 00:00:00";
+     /*Костыль для конца времени*/
+     final String END_TIME = " 23:59:00";
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -52,8 +56,8 @@ public class ReportRoute extends HttpServlet {
         
         String routeName = request.getParameter("route");
         int routeId = mapper.getRouteId(routeName);
-        String from_date = request.getParameter("date") + " 00:00:00";
-        String to_date = request.getParameter("date") + " 23:59:00";
+        String from_date = request.getParameter("date") + START_TIME;
+        String to_date = request.getParameter("date") + END_TIME;
         try {
             String sid = getSid();
             mapper.getReport4(from_date, to_date, routeId, sid);

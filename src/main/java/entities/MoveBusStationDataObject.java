@@ -3,6 +3,7 @@ package entities;
 /**
  *
  * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Класс для хранения информации о прохождении ТС остановок
  */
 public class MoveBusStationDataObject {
     Integer Route;

@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import entities.BusObject;
+import entities.Geocode;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import mapper.DataMapper;
 import mapper.ProjectsMapper;
 import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
+import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -101,6 +103,9 @@ public class GetRouteBuses extends HttpServlet {
                 bus.setName_(mapper.getNameofBus(buses.get(i).getProj_id_(), buses.get(i).getObj_id_()));
                 bus.setObj_id_(buses.get(i).getObj_id_());
                 bus.setProj_id_(buses.get(i).getProj_id_());
+                //Ставим фактический адрес
+                String address = Geocode.getReverseGeoCode(buses.get(i).getLast_lat_(), buses.get(i).getLast_lon_());
+                bus.setAddress(address);
                 resultBuses.add(bus);
             }
             session.commit();     
@@ -141,7 +146,7 @@ public class GetRouteBuses extends HttpServlet {
                 JSONObject obj = (JSONObject)routes.get(i);
                 int routeID = mapper.getRouteId(obj.get("route").toString());
                 int projID = Integer.parseInt(obj.get("proj_ID").toString());
-                buses = mapper.selectObjects(routeID, projID);
+                buses = getAddresses(mapper.selectObjects(routeID, projID));
                 allRoutesBuses += gson.toJson(buses).replaceAll("\\[|\\]", "") +",";
             }
             //валидация json
@@ -152,6 +157,19 @@ public class GetRouteBuses extends HttpServlet {
             session.close();     
         }
         return allRoutesBuses + "]";         
+    }
+    
+    /*Получение физического адреса ТС
+     * @param List<BusObject> Тс которым нужен адрес
+     * @return List<BusObject> ТС с адресами
+     */
+    private static List<BusObject> getAddresses(List<BusObject> buses) throws IOException, JSONException{
+        for (int i = 0; i <= buses.size()-1; i++){
+            BusObject bus = buses.get(i);
+            String address = Geocode.getReverseGeoCode(bus.getLast_lat_(), bus.getLast_lon_());
+            buses.get(i).setAddress(address);
+        }
+        return buses;
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -199,6 +217,6 @@ public class GetRouteBuses extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Получение автобусов по маршуту с условием и по маршрутам без условия ";
     }// </editor-fold>
 }

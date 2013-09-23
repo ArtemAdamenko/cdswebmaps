@@ -79,12 +79,12 @@ Ext.define('CWM.view.RouteOptions', {
         var widget = Ext.getCmp('routes');
         //начало интервала времени
         var from_date = datef("YYYY-MM-dd", Ext.getCmp('from_date').getValue());
-        //var from_time = parseTime(Ext.getCmp('from_time').value);
         var from_time = Ext.getCmp('from_time').value + ":00";
+        
         //конец интервала
         var to_date = datef("YYYY-MM-dd", Ext.getCmp('to_date').getValue());
-        //var to_time = parseTime(Ext.getCmp('to_time').value);
         var to_time = Ext.getCmp('to_time').value + ":00";
+        
         //создаем даты со временем
         var fullDateFrom = from_date + " " + from_time;
         var fullDateTo = to_date + " " + to_time;
@@ -195,16 +195,4 @@ Ext.define('CWM.view.RouteOptions', {
             }       
         });
     },
-    getGeoLocation:function getGeoLocation(lat,lng) {
-            var res;
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'GeocodeServlet?lat=' + lat + "&lng=" + lng, false);
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState !== 4) return;
-                        res = xhr.responseText;
-                };
-                xhr.send(null);
-                return res;
-            },
-    
 });

@@ -34,10 +34,6 @@
         <servlet-class>servlets.GetRoute</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>GeocodeServlet</servlet-name>
-        <servlet-class>servlets.GeocodeServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ReportRoute</servlet-name>
         <servlet-class>servlets.ReportRoute</servlet-class>
     </servlet>
@@ -80,10 +76,6 @@
     <servlet-mapping>
         <servlet-name>GetRoute</servlet-name>
         <url-pattern>/GetRoute</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>GeocodeServlet</servlet-name>
-        <url-pattern>/GeocodeServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ReportRoute</servlet-name>

@@ -104,6 +104,10 @@ Ext.define('CWM.view.DetailReport', {
                     Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
                     return 0;
                 }
+                if (response.responseText.length === 0){
+                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
+                    return 0;
+                }
                 var buses =  JSON.parse(response.responseText);
                 var objects = new Array();
                 /*формируем объекты для дерева*/
@@ -142,7 +146,10 @@ Ext.define('CWM.view.DetailReport', {
                 }
                 window.add(panel);
                 window.doLayout();
-            }
+            },
+            failure:function () {
+                Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');
+            }      
     });},
     
     //Получение данных для подробного отчета
@@ -186,11 +193,12 @@ Ext.define('CWM.view.DetailReport', {
                     Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
                     return 0;
                 }
-                var routes =  JSON.parse(response.responseText);
-                if (routes.length === 0){
+                
+                if (response.responseText.length === 0){
                     Ext.Msg.alert('Предупреждение', 'Данные пусты');
                     return 0;
                 }
+                var routes =  JSON.parse(response.responseText);
                 var detailReportCmp = Ext.getCmp("detailReport");
                 var resultViewReport = detailReportCmp.createReport(routes, route, from, to);
                 var reportViewCmp = Ext.getCmp('report');

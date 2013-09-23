@@ -106,6 +106,6 @@ public class GetBusStations extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Остановки по данному маршруту";
     }// </editor-fold>
 }

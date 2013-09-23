@@ -18,7 +18,17 @@ Ext.define('CWM.view.ReportRoute', {
   
         me.tbar = [{   
                         xtype: 'button',
-                        text: 'Печать'
+                        text: 'Печать',
+                        listeners:{
+                            click:function(){
+                                var data = Ext.getCmp("reportRoute");
+                                var newWin = window.open('','printWindow','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0'); 
+                                newWin.document.open(); 
+                                newWin.document.write(data.body.el.dom.childNodes[0].innerHTML); 
+                                newWin.print();
+                                newWin.document.close(); 
+                            }
+                        }
                     },{
                         xtype: 'combobox',
                         displayField:'route',
@@ -57,6 +67,15 @@ Ext.define('CWM.view.ReportRoute', {
                     date: date
                 },
                 success:function(response){
+                    if (response.responseText === undefined || response.responseText === null){
+                        Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
+                        return 0;
+                    }
+
+                    if (response.responseText.length === 0){
+                        Ext.Msg.alert('Предупреждение', 'Данные пусты');
+                        return 0;
+                    }
                     var report = Ext.getCmp('reportRoute');
                     var view = report.createReport(response.responseText);
                     var repId = Ext.getCmp('report');

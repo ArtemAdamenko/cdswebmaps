@@ -88,7 +88,8 @@ Ext.define('CWM.view.Main', {
                 me.on('boxready', me.createYMap);
                 me.callParent(arguments);
             },
-
+            
+            /*Создание веб карты*/
             createYMap: function () {
                 var me = this;
                 me.update('<div style="width: ' + me.getEl().getWidth() + 'px; height: ' + me.getEl().getHeight() + 'px;" id="' + me.yMapId + '"></div>');
@@ -130,7 +131,6 @@ Ext.define('CWM.view.Main', {
                                         marker = "twirl#greenStretchyIcon";
                                     }
                                     
-                                    var address = "aaa";//me.getGeoLocation(lat,lng);
                                     myGeoObject = new ymaps.GeoObject({
                                         geometry: {
                                             type: "Point",
@@ -144,7 +144,7 @@ Ext.define('CWM.view.Main', {
                                                     "<br> Скорость: " + routes[i].last_speed_ + 
                                                     " КМ/Ч<br>Время последней остановки: " + datef("dd.MM.YYYY hh:mm:ss", routes[i].last_station_time_) +
                                                     "<br> Последняя остановка: " + routes[i].bus_station_ +
-                                                    "<br>Местоположение: " + address + 
+                                                    "<br>Местоположение: " + routes[i].address + 
                                                     "<br>Маршрут " + routes[i].route_name_
                                         }
                                     }, {
@@ -153,18 +153,10 @@ Ext.define('CWM.view.Main', {
                                     me.yMap.geoObjects.add(myGeoObject);
                                 }
                         });
-                    }
+                    },
+                    failure:function () {
+                        Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');
+                    }      
                 });
             },
-            getGeoLocation:function getGeoLocation(lat,lng) {
-            var res;
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'GeocodeServlet?lat=' + lat + "&lng=" + lng, false);
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState !== 4) return;
-                        res = xhr.responseText;
-                };
-                xhr.send(null);
-                return res;
-            }
 });

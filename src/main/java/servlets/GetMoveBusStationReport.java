@@ -18,6 +18,7 @@ import org.apache.ibatis.session.SqlSession;
 /**
  *
  * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Получение данных для отчета по прохождению ТС остановок 
  */
 public class GetMoveBusStationReport extends HttpServlet {
     /*Менеджер подключений к БД*/
@@ -27,7 +28,7 @@ public class GetMoveBusStationReport extends HttpServlet {
      /*База данных Data для подключения*/
      final String DB = "Data";
      /*сообщение об ошибке*/
-     final String SERVLET_ERROR = "Ошибка получения автобусов по маршруту";
+     final String SERVLET_ERROR = "Ошибка в GetMoveBusStationReport";
 
     /**
      * Processes requests for both HTTP
@@ -53,6 +54,7 @@ public class GetMoveBusStationReport extends HttpServlet {
         String from = request.getParameter("from");
         String to = request.getParameter("to");
         int stationID = Integer.parseInt(request.getParameter("station"));
+        
         Gson gson = new Gson();
         
         try {
@@ -112,6 +114,6 @@ public class GetMoveBusStationReport extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Получение данных для отчета по прохождению ТС остановок ";
     }// </editor-fold>
 }

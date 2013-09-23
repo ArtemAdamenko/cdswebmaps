@@ -55,18 +55,26 @@ Ext.define('CWM.view.MyChart', {
                 maxValue: date
             },{   
                         xtype: 'button',
-                        //itemId: 'print',
                         text: 'Печать',
-                        //action: 'printReport',
                         listeners:{
                             click:function(){
                                 var data = Ext.getCmp("speedChart");
-                                console.log(data);
-                                newWin=window.open('','printWindow','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0'); 
+                                var newWin = window.open('','printWindow','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0'); 
                                 newWin.document.open(); 
-                                newWin.document.write("<style>div{transform:rotate(90deg);-ms-transform:rotate(90deg);-webkit-transform:rotate(90deg);margin-top:500px;width:100%;height:100%}</style><div>" + data.container.dom.childNodes[0].innerHTML + "</div>"); 
+                                //добавляем оформление для дива
+                                newWin.document.write("<style>\n\
+                                                        div\n\
+                                                        {\n\
+                                                            transform:rotate(90deg);\n\
+                                                            -ms-transform:rotate(90deg);\n\
+                                                            -webkit-transform:rotate(90deg);\n\
+                                                            margin-top:500px;\n\
+                                                            width:100%;\n\
+                                                            height:100%\n\
+                                                        }\n\
+                                                        </style>\n\
+                                                        <div>" + data.container.dom.childNodes[0].innerHTML + "</div>"); 
                                 newWin.print();
-                                //newWin.document.close(); 
                             }
                         }
                     }
@@ -79,6 +87,10 @@ Ext.define('CWM.view.MyChart', {
                     Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
                     return 0;
                 }
+                if (response.responseText.length === 0){
+                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
+                    return 0;
+                }
                 var routes =  JSON.parse(response.responseText);
                 routes = routes.sort(function(obj1, obj2) {
                                         // Сортировка по возрастанию
@@ -88,6 +100,7 @@ Ext.define('CWM.view.MyChart', {
                 /*формируем объекты для дерева*/
                 var tree = new Array();
                 var childrens = new Array();
+                
                 var route_name_ = routes[0].route_name_;
                 var parent = new Object({
                             text: route_name_, 
@@ -183,6 +196,7 @@ Ext.define('CWM.view.MyChart', {
                     return 0;
                 }
                 var data = new Array();
+                //усредняем значение деля на 100
                 if (routes.length-1 < 100)
                     var temp = 1;
                 else

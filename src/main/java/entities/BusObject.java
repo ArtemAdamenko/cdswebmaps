@@ -28,7 +28,16 @@ public class BusObject {
     String route_name_;
     /*остановка*/
     String bus_station_;
+    /*физический адрес местонахождения*/
+    String address;
 
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    
+    public String getAddress() {
+        return address;
+    }
 
     public void setBus_station_(String bus_station_) {
         this.bus_station_ = bus_station_;

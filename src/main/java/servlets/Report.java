@@ -54,9 +54,11 @@ public class Report extends HttpServlet {
         manager.initDBFactory(environment, DB);
         SqlSession session = manager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
+        
         Cookie[] cookies = request.getCookies();
         String username = "";
         Gson gson = new Gson();
+        
         /*берем из куки имя пользователя*/
         for (int i = 0; i <= cookies.length-1; i++){
             if (cookies[i].getName().equals("session_id"))

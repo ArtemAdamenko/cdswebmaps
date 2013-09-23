@@ -17,6 +17,7 @@ import org.apache.ibatis.session.SqlSession;
 /**
  *
  * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Получение информации по одному автобусу
  */
 public class GetInfoOfBus extends HttpServlet {
     /*Менеджер подключений к БД*/
@@ -26,7 +27,7 @@ public class GetInfoOfBus extends HttpServlet {
      /*База данных для подключения*/
      final String DB = "Projects";
      /*сообщение об ошибке*/
-     final String SERVLET_ERROR = "Ошибка в GetRouteServlet";
+     final String SERVLET_ERROR = "Ошибка в GetInfoOfBus";
 
     /**
      * Processes requests for both HTTP
@@ -46,6 +47,7 @@ public class GetInfoOfBus extends HttpServlet {
         manager.initDBFactory(environment, DB);
         SqlSession session = manager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
+        
         String busName = request.getParameter("busName");
         Gson gson = new Gson();
         try {
@@ -104,6 +106,6 @@ public class GetInfoOfBus extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Получение информации по одному автобусу";
     }// </editor-fold>
 }

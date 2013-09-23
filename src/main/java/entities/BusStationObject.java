@@ -3,12 +3,15 @@ package entities;
 /**
  *
  * @author Adamenko Artem <adamenko.artem@gmail.com>
+ * Класс остановок
  */
 public class BusStationObject {
     public Integer Number;
     public String Name;
     public Long Lon;
     public Long Lat;
+    public Integer Route;
+    public Integer Control;
 
     @Override
     public String toString() {
@@ -62,6 +65,5 @@ public class BusStationObject {
     public Integer getControl() {
         return Control;
     }
-    public Integer Route;
-    public Integer Control;
+    
 }

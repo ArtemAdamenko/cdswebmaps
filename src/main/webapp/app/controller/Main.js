@@ -143,7 +143,6 @@ Ext.define('CWM.controller.Main', {
                             Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
                             return 0;
                         }
-
                         if (response.responseText.length === 0){
                             Ext.Msg.alert('Предупреждение', 'Данные пусты');
                             return 0;
@@ -160,12 +159,10 @@ Ext.define('CWM.controller.Main', {
                             }));
                         }
                         //получаем адреса
-                        var addresses = me.getGeoLocation(coords);
                         for (var i = 0; i <= routes.length-1; i++)
                         {
                             var lng = coords[i].lon;
                             var lat = coords[i].lat;
-                            var address = addresses[i];
                             var marker = "twirl#blackStretchyIcon";
                             
                             //проверка тс на активность и соответствующий маркер
@@ -190,7 +187,7 @@ Ext.define('CWM.controller.Main', {
                                     "<br> Скорость: " + routes[i].last_speed_ + 
                                     " КМ/Ч<br>Время последней остановки: " + datef("dd.MM.YYYY hh:mm:ss", routes[i].last_station_time_) +
                                     "<br> Последняя остановка: " + routes[i].bus_station_ +
-                                    "<br>Местоположение: " + address + 
+                                    "<br>Местоположение: " + routes[i].address + 
                                     "<br>Маршрут " + routes[i].route_name_
                                 }
                             }, {
@@ -217,23 +214,6 @@ Ext.define('CWM.controller.Main', {
         }
         setInterval(func, 30000);
     },
-    /*Получение адреса по координатам*/
-    getGeoLocation:function getGeoLocation(coords){
-        var addresses;
-        Ext.Ajax.request({
-            url: 'GeocodeServlet',
-            params: {
-                    coords: JSON.stringify(coords)
-            },
-            success: function(response){
-               addresses = JSON.parse(response.responseText);
-               console.log(addresses);
-            }
-            //return addresses;
-     });console.log(addresses);
-     //console.log(addresses);
-     return addresses;
-     },
     //Открытие окна с отчетом по перевозчикам
     openReport: function(){
         var win = Ext.widget('report');
@@ -297,7 +277,7 @@ Ext.define('CWM.controller.Main', {
                     proj_ID: userRoutes[i].proj_ID
             }));
         }
-        routes = JSON.stringify(routes);
+        routes = Ext.JSON.encode(routes);
         Ext.Ajax.request({
                     params:{
                         routes: routes
@@ -321,7 +301,7 @@ Ext.define('CWM.controller.Main', {
                                 marker = "twirl#greenStretchyIcon";
                             }
                             
-                            var address = me.getGeoLocation(lat,lng);
+                            //var address = me.getGeoLocation(lat,lng);
                             myGeoObject = new ymaps.GeoObject({
                                 geometry: {
                                     type: "Point",
@@ -335,7 +315,7 @@ Ext.define('CWM.controller.Main', {
                                     "<br> Скорость: " + routes[i].last_speed_ + 
                                     " КМ/Ч<br>Время последней остановки: " + datef("dd.MM.YYYY hh:mm:ss", routes[i].last_station_time_) +
                                     "<br> Последняя остановка: " + routes[i].bus_station_ +
-                                    "<br>Местоположение: " + address + 
+                                    "<br>Местоположение: " + routes[i].address + 
                                     "<br>Маршрут " + routes[i].route_name_
                                 }
                             }, {

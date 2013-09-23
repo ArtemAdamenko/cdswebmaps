@@ -95,6 +95,10 @@ Ext.define('CWM.view.MoveBusControl', {
                     Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
                     return 0;
                 }
+                if (response.responseText.length === 0){
+                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
+                    return 0;
+                }
                 var allStations =  JSON.parse(response.responseText);
                 
                 //получаем список конечных для маршрута, остановки должны быть отсортированы
@@ -107,6 +111,8 @@ Ext.define('CWM.view.MoveBusControl', {
                      
                 var objects = new Array();               
                 //формируем объекты для дерева
+                //достаем попарно конечные
+                //те остановки что между конечными, проходит ТС
                 for (var i=0; i <= controls.length-1; i = i+2) {
                     //собираем все остановки от начала маршрута до конца
                     var childrens = new Array();
@@ -155,7 +161,10 @@ Ext.define('CWM.view.MoveBusControl', {
                 }
                 window.add(panel);
                 window.doLayout();
-            }
+            },
+            failure:function () {
+                Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');
+            }      
     });},
     
     //Получение данных для подробного отчета
