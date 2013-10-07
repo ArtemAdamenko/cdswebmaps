@@ -16,22 +16,22 @@ import mapper.DataMapper;
  */
 public class MyBatisManager {
     /*Объект хранящий Sql Project сессию*/
-    private SqlSessionFactory sqlProjectSessionFactory;
+    private static SqlSessionFactory sqlProjectSessionFactory;
     /*Объект хранящий Sql Data сессию*/
-    private SqlSessionFactory sqlDataSessionFactory;
+    private static SqlSessionFactory sqlDataSessionFactory;
     /*Запись в лог*/
     private final static Logger Log = Logger.getLogger(MyBatisManager.class.getName());
     /*сообщение об ошибке в бд Data*/
-     final String ERROR_DB_DATA = "Ошибка подключения к БД Data";
+    final static String ERROR_DB_DATA = "Ошибка подключения к БД Data";
      /*сообщение об ошибке в бд Project*/
-     final String ERROR_DB_PROJECT = "Ошибка подключения к БД Project";
+    final static String ERROR_DB_PROJECT = "Ошибка подключения к БД Project";
     
     
     /*
      * Инициализация подключения к БД
      * @param String environment
      */
-    public void initDBFactory(String environment, String db) throws Exception{
+    public static void initDBFactory(String environment, String db) throws Exception{
         if (db.equals("Projects")){     
             try{
                 String resource = "mybatis/mybatis-config-projects.xml";
@@ -63,7 +63,7 @@ public class MyBatisManager {
      * Возвращает singleton SqlProjectSessionFactory
      * @return SqlSessionFactory
      */
-    public SqlSessionFactory getProjectSessionFactory() throws Exception{
+    public static SqlSessionFactory getProjectSessionFactory() throws Exception{
         return sqlProjectSessionFactory;
     }
     
@@ -71,12 +71,8 @@ public class MyBatisManager {
      * Возвращает singleton SqlDataSessionFactory
      * @return SqlSessionFactory
      */
-    public SqlSessionFactory getDataSessionFactory() throws Exception{
+    public static SqlSessionFactory getDataSessionFactory() throws Exception{
         return sqlDataSessionFactory;
-    }
-    
-    public void closeConnections(){
-       // sqlDataSessionFactory.
     }
 }
 

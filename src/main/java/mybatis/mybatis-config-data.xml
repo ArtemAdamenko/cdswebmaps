@@ -8,7 +8,7 @@
       <transactionManager type="JDBC"/>
       <dataSource type="POOLED">
         <property name="driver" value="org.firebirdsql.jdbc.FBDriver"/>
-        <property name="url" value="jdbc:firebirdsql:195.98.79.37/3050:C:/SCAT/WORKBIN/DB/DATA.fdb"/>
+        <property name="url" value="jdbc:firebirdsql:192.168.137.142/3050:C:/SCAT/WORKBIN/DB/DATA.fdb"/>
         <property name="username" value="sysdba"/>
         <property name="password" value="zaUgD5Lt"/>
       </dataSource>

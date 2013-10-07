@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
-import mybatis.MyBatisManager;
 import java.util.Random;
+import mybatis.RequestDataSessionManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -23,12 +23,7 @@ import org.apache.ibatis.session.SqlSession;
  * Обработка данных для отчета по рейсам
  */
 public class ReportRoute extends HttpServlet {
-     /*Менеджер подключений к БД*/
-     private static MyBatisManager manager = new MyBatisManager();
-     /*Среда запуска приложения*/
-     final String environment = "development";
-     /*База данных для подключения*/
-     final String DB = "Data";
+
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка обработки данных ReportRoute Servlet";
      /*Костыль для начала времени*/
@@ -50,8 +45,8 @@ public class ReportRoute extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        manager.initDBFactory(environment, DB);
-        SqlSession session = manager.getDataSessionFactory().openSession();
+
+        SqlSession session = RequestDataSessionManager.getRequestSession();
         DataMapper mapper = session.getMapper(DataMapper.class);
         
         String routeName = request.getParameter("route");
@@ -62,8 +57,9 @@ public class ReportRoute extends HttpServlet {
             String sid = getSid();
             mapper.getReport4(from_date, to_date, routeId, sid);
             session.commit();
-            session.close();
-            session = manager.getDataSessionFactory().openSession();
+
+            RequestDataSessionManager.closeRequestSession();
+            session = RequestDataSessionManager.getRequestSession();
             mapper = session.getMapper(DataMapper.class);
             List<RouteReportObject> report = mapper.getDataToRouteReport(sid, routeId);
             Gson gson = new Gson();

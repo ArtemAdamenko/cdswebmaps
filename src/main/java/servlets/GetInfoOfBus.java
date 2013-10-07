@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import entities.BusObject;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.ProjectsMapper;
-import mybatis.MyBatisManager;
+import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -20,12 +21,7 @@ import org.apache.ibatis.session.SqlSession;
  * Получение информации по одному автобусу
  */
 public class GetInfoOfBus extends HttpServlet {
-    /*Менеджер подключений к БД*/
-     private static MyBatisManager manager = new MyBatisManager();
-     /*Среда запуска приложения*/
-     final String environment = "development";
-     /*База данных для подключения*/
-     final String DB = "Projects";
+
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка в GetInfoOfBus";
 
@@ -44,18 +40,18 @@ public class GetInfoOfBus extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         /*инициализация объектов*/
-        manager.initDBFactory(environment, DB);
-        SqlSession session = manager.getProjectSessionFactory().openSession();
+
+        SqlSession session = RequestProjectsSessionManager.getRequestSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         
         String busName = request.getParameter("busName");
         Gson gson = new Gson();
         try {
-            BusObject busInfo = mapper.getBusInfo(busName);
+            List<BusObject> busInfo = mapper.getBusInfo(busName);
             out.print(gson.toJson(busInfo));
-            session.commit();
+
         } finally {          
-            session.close();
+
             out.close();
         }
     }

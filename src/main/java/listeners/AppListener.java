@@ -6,6 +6,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import mybatis.MyBatisManager;
+import mybatis.RequestDataSessionManager;
+import mybatis.RequestProjectsSessionManager;
 /**
  *
  * @author Artem Adamenko <adamenko.artem@gmail.com>
@@ -14,19 +16,18 @@ import mybatis.MyBatisManager;
 public class AppListener implements ServletContextListener{
 	ServletContext context;
         /*Менеджер подключений к БД*/
-        private static MyBatisManager manager = new MyBatisManager();
+        //private static MyBatisManager manager = new MyBatisManager();
         @Override
 	public void contextInitialized(ServletContextEvent contextEvent) {
             try {
-                manager.initDBFactory("development", "Projects");
-                manager.initDBFactory("development", "Data");
+                MyBatisManager.initDBFactory("development", "Projects");
+                MyBatisManager.initDBFactory("development", "Data");
+                RequestProjectsSessionManager.initialize();
+                RequestDataSessionManager.initialize();
             } catch (Exception ex) {
                 Logger.getLogger(AppListener.class.getName()).log(Level.SEVERE, null, ex);
             }
 		System.out.println("Context Created");
-		context = contextEvent.getServletContext();
-		// set variable to servlet context
-		//context.setAttribute("TEST", "TEST_VALUE");
 	}
         @Override
 	public void contextDestroyed(ServletContextEvent contextEvent) {

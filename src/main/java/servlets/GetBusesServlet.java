@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.ProjectsMapper;
-import mybatis.MyBatisManager;
+import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
 import org.json.JSONException;
 
@@ -27,13 +27,6 @@ import org.json.JSONException;
  * Сервлет отдающий данные об автобусах
  */
 public class GetBusesServlet extends HttpServlet {
-
-    /*Менеджер подключений к БД*/
-     private static MyBatisManager manager = new MyBatisManager();
-     /*Среда запуска приложения*/
-     final String environment = "development";
-     /*База данных для подключения*/
-     final String DB = "Projects";
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка обработки данных GetBusesServlet";
     /**
@@ -50,8 +43,8 @@ public class GetBusesServlet extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        manager.initDBFactory(environment, DB);
-        SqlSession session = manager.getProjectSessionFactory().openSession();
+
+        SqlSession session = RequestProjectsSessionManager.getRequestSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         Cookie[] cookies = request.getCookies();
         String username = "";
@@ -61,6 +54,7 @@ public class GetBusesServlet extends HttpServlet {
                      username = cookies[i].getValue();
             }
             /*Получаем id поль-ля*/
+            //List<BusStationObject> stations = mapper.getstations();
             int userId = mapper.selectUserId(username);
             /*Получаем проекты и маршруты по каждому в соответствии с id поль-ля*/
             List<Map> routes = mapper.selectProjsAndRoutes(userId);
@@ -68,10 +62,9 @@ public class GetBusesServlet extends HttpServlet {
             Map<Integer, List<Integer>> newRoutes = mapFromListOfMap(routes);
             /*преобразовываем данные в json*/
             String res = getObjects(newRoutes);
-            session.commit();
+            Gson gson = new Gson();
             out.print(res);       
         }finally {
-            session.close();
             out.close();
         }
     }
@@ -83,7 +76,8 @@ public class GetBusesServlet extends HttpServlet {
     public static String getObjects(Map<Integer, List<Integer>> projects) throws Exception
     {
         /*Открываем сессию для запросов*/
-        SqlSession session = manager.getProjectSessionFactory().openSession();
+        SqlSession session = RequestProjectsSessionManager.getRequestSession();
+
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         /*результирующий список объектов по маршруту*/
         List<BusObject> buses = new ArrayList<BusObject>();
@@ -108,8 +102,6 @@ public class GetBusesServlet extends HttpServlet {
             allJsonBuses = allJsonBuses.substring(0, allJsonBuses.length()-1);
         }
         finally{
-            session.commit();
-            session.close();
         }
         return allJsonBuses + "]";
     }

@@ -11,7 +11,7 @@ Ext.define('CWM.view.RouteOptions', {
         obj:''
     },
 
-      constructor: function() {
+      constructor: function(){
         this.callParent(arguments);
     },
 
@@ -102,26 +102,64 @@ Ext.define('CWM.view.RouteOptions', {
                 toTime:fullDateTo
             },
             success:function(response){
-                if (response.responseText === undefined || response.responseText === null){
+                /*if (response.responseText === undefined || response.responseText === null){
                     Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
                     return 0;
                 }
                 if (response.responseText.length === 0){
                     Ext.Msg.alert('Предупреждение', 'Данные пусты');
                     return 0;
+                }*/
+                var ERROR = checkResponseServer(response);
+                if (ERROR){
+                    Ext.Msg.alert('Ошибка', ERROR);
+                    return 0;
                 }
                 routes = JSON.parse(response.responseText);
-
                 ymaps.ready(function init() {            
                         var map = Ext.getCmp("main");
                         map.yMap.geoObjects.each(function(geoObject){
                                     map.yMap.geoObjects.remove(geoObject);
                         });
-
-                        for (var i = 0; i <= routes.length-1; i++){
-                            mass[i] =  [convert(routes[i].LON_), convert(routes[i].LAT_)];
+                        var myRoute;
+                        var j = 0;
+                        var leng = (routes.length-1)/10;
+                        leng = parseInt(leng) * 10;
+                        for (var i = 0; i <= leng; i= i+10){
+                            mass[j] = new Object({
+                                point:[routes[i].LON_, routes[i].LAT_],
+                                type: 'viaPoint'
+                            });
+                            j++;
                         }
-                          var myPolyline = new ymaps.Polyline(mass, {
+                        
+                        var Placemarks = new Array();
+                        /*
+                        ymaps.route(mass,{ mapStateAutoApply: true}).then(function (route) {
+                            myRoute = route;
+                            // Задание контента меток в начальной и конечной точках
+                            var points = route.getViaPoints();
+                            console.log(points);
+                            points.get(0).properties.set("iconContent", "А");
+                            points.get(1).properties.set("iconContent", "Б");
+                            console.log(points.get(0));
+
+                            // Добавление маршрута на карту
+                            map.yMap.geoObjects.add(route);
+                        }, function (error) {
+                            alert('Возникла ошибка: ' + error.message);
+                        });*/
+                        /*ymaps.route(mass).then(function (route) {
+                            map.yMap.geoObjects.add(route);
+
+                        }, function (error) {
+                            alert('Возникла ошибка: ' + error.message);
+                        });*/
+                          ymaps.route(mass,{ mapStateAutoApply: true}).then(function (route) {
+                            myRoute = route;
+                            map.yMap.geoObjects.add(route);
+                            console.log(route);
+                          })   /*, {
                             // Описываем свойства геообъекта.
                             // Содержимое балуна.
                             balloonContent: "Ломаная линия"
@@ -133,9 +171,9 @@ Ext.define('CWM.view.RouteOptions', {
                             strokeColor: "#000000",
                             // Ширина линии.
                             strokeWidth: 4,
-                        });
+                        });*/
  
-                        map.yMap.geoObjects.add(myPolyline);
+                        //map.yMap.geoObjects.add(myPolyline);
 
                         var slider = Ext.create('Ext.slider.Single', {
                                                     width: 480,
@@ -149,17 +187,17 @@ Ext.define('CWM.view.RouteOptions', {
                                                     },
                                                     listeners:{
                                                         changecomplete:function(slider, value, thumb, eOpts){
-                                                            if (myPolyline !== null){
+                                                            if (myRoute !== null){
                                                                 //Очищаем карту от траектории
-                                                                myPolyline && map.yMap.geoObjects.remove(myPolyline);
-                                                                myPolyline = null;
+                                                                myRoute && map.yMap.geoObjects.remove(myRoute);
+                                                                myRoute = null;
                                                             }                                                
                                                             if (Placemarks.length !== 0){
                                                                 //удаляем предыдущую метку ТС
                                                                 map.yMap.geoObjects.remove(Placemarks[0]);
                                                                 Placemarks = new Array();
                                                             }
-                                                            var Placemark = new ymaps.Placemark(mass[value], {                                 
+                                                            var Placemark = new ymaps.Placemark([routes[value].LON_, routes[value].LAT_], {                                 
                                                                 iconContent:routes[value].TIME_.split(" ")[1].substr(0, 8)
                                                             },  {
                                                                     preset: "twirl#yellowStretchyIcon",

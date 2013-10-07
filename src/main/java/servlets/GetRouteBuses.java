@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
 import mapper.ProjectsMapper;
-import mybatis.MyBatisManager;
+import mybatis.RequestDataSessionManager;
+import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
 import org.json.JSONException;
 import org.json.simple.JSONArray;
@@ -29,14 +30,7 @@ import org.json.simple.parser.ParseException;
  * Получение автобусов по маршуту с условием и по маршрутам без условия 
  */
 public class GetRouteBuses extends HttpServlet {
-    /*Менеджер подключений к БД*/
-     private static MyBatisManager manager = new MyBatisManager();
-     /*Среда запуска приложения*/
-     final String environment = "development";
-     /*База данных Project для подключения*/
-     final String DBProjects = "Projects";
-     /*База данных Data для подключения*/
-     final String DBData = "Data";
+
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка получения автобусов по маршруту";
      /*Промежуточный список автобусов*/
@@ -86,8 +80,8 @@ public class GetRouteBuses extends HttpServlet {
      */
     private String getBusesOfOneRoute(String routeName, String from, String to) throws Exception{
         //Инициализация подключения к БД Data
-        manager.initDBFactory(environment, DBData);
-        SqlSession session = manager.getDataSessionFactory().openSession();
+
+        SqlSession session = RequestDataSessionManager.getRequestSession();
         DataMapper mapper = session.getMapper(DataMapper.class);
         
         //результирующий список
@@ -108,9 +102,9 @@ public class GetRouteBuses extends HttpServlet {
                 bus.setAddress(address);
                 resultBuses.add(bus);
             }
-            session.commit();     
+    
         }finally{
-            session.close();
+
         }
         return gson.toJson(resultBuses);     
     }
@@ -125,8 +119,8 @@ public class GetRouteBuses extends HttpServlet {
         String allRoutesBuses = "[";
 
         //инициализация подключений к бд Data и Projects
-        manager.initDBFactory(environment, DBProjects);    
-        SqlSession session = manager.getProjectSessionFactory().openSession();
+
+        SqlSession session = RequestProjectsSessionManager.getRequestSession();
         
         //инициализация мапперов
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
@@ -152,9 +146,9 @@ public class GetRouteBuses extends HttpServlet {
             //валидация json
             allRoutesBuses = allRoutesBuses.replaceAll(",,", ",");
             allRoutesBuses = allRoutesBuses.substring(0, allRoutesBuses.length()-1);
-            session.commit();
+
         }finally{
-            session.close();     
+  
         }
         return allRoutesBuses + "]";         
     }

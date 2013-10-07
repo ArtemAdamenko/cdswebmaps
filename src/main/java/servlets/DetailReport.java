@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
-import mybatis.MyBatisManager;
+import mybatis.RequestDataSessionManager;
 import org.apache.ibatis.session.SqlSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -30,11 +30,11 @@ import static org.apache.ibatis.jdbc.SqlBuilder.*;
  */
 public class DetailReport extends HttpServlet {
     /*Менеджер подключений к БД*/
-     private static MyBatisManager manager = new MyBatisManager();
+     //private static MyBatisManager manager = new MyBatisManager();
      /*Среда запуска приложения*/
-     final String environment = "development";
+     //final String environment = "development";
      /*База данных для подключения*/
-     final String DB = "Data";
+     //final String DB = "Data";
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка получения данных для детального отчета по ТС";
     /**
@@ -52,8 +52,7 @@ public class DetailReport extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        manager.initDBFactory(environment, DB);
-        SqlSession session = manager.getDataSessionFactory().openSession();
+        SqlSession session = RequestDataSessionManager.getRequestSession();
         DataMapper mapper = session.getMapper(DataMapper.class);         
         //парсим выбранные в клиентском окне автобусы
         String objects = request.getParameter("objects");  
@@ -76,8 +75,8 @@ public class DetailReport extends HttpServlet {
             //выполняем триггер
             mapper.getRepDetailMovObjects(fromTime, toTime, routeID, sid);
             session.commit();
-            session.close();
-            session = manager.getDataSessionFactory().openSession();
+            RequestDataSessionManager.closeRequestSession();
+            session = RequestDataSessionManager.getRequestSession();
             mapper = session.getMapper(DataMapper.class);
             String wsql = "";
             for(int i = 0; i <= buses.size()-1; i++){
@@ -88,7 +87,6 @@ public class DetailReport extends HttpServlet {
             }
 
             List<DetailReportObject> resultObjects = mapper.selectPersonSql(sid,wsql);
-            session.close(); 
             Gson gson = new Gson();  
             out.print(gson.toJson(resultObjects));
         } finally {         

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
-import mybatis.MyBatisManager;
+import mybatis.RequestDataSessionManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -22,12 +22,6 @@ import org.apache.ibatis.session.SqlSession;
  */
 public class GetSpeedBus extends HttpServlet {
 
-    /*Менеджер подключений к БД*/
-     private static MyBatisManager manager = new MyBatisManager();
-     /*Среда запуска приложения*/
-     final String environment = "development";
-     /*База данных для подключения*/
-     final String DB = "Data";
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка получения данных по скорости";
     /**
@@ -45,8 +39,7 @@ public class GetSpeedBus extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        manager.initDBFactory(environment, DB);
-        SqlSession session = manager.getDataSessionFactory().openSession();
+        SqlSession session = RequestDataSessionManager.getRequestSession();
         DataMapper mapper = session.getMapper(DataMapper.class);
         
         Integer objId = Integer.valueOf(request.getParameter("obj"));
@@ -58,9 +51,7 @@ public class GetSpeedBus extends HttpServlet {
            List<SpeedBus> speed = mapper.getSpeedBus(objId, projId, fromTime, toTime);
            Gson gson = new Gson();
            out.print(gson.toJson(speed));
-           session.commit();
         } finally {         
-            session.close();
             out.close();
         }
     }

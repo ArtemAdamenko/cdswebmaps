@@ -62,13 +62,19 @@ public interface ProjectsMapper {
     public Map<Integer,String> getUserProject(String user);  
     
     /*Достаем время последнего отклика, маршрут и название проекта по названию маршрута*/
-    @Select("SELECT last_time_, "
-            + "(SELECT name_ FROM projects pr WHERE pr.id_ = o.proj_id_) as name_, "
+    @Select("SELECT last_time_, name_,"
+            + "(SELECT name_ FROM projects pr WHERE pr.id_ = o.proj_id_) as projName, "
             + "(SELECT name_ FROM routs rt WHERE rt.id_ = o.last_rout_) as route_name_ "
-            + "FROM objects o WHERE o.name_ = #{busName}")
-    public BusObject getBusInfo(String busName);
+            + "FROM objects o WHERE (o.name_ CONTAINING #{busName})")
+    public List<BusObject> getBusInfo(String busName);
     
     /*Достаем остановки по маршруту*/
     @Select("SELECT NUMBER_ as Number, NAME_ as name, CONTROL_ as Control FROM BUS_STATIONS WHERE ROUT_ = #{routeID}")
     public List<BusStationObject> getBusStations(int routeID); 
+    
+    @Select("SELECT LON_, LAT_ FROM BUS_STATIONS WHERE NUMBER_ = #{number} AND ROUT_ = #{route}")
+    public BusStationObject getCoordsOfStation(@Param("number")int number, @Param("route")int route);
+    
+    @Select("Select NUMBER_ AS Number, LON_, LAT_ AS Lat FROM BUS_STATIONS WHERE ROUT_ = 1 ORDER BY NUMBER_ ASC")
+    public List<BusStationObject> getstations();
 }

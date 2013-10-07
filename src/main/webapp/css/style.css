@@ -6,7 +6,7 @@ body {
 	font-family: Geneva, Arial, Helvetica, sans-serif;
 	line-height: 15px;
 }
-html, body, #bg, #bg table, #bg td, #cont {
+html, body{
     height:100%;
     width:100%;
     overflow:hidden;
@@ -14,340 +14,60 @@ html, body, #bg, #bg table, #bg td, #cont {
 .cls{
     font-weight: bold
 }
-h2 {
-	font-size: 15px;
-	line-height: 43px;
-	color: #333333;
-	font-weight: bold;
-	text-shadow: 0px 1px 1px #FFF;
-	background-image: url(/CdsWebMaps/images/header.png);
-	background-repeat: repeat;
-	background-position: center top;
-	height: 43px;
-	padding-top: 0px;
-	padding-right: 0px;
-	padding-bottom: 0px;
-	padding-left: 20px;
-	position: relative;
-	margin: 0px;
-}
-.clear {
-	clear: both;
+.activeBusCount{
+    font-style: oblique;
+    color: #39d;
+    font-weight: bold;
 }
 
-
-a.close {
-	position: absolute;
-	background-image: url(/CdsWebMaps/images/close.png);
-	background-repeat: no-repeat;
-	background-position: center center;
-	height: 25px;
-	width: 25px;
-	text-indent: -99999px;
-	outline: none;
-	top: 10px;
-	right: 10px;
+table#report_content{
+    border-collapse: collapse;
+    border: 0px solid black;
+    width:830px; 
+    background-color:#ffffff;
+    text-align: center;
 }
 
-.message {
-	display:block;
-	font-size: 12px;
-	margin-top: 15px;
-	margin-bottom: 10px;
-
+tr#table_header{
+    background-color: #cccccc;
+    font-size: 10px;
+    font-weight: bold;
+}
+td#obj_num{
+    width:50px;
+    background-color: #cccccc;
+}
+td#obj_name{
+    width:80px;
+}
+td#obj_cbname{
+    width:140px;
+}
+td#obj_pvname{
+    width:140px;
+}
+td#obj_rname{
+    width:100px;
+}
+td#obj_lastStationTime{
+    width:100px;
+}
+td#obj_lastTime{
+    width:100px;
 }
 
-
-#bg div {
-    height:200%;
-    left:-50%;
-    position:absolute;
-    top:-50%;
-    width:200%;
+div#report_header{
+	background-color: inherit;
+	text-align: center;
+		
+	font-family: Arial;
+	font-size: 20px;
+	font-weight: normal;
+	color: #000000;	
+	margin:15px 0px 20px 0px;
 }
-
-#bg td {
-    text-align:center;
-    vertical-align:middle;
+#report_content{
+        width: 100%;
+	height: 100%;
+	text-align: center;
 }
-
-#bg img {
-    margin:0 auto;
-    min-height:50%;
-    min-width:50%;
-}
-
-#cont {
-	position:absolute;
-	top:0;
-	left:0;
-	z-index:70;
-	overflow:auto;
-}
-
-.lock {
-    width: 197px;
-    height: 198px;
-    padding: 0px;
-	background-image: url(/CdsWebMaps/images/lock.png);
-	background-repeat: no-repeat;
-	background-position: center center;
-	position: absolute;
-	left: 50%;
-	top: 50%;	
-	margin-left: -99px; 
-	/* Half the width of the DIV tag which is 50 pixels */
-	margin-top: -99px; 
-	/* Half the height of the DIV tag which is also 50 pixels */
-}
-
-.form {
-	display: none;
-	width: 387px;
-	padding: 0px;
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	
-	/* Half the width of the DIV tag which is 388 pixels */
-	margin-left: -194px;
-	
-	/* Half the height of the DIV tag which is also 216 pixels */
-	margin-top: -108px;	
-	
-	margin-right: auto;
-	margin-bottom: 0;
-}
-
-.show {
-	display: inline;
-}
-
-.box { 
-	position: absolute;
-	left: 50%;
-	top: 50%;	
-
-}
-.formcont {
-	margin: 0px;
-	overflow: hidden;
-	position: relative;
-}
-.formfooter {
-	background-image: url(/CdsWebMaps/images/footer.png);
-	background-repeat: no-repeat;
-	background-position: center top;
-	margin: 0px;
-	padding: 0px;
-	height: 13px;
-}
-
-
-
-#signin_menu {
-	height: 160px;
-	border:none;
-	text-align:left;
-	margin: 0px;
-	color:#333;
-	font-size:12px;
-	background-image: url(/CdsWebMaps/images/form-bg.png);
-	background-repeat: repeat-y;
-	background-position: center bottom;
-	overflow: hidden;
-	padding-top: 0px;
-	padding-right: 20px;
-	padding-bottom: 0px;
-	padding-left: 20px;
-}
-
-#signin_menu input[type=text], #signin_menu input[type=password] {
-	float: right;
-	-moz-border-radius:4px;
-	-webkit-border-radius:4px;
-	border:1px solid #C6C6C6;
-	font-size:13px;
-	margin:5px 0px 5px;
-	*margin:0px;
-	padding:5px;
-	width:180px;
-}
-#signin_menu p {
-	margin:10px 0 10px;
-	*margin:5px 0 5px;
-	clear: both;
-}
-#signin_menu a {
-	color:#6AC;
-}
-#signin_menu label {
-	margin:10px 0px 0px;
-	float: left;
-	font-weight:normal;
-}
-#signin_menu p.remember {
-	float: right;
-	clear: none;
-	padding:0;
-}
-#signin_menu a.forgot {
-	margin-top: 10px;
-	float: left;
-	display: inline;
-	line-height: 24px;
-	color: #666666;
-	text-decoration: none;
-	background-image: url(/CdsWebMaps/images/reset.png);
-	background-repeat: no-repeat;
-	background-position: left center;
-	padding-left: 18px;
-	font-weight: bold;
-}
-
-.remember input {
-	-moz-border-radius:4px;
-	-webkit-border-radius:4px;
-	background:#39d url('/CdsWebMaps/images/bg-btn.png') repeat-x scroll 0 0;
-	border:1px solid #B5B5B5;
-	color:#222;
-	text-shadow: 0px 1px 1px #FFF;
-	*filter: Shadow(Color=#FFFFFF, 	
-			Direction=180, 
-			Strength=1);
-	padding:4px 10px 5px;
-	font-size:11px;
-	margin: 0 0px 0 3px;
-	font-weight:bold;
-}
-
-#signin_submit::-moz-focus-inner {
-        padding:0;
-        border:0;
-}
-#signin_submit:hover, #signin_submit:focus {
-	background-position:0 -5px;
-	cursor:pointer;
-}
-
-#focus-stealer{ 
-    position: absolute; 
-    left: -9999px; 
-}
-
-#background { 
-  left: 0; 
-  top: 0; 
-  position: absolute; 
-  background: #000; 
-  opacity: 0.7; 
-  z-index: 999; 
-  display: none; 
-  height: 100%; 
-  width: 100%; 
-} 
- 
-#null_bus_window,#null_coord_window { 
-  display: none; 
-  z-index: 9999; 
-  border: 1px solid #444; 
-  background-color: #FEFEFE; 
-  border-radius: 10px; 
-  padding: 15px 20px; 
-  height: 120px; 
-  width: 250px; 
-}
-
-#button{
-	padding:10px 15px;/*Отступ от границы рамки до текста */
-	background-color:#f5f5f5;/*Фон*/
-	border:1px solid #DEDEDE;/*Граница кнопки*/
-	font:normal 15px "Tahoma";/*Шрифт*/
-	color:#8F8F8F;/*Цвет шрифта*/
-	cursor:pointer;/*Курсор мыши*/
-	
-	/*
-	Тень, отбрасываемая текстом в кнопке:
-	text-shadow: none | тень
-	где тень: [сдвиг по x] [сдвиг по y] [радиус размытия] [цвет]
-	*/
-	text-shadow: 0 1px 0 white;
-	
-	/*
-	Закругление углов кнопки:
-	*/
-	-moz-border-radius: 5px;
-	-webkit-border-radius:5px;
-	border-radius: 5px;
-	
-	/*
-	Градиент:
-	linear-gradient(направление наложения градиента, цвет 1, цвет 2)
-	Происходит плавный переход от цвета 1 к цвету 2 в заданном направлении.
-	*/
-	background: -webkit-linear-gradient(top, #fff, #EBEBEB);
-	background:    -moz-linear-gradient(top, #fff, #EBEBEB);
-	background:     -ms-linear-gradient(top, #fff, #EBEBEB);
-	background:      -o-linear-gradient(top, #fff, #EBEBEB);
-}
-
-#button:hover{
-	background-color:#EBEBEB;
-	
-	/*
-	Тень вокруг кнопки
-	box-shadow: none | тень [, тень]*
-	где  тень: inset [сдвиг по x] [сдвиг по y] [радиус размытия] [растяжение] [цвет]
-	Значение insert указывается, если нужно создать внутреннюю тень.
-	*/
-	-webkit-box-shadow:0 0 5px 1px #EAEAEA;
-	-moz-box-shadow:0 0 5px 1px #EAEAEA;
-	box-shadow:0 0 5px 1px #EAEAEA;
-	
-	/*
-	Градиент
-	linear-gradient(направление наложения градиента, цвет 1, цвет 2)
-	Происходит плавный переход от цвета 1 к цвету 2 в заданном направлении.
-
-	*/
-	background: -webkit-linear-gradient(top, #fff, #E0E0E0);
-	background:    -moz-linear-gradient(top, #fff, #E0E0E0);
-	background:     -ms-linear-gradient(top, #fff, #E0E0E0);
-	background:      -o-linear-gradient(top, #fff, #E0E0E0);
-}
-
-#button:active{
-	
-	-webkit-box-shadow:inset 0 1px 0 1px #B5B5B5;
-	-moz-box-shadow:inset 0 1px 0 1px #B5B5B5;
-	box-shadow:inset 0 1px 0 1px #B5B5B5;
-	
-	background: -webkit-linear-gradient(top, #E3E3E3, #FAFAFA);
-	background:    -moz-linear-gradient(top, #E3E3E3, #FAFAFA);
-	background:     -ms-linear-gradient(top, #E3E3E3, #FAFAFA);
-	background:      -o-linear-gradient(top, #E3E3E3, #FAFAFA);
-}
-
-#map-canvas {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 83%;
-        position: absolute;
-      }
-      #routeTimes{
-        position: relative;
-        margin-left: 1600px;
-        font-size: 1.2em;  
-      }
-      
-.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
-.ui-timepicker-div dl { text-align: left; }
-.ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
-.ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
-.ui-timepicker-div td { font-size: 90%; }
-.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
-
-.ui-timepicker-rtl{ direction: rtl; }
-.ui-timepicker-rtl dl { text-align: right; }
-.ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }

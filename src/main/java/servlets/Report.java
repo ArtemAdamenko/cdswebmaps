@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.ProjectsMapper;
-import mybatis.MyBatisManager;
+import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -28,12 +28,7 @@ import org.apache.ibatis.session.SqlSession;
  */
 public class Report extends HttpServlet {
 
-    /*Менеджер подключений к БД*/
-     private static MyBatisManager manager = new MyBatisManager();
-          /*Среда запуска приложения*/
-     final String environment = "development";
-     /*База данных для подключения*/
-     final String DB = "Projects";
+
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка обработки данных Report Servlet";
     /**
@@ -51,8 +46,8 @@ public class Report extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         /*инициализация объектов*/
-        manager.initDBFactory(environment, DB);
-        SqlSession session = manager.getProjectSessionFactory().openSession();
+
+        SqlSession session = RequestProjectsSessionManager.getRequestSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         
         Cookie[] cookies = request.getCookies();
@@ -67,15 +62,12 @@ public class Report extends HttpServlet {
         try {
             /*подготовка данных для клиентской стороны*/
             List<ReportObject> Objects = mapper.getDataToReport(username);
-            //List<ReportObject> busesList = sortDataList(Objects); 
             String buses = gson.toJson(Objects);
             Map<Integer,String> userProject = mapper.getUserProject(username);
             String jsonUserProject = gson.toJson(userProject) + "@";
             out.println(jsonUserProject);
             out.println(buses);
         } finally {      
-            session.commit();
-            session.close();
             out.close();
         }
     }

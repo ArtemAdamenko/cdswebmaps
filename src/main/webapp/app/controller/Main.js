@@ -1,6 +1,6 @@
 Ext.define('CWM.controller.Main', {
     extend: 'Ext.app.Controller',
-    views: ['CWM.view.Main','CWM.view.Report','CWM.view.RouteOptions', 'CWM.view.ReportRoute', 'CWM.view.MyChart', 'CWM.view.DetailReport', 'CWM.view.MoveBusControl'],
+    views: ['CWM.view.Main','CWM.view.Report','CWM.view.RouteOptions', 'CWM.view.ReportRoute', 'CWM.view.MyChart', 'CWM.view.DetailReport', 'CWM.view.MoveBusControl', 'CWM.view.BusesInfo'],
     refs: [
         {ref: 'MainView', selector: 'main'} // Reference to main view
     ],
@@ -55,7 +55,7 @@ Ext.define('CWM.controller.Main', {
         Ext.Ajax.request({
             url: 'GetBusesServlet',
             success: function(response){
-                if (response.responseText === undefined || response.responseText === null){
+                /*if (response.responseText === undefined || response.responseText === null){
                     Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
                     return 0;
                 }
@@ -63,12 +63,17 @@ Ext.define('CWM.controller.Main', {
                 if (response.responseText.length === 0){
                     Ext.Msg.alert('Предупреждение', 'Данные пусты');
                     return 0;
+                }*/
+                var ERROR = checkResponseServer(response);
+                if (ERROR){
+                    Ext.Msg.alert('Ошибка', ERROR);
+                    return 0;
                 }
                 var routes =  JSON.parse(response.responseText);  
-                routes = routes.sort(function(obj1, obj2) {
+                /*routes = routes.sort(function(obj1, obj2) {
                                         // Сортировка по возрастанию
                                         return obj1.route_name_.localeCompare(obj2.route_name_);
-                                        });
+                                        });*/
                 var w = me.getMainView(),
                 t = w.down('#MainMenuItem'),
                 userRoutes = w.down('#checkboxes');
@@ -88,8 +93,15 @@ Ext.define('CWM.controller.Main', {
                 //интервал времени для выделения активных автобусов
                 var now = new Date().valueOf() - 600000;
                 
+                //активные автобусы маршрута
+                var activeBusOfRoute = 0;
                 for (var i=0; i<= routes.length-1; i++) {
                     if (route_name_ !== routes[i].route_name_){
+                        item.menu.push({
+                                        text: "Активных :" + activeBusOfRoute,
+                                        cls:"activeBusCount"
+                        });
+                        activeBusOfRoute = 0;
                         t.menu.add(item);
                         route_name_ = routes[i].route_name_;
                         var item = {text: route_name_,
@@ -106,6 +118,7 @@ Ext.define('CWM.controller.Main', {
                     var style = "";
                     var lastBusDate = new Date(routes[i].last_time_).valueOf();
                     if (lastBusDate > now){
+                        activeBusOfRoute++;
                         //жирный шрифт для выделения активных автобусов
                         style = "cls";
                     }
@@ -119,6 +132,10 @@ Ext.define('CWM.controller.Main', {
                                     cls: style
                                     });
                     if (i === routes.length-1){
+                         item.menu.push({
+                                        text: "Активных :" + activeBusOfRoute,
+                                        cls:"activeBusCount"
+                        });
                          t.menu.add(item);
                          userRoutes.add(checkboxes);
                     }
@@ -139,30 +156,35 @@ Ext.define('CWM.controller.Main', {
                 Ext.Ajax.request({
                     url: 'GetBusesServlet',
                     success: function(response){
-                        if (response.responseText === undefined || response.responseText === null){
+                        /*if (response.responseText === undefined || response.responseText === null){
                             Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
                             return 0;
                         }
                         if (response.responseText.length === 0){
                             Ext.Msg.alert('Предупреждение', 'Данные пусты');
                             return 0;
+                        }*/
+                        var ERROR = checkResponseServer(response);
+                        if (ERROR){
+                            Ext.Msg.alert('Ошибка', ERROR);
+                            return 0;
                         }
                         var routes =  JSON.parse(response.responseText);                   
                         var objects = new Array();
                         
                         //координаты в массив на получение адресов
-                        var coords = new Array();
+                        /*var coords = new Array();
                         for (var i = 0; i <= routes.length-1; i++){
                             coords.push(new Object({
                                 lon: convert(routes[i].last_lon_),
                                 lat: convert(routes[i].last_lat_)
                             }));
-                        }
+                        }*/
                         //получаем адреса
                         for (var i = 0; i <= routes.length-1; i++)
                         {
-                            var lng = coords[i].lon;
-                            var lat = coords[i].lat;
+                            var lng = routes[i].last_lon_;
+                            var lat = routes[i].last_lat_;
                             var marker = "twirl#blackStretchyIcon";
                             
                             //проверка тс на активность и соответствующий маркер
@@ -284,13 +306,18 @@ Ext.define('CWM.controller.Main', {
                     },
                     url: 'GetRouteBuses',
                     success: function(response){
+                        var ERROR = checkResponseServer(response);
+                        if (ERROR){
+                            Ext.Msg.alert('Ошибка', ERROR);
+                            return 0;
+                        }
                         var routes =  JSON.parse(response.responseText);
                         var map = Ext.getCmp("main");
                         var objects = new Array();
                         for (var i = 0; i <= routes.length-1; i++)
                         {
-                            var lng = convert(routes[i].last_lon_);
-                            var lat = convert(routes[i].last_lat_);
+                            var lng = routes[i].last_lon_;
+                            var lat = routes[i].last_lat_;
                             
                             //проверка тс на активность и соответствующий маркер
                             var now = new Date().valueOf() - 600000;
@@ -300,7 +327,22 @@ Ext.define('CWM.controller.Main', {
                                 //жирный шрифт для выделения активных автобусов
                                 marker = "twirl#greenStretchyIcon";
                             }
+                            //центр города
+                           /* var mass = new Array();
+                            var centr = [51.671644, 39.209945];
+                            mass.push([lng,lat]);
+                            mass.push(centr);
                             
+                            ymaps.route(mass,{ mapStateAutoApply: true}).then(function (route) {
+                                // Задание контента меток в начальной и конечной точках
+                                var points = route.getViaPoints();
+                                console.log(points.get(0).geometry._yD);
+                                var temp = points.get(0).geometry._yD;
+                                // Добавление маршрута на карту
+                                map.yMap.geoObjects.add(temp);
+                            }, function (error) {
+                                alert('Возникла ошибка: ' + error.message);
+                            });*/
                             //var address = me.getGeoLocation(lat,lng);
                             myGeoObject = new ymaps.GeoObject({
                                 geometry: {
@@ -346,10 +388,21 @@ Ext.define('CWM.controller.Main', {
             },
             url:'GetInfoOfBus',
             success: function(response){
-                var info = JSON.parse(response.responseText);
-                Ext.Msg.alert('Информация об автобусе ' + busName, 'Перевозчик: ' + info.name_
-                                                                    + '<br>Маршрут: ' + info.route_name_
-                                                                    + '<br>Последний отклик: ' + datef("dd.MM.YYYY hh:mm:ss", info.last_time_));
+                /*if (response.responseText === undefined || response.responseText === null){
+                    Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
+                    return 0;
+                }
+                if (response.responseText.length === 0){
+                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
+                    return 0;
+                }*/
+                var ERROR = checkResponseServer(response);
+                if (ERROR){
+                    Ext.Msg.alert('Ошибка', ERROR);
+                    return 0;
+                }
+                var busesInfoWindow = Ext.widget('busesInfo', {info: response.responseText});
+                busesInfoWindow.show();
             },
             failure: function(){
                 Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');

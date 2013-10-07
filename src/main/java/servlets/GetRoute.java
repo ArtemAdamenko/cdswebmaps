@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
-import mybatis.MyBatisManager;
+import mapper.ProjectsMapper;
+import mybatis.RequestDataSessionManager;
+import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -22,12 +24,6 @@ import org.apache.ibatis.session.SqlSession;
  */
 public class GetRoute extends HttpServlet {
 
-    /*Менеджер подключений к БД*/
-     private static MyBatisManager manager = new MyBatisManager();
-     /*Среда запуска приложения*/
-     final String environment = "development";
-     /*База данных для подключения*/
-     final String DB = "Data";
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка в GetRouteServlet";
     /**
@@ -46,21 +42,22 @@ public class GetRoute extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         /*инициализация объектов*/
-        manager.initDBFactory(environment, DB);
-        SqlSession session = manager.getDataSessionFactory().openSession();
-        DataMapper mapper = session.getMapper(DataMapper.class);
+        SqlSession session = RequestDataSessionManager.getRequestSession();
+        DataMapper mapperData = session.getMapper(DataMapper.class);
         
         String projectId = request.getParameter("proj");
         String busId = request.getParameter("bus");
         String fromTimeStr = request.getParameter("fromTime");
         String toTimeStr = request.getParameter("toTime");
         try {
-            List<Route> route = mapper.getRoute(Integer.parseInt(busId), Integer.parseInt(projectId), fromTimeStr, toTimeStr);
+            List<Route> route = mapperData.getRoute(Integer.parseInt(busId), Integer.parseInt(projectId), fromTimeStr, toTimeStr);
+
+            session = RequestProjectsSessionManager.getRequestSession();
+            ProjectsMapper mapperProjects = session.getMapper(ProjectsMapper.class);
             Gson gson = new Gson();
             out.print(gson.toJson(route));
         } finally {            
-            session.commit();
-            session.close();
+
         }
     }
 

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.ProjectsMapper;
-import mybatis.MyBatisManager;
+import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -21,12 +21,6 @@ import org.apache.ibatis.session.SqlSession;
  * Остановки по данному маршруту
  */
 public class GetBusStations extends HttpServlet {
-    /*Менеджер подключений к БД*/
-     private static MyBatisManager manager = new MyBatisManager();
-     /*Среда запуска приложения*/
-     final String environment = "development";
-     /*База данных для подключения*/
-     final String DB = "Projects";
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка обработки данных GetBusStations";
 
@@ -47,8 +41,7 @@ public class GetBusStations extends HttpServlet {
         
         String routeName = request.getParameter("routeName");
         
-        manager.initDBFactory(environment, DB);
-        SqlSession session = manager.getProjectSessionFactory().openSession();
+        SqlSession session = RequestProjectsSessionManager.getRequestSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         try {
             Integer routeID = mapper.getRouteId(routeName);

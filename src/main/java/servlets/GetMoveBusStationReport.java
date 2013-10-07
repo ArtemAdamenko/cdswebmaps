@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
-import mybatis.MyBatisManager;
+import mybatis.RequestDataSessionManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -21,12 +21,7 @@ import org.apache.ibatis.session.SqlSession;
  * Получение данных для отчета по прохождению ТС остановок 
  */
 public class GetMoveBusStationReport extends HttpServlet {
-    /*Менеджер подключений к БД*/
-     private static MyBatisManager manager = new MyBatisManager();
-     /*Среда запуска приложения*/
-     final String environment = "development";
-     /*База данных Data для подключения*/
-     final String DB = "Data";
+
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка в GetMoveBusStationReport";
 
@@ -46,8 +41,8 @@ public class GetMoveBusStationReport extends HttpServlet {
         PrintWriter out = response.getWriter();
         
          /*инициализация объектов*/
-        manager.initDBFactory(environment, DB);
-        SqlSession session = manager.getDataSessionFactory().openSession();
+
+        SqlSession session = RequestDataSessionManager.getRequestSession();
         DataMapper mapper = session.getMapper(DataMapper.class);
         
         String routeName = request.getParameter("routeName");
@@ -61,9 +56,8 @@ public class GetMoveBusStationReport extends HttpServlet {
            int routeID = mapper.getRouteId(routeName);
            List<MoveBusStationDataObject> reportData = mapper.getMoveBusControlReportData(from, to, routeID, stationID);
            out.printf(gson.toJson(reportData));
-           session.commit();
         } finally {   
-            session.close();
+
             out.close();
         }
     }
