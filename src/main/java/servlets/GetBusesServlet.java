@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import entities.BusObject;
+import entities.CacheManager;
 import entities.Geocode;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import mapper.ProjectsMapper;
 import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
-import org.json.JSONException;
 
 /**
  *
@@ -76,8 +76,7 @@ public class GetBusesServlet extends HttpServlet {
     public static String getObjects(Map<Integer, List<Integer>> projects) throws Exception
     {
         /*Открываем сессию для запросов*/
-        SqlSession session = RequestProjectsSessionManager.getRequestSession();
-
+        SqlSession session = RequestProjectsSessionManager.getRequestSession();  
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         /*результирующий список объектов по маршруту*/
         List<BusObject> buses = new ArrayList<BusObject>();
@@ -110,12 +109,26 @@ public class GetBusesServlet extends HttpServlet {
      * @param List<BusObject> Тс которым нужен адрес
      * @return List<BusObject> ТС с адресами
      */
-    private static List<BusObject> getAddresses(List<BusObject> buses) throws IOException, JSONException{
+    private static List<BusObject> getAddresses(List<BusObject> buses) throws IOException{
+        String address = ""; 
         for (int i = 0; i <= buses.size()-1; i++){
-            BusObject bus = buses.get(i);
-            String address = Geocode.getReverseGeoCode(bus.getLast_lat_(), bus.getLast_lon_());
+            BusObject bus = buses.get(i);      
+            Double coord =  bus.getLast_lat_() + bus.getLast_lon_();
+            //если координаты уже есть в кэше
+            if (CacheManager.checkElement(coord)){
+                address = CacheManager.getValue(coord);
+                //System.out.println("get");
+            }else{
+                //иначе запрашиваем адрес и кладем в кэш
+                address = Geocode.getReverseGeoCode(bus.getLast_lat_(),bus.getLast_lon_());
+                if (address != "Адрес не получен"){
+                    CacheManager.add(coord, address);
+                    //System.out.println("add"); 
+                }           
+            }      
             buses.get(i).setAddress(address);
         }
+        //System.out.print(CacheManager.toStr());
         return buses;
     }
     

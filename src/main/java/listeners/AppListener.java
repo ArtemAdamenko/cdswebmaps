@@ -15,8 +15,6 @@ import mybatis.RequestProjectsSessionManager;
  */
 public class AppListener implements ServletContextListener{
 	ServletContext context;
-        /*Менеджер подключений к БД*/
-        //private static MyBatisManager manager = new MyBatisManager();
         @Override
 	public void contextInitialized(ServletContextEvent contextEvent) {
             try {
@@ -29,6 +27,7 @@ public class AppListener implements ServletContextListener{
             }
 		System.out.println("Context Created");
 	}
+        
         @Override
 	public void contextDestroyed(ServletContextEvent contextEvent) {
 		context = contextEvent.getServletContext();

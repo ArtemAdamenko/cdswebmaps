@@ -14,11 +14,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
 
 /**
  *
@@ -27,13 +24,6 @@ import org.json.JSONArray;
  */
 public class Geocode {
     public static String getReverseGeoCode(Double lat, Double lng) throws IOException, JSONException {
-        /*String[] latitude = lat.toString().split("\\.");
-        String[] temp = latitude[0].split("{2}");
-        String temp1 = temp[1] + temp[2] + "." + temp[3] + temp[4] + latitude[1];
-        
-        String[] longit = lng.toString().split("\\.");
-        String[] temp2 = longit[0].split("{2}");
-        String temp3 = temp2[1] + temp2[2] + "." + temp2[3] + temp2[4] + longit[1];*/
         final String baseUrl = "http://maps.googleapis.com/maps/api/geocode/json";// путь к Geocoding API по HTTP
         final Map<String, String> params = Maps.newHashMap();
         params.put("language", "ru");// язык данных, на котором мы хотим получить
@@ -54,26 +44,6 @@ public class Geocode {
         if (formattedAddress == null)
             formattedAddress = "Адрес не получен";
         return formattedAddress;
-        /*final String baseUrl = " http://nominatim.openstreetmap.org/reverse?format=json&lat=" + temp3 + "&lon=" + temp1;// путь к Geocoding API по HTTP
-        //final Map<String, String> params = Maps.newHashMap();
-        //params.put("language", "ru");// язык данных, на котором мы хотим получить
-        //params.put("sensor", "false");// исходит ли запрос на геокодирование от устройства с датчиком местоположения
-        // текстовое значение широты/долготы, для которого следует получить ближайший понятный человеку адрес, долгота и
-        //params.put("latlng", lat.toString()+","+lng.toString());
-        //final String url = baseUrl + '?' + encodeParams(params);// генерируем путь с параметрами
-        String formattedAddress = null;
-        try{
-            final JSONObject response = Geocode.read(baseUrl);// делаем запрос к вебсервису и получаем от него ответ
-            // как правило, наиболее подходящий ответ первый и данные об адресе можно получить по пути
-            // //results[0]/formatted_address
-            final JSONArray location = response.getJSONArray("map");
-            formattedAddress = location.getString(1);
-        }catch(Exception e){
-            Logger.getLogger(Geocode.class.getName()).log(Level.SEVERE, null, "Ошибка получения адреса");
-        }
-        if (formattedAddress == null)
-            formattedAddress = "Адрес не получен";
-        return formattedAddress;*/
     }
     
     /*

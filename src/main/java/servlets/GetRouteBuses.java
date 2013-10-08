@@ -18,7 +18,6 @@ import mapper.ProjectsMapper;
 import mybatis.RequestDataSessionManager;
 import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
-import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -157,7 +156,7 @@ public class GetRouteBuses extends HttpServlet {
      * @param List<BusObject> Тс которым нужен адрес
      * @return List<BusObject> ТС с адресами
      */
-    private static List<BusObject> getAddresses(List<BusObject> buses) throws IOException, JSONException{
+    private static List<BusObject> getAddresses(List<BusObject> buses) throws IOException{
         for (int i = 0; i <= buses.size()-1; i++){
             BusObject bus = buses.get(i);
             String address = Geocode.getReverseGeoCode(bus.getLast_lat_(), bus.getLast_lon_());
