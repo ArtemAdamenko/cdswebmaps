@@ -120,7 +120,7 @@ public class GetBusesServlet extends HttpServlet {
                 //System.out.println("get");
             }else{
                 //иначе запрашиваем адрес и кладем в кэш
-                address = Geocode.getReverseGeoCode(bus.getLast_lat_(),bus.getLast_lon_());
+                address = Geocode.getReverseGeoCode(bus.getLast_lat_(), bus.getLast_lon_());
                 if (address != "Адрес не получен"){
                     CacheManager.add(coord, address);
                     //System.out.println("add"); 

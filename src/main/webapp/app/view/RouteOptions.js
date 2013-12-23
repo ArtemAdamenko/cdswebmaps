@@ -125,7 +125,7 @@ Ext.define('CWM.view.RouteOptions', {
                         var j = 0;
                         var leng = (routes.length-1)/10;
                         leng = parseInt(leng) * 10;
-                        for (var i = 0; i <= leng; i= i+10){
+                        for (var i = 0; i <= routes.length-1; i= i+10){
                             mass[j] = new Object({
                                 point:[routes[i].LON_, routes[i].LAT_],
                                 type: 'viaPoint'

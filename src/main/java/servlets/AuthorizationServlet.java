@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import mapper.ProjectsMapper;
 import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
@@ -50,6 +52,10 @@ public class AuthorizationServlet extends HttpServlet {
                 cookie = new Cookie("session_id", userName);
                 cookie.setMaxAge(365 * 24 * 60 * 60);
                 response.addCookie(cookie);
+                HttpSession sessionUser = request.getSession();
+                sessionUser.setAttribute("session_id", userName);
+                RequestDispatcher view = request.getRequestDispatcher("maps.html");
+                //view.forward(request, response);
                 out.print("access done");
             }
         }finally {   

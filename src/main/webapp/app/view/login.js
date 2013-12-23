@@ -3,7 +3,6 @@ Ext.onReady(function(){
  *  Создаем форму для входа
  */
 var loginForm = new Ext.FormPanel({
-
   url:'AuthorizationServlet',
   frame: true,
   items: [
@@ -53,7 +52,6 @@ var loginForm = new Ext.FormPanel({
       }
   ]
 });
-
 
 /*
  *  Создаем окно, в которое помещаем форму

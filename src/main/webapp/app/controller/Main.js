@@ -156,6 +156,7 @@ Ext.define('CWM.controller.Main', {
                 Ext.Ajax.request({
                     url: 'GetBusesServlet',
                     success: function(response){
+                        console.log("ddd");
                         /*if (response.responseText === undefined || response.responseText === null){
                             Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
                             return 0;
@@ -234,7 +235,7 @@ Ext.define('CWM.controller.Main', {
                 });}
             });
         }
-        setInterval(func, 30000);
+        setInterval(func, 10000);
     },
     //Открытие окна с отчетом по перевозчикам
     openReport: function(){

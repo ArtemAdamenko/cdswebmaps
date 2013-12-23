@@ -1,6 +1,8 @@
 package filters;
 
 import java.io.*; 
+import java.util.LinkedList;
+import java.util.List;
 import javax.servlet.*; 
 import javax.servlet.http.*; 
 import mybatis.RequestDataSessionManager;
@@ -23,9 +25,18 @@ import org.apache.ibatis.session.SqlSession;
        
        Throwable problem = null;
        
+       protected List<String> includeUrls = new LinkedList<String>();
+        protected List<String> excludeUrls = new LinkedList<String>();
+       
        @Override
        public void init (FilterConfig config) throws ServletException 
        { 
+              includeUrls.add("/");
+              excludeUrls.add("utils.js");
+              excludeUrls.add("datef.js");
+              excludeUrls.add("css");
+              excludeUrls.add("/AuthorizationServlet");
+              excludeUrls.add("index.html");
               this.config = config; 
               String act = config.getInitParameter("active"); 
               if (act != null) 
@@ -37,6 +48,19 @@ import org.apache.ibatis.session.SqlSession;
        { 
               boolean exist = false;
               HttpServletRequest req = (HttpServletRequest)request;
+              String pageRequested = req.getRequestURL().toString();
+              /*System.out.println(pageRequested);
+              if ("http://localhost:8084/CdsWebMaps/AuthorizationServlet".equals(pageRequested))
+                  chain.doFilter(request, response);*/
+              String path = req.getRequestURI().substring(req.getContextPath().length());
+                for (String includeUrl : includeUrls)
+                    if (path.startsWith(includeUrl)) {
+                        for (String excludeUrl : excludeUrls)
+                            if (path.startsWith(excludeUrl)){
+                                chain.doFilter(request, response);
+                                return;
+                            }
+                    }
 
               if (active)  
               { 
@@ -77,6 +101,7 @@ import org.apache.ibatis.session.SqlSession;
                     }
                 } finally {
                     // close session
+                    System.out.println("Conn close");
                     RequestDataSessionManager.closeRequestSession();
                 }
              }
@@ -94,6 +119,7 @@ import org.apache.ibatis.session.SqlSession;
                     }
                 } finally {
                     // close session
+                    System.out.println("Conn close");
                     RequestProjectsSessionManager.closeRequestSession();
                 }
              }
