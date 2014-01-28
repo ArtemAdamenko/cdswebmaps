@@ -2,7 +2,7 @@
 Ext.define('CWM.view.Main', {
     alias: 'widget.main', // alias (xtype)
     extend: 'Ext.panel.Panel',
-    title: 'Панель управления МБУ ЦДС "Веб карты" BETA версия Текущий пользователь: ' + document.cookie.split(";")[0].split("=")[1],
+    title: 'Панель управления МБУ ЦДС "Веб карты" FINAL версия Текущий пользователь: ' + document.cookie.split(";")[0].split("=")[1],
     id:'main',
    // map instance
             yMap: null,
@@ -81,6 +81,13 @@ Ext.define('CWM.view.Main', {
                                 redirect('index.html');
                             }
                         }
+                    }, {
+                        xtype: 'label',
+                        itemId: 'realCoords',
+                        id: 'realCoords',
+                        forId: 'myFieldId',
+                        text: '',
+                        margin: '0 0 0 10'
                     }
                 ];
                 me.yMapId = "map-canvas";
@@ -121,6 +128,13 @@ Ext.define('CWM.view.Main', {
                                 .add('typeSelector')
                                 // Стандартный набор кнопок
                                 .add('mapTools', { left: 35, top: 5 });
+                        
+                        
+                                me.yMap.events.add('mousemove', function (e) {
+                                    var label = Ext.getCmp("realCoords");
+                                    label.setText(e.get('coordPosition') + "");
+                                });
+                           
                                 for (var i = 0; i <= routes.length-1; i++)
                                 {
 
