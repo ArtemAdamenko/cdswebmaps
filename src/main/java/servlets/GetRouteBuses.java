@@ -164,6 +164,16 @@ public class GetRouteBuses extends HttpServlet {
         }
         return buses;
     }
+    
+    private static Double convertCoord(Double coord){   
+        double x = coord;
+        double y = x;
+        y = (int)x/100;
+        x=x-y*100;
+        double x1=(int)x;
+        y=y+x1/60+(x-x1)/60;
+        return y;
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP

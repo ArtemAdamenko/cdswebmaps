@@ -46,7 +46,6 @@ Ext.define('CWM.view.MoveBusControl', {
                         labelWidth: 35,
                         name: 'startDate',
                         id: 'startDate',
-                       // vtype: 'daterange',
                         endDateField: 'endDate',
                         value: date
                     },{
@@ -63,7 +62,6 @@ Ext.define('CWM.view.MoveBusControl', {
                         fieldLabel:'Конец',
                         name: 'endDate',
                         id: 'endDate',
-                       // vtype: 'daterange',
                         startDateField: 'startDate',
                         value: date
                     },{

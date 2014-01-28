@@ -17,7 +17,6 @@ Ext.define('CWM.view.RouteOptions', {
 
     initComponent: function () {
         var date = new Date();
-        //date = parseTime(date);
         date.getHours() < 10? hour = "0" + date.getHours() : hour = date.getHours();
         date.getMinutes() < 10? min = "0" + date.getMinutes() : min = date.getMinutes();
         date = hour + ":" + min;
@@ -43,9 +42,6 @@ Ext.define('CWM.view.RouteOptions', {
         },{
                 xtype: 'textfield',
                 id: 'from_time',
-                /*minValue: '00:00',
-                maxValue: '23:30',
-                format: 'H:i',*/
                 increment: 30
         },{
                 xtype: 'label',
@@ -61,9 +57,6 @@ Ext.define('CWM.view.RouteOptions', {
         },{
                 xtype: 'textfield',
                 id: 'to_time',
-                /*minValue: '00:00',
-                maxValue: '23:30',
-                format: 'H:i',*/
                 increment: 30,
                 value: date
         }];
@@ -74,7 +67,9 @@ Ext.define('CWM.view.RouteOptions', {
             
     /*прорисовка траектории и прохождение по каждой точке*/    
     routing: function(){
+        //отключение любых обновлений на карте
         Ext.updateMap = false;
+        Ext.updateRouteBuses = false;
         //Собираем данные для запроса 
         var widget = Ext.getCmp('routes');
         //начало интервала времени
@@ -125,7 +120,8 @@ Ext.define('CWM.view.RouteOptions', {
                         var j = 0;
                         var leng = (routes.length-1)/10;
                         leng = parseInt(leng) * 10;
-                        for (var i = 0; i <= routes.length-1; i= i+10){
+                        
+                        for (var i = 0; i <= routes.length-1; i++){
                             mass[j] = new Object({
                                 point:[routes[i].LON_, routes[i].LAT_],
                                 type: 'viaPoint'
@@ -134,47 +130,11 @@ Ext.define('CWM.view.RouteOptions', {
                         }
                         
                         var Placemarks = new Array();
-                        /*
-                        ymaps.route(mass,{ mapStateAutoApply: true}).then(function (route) {
-                            myRoute = route;
-                            // Задание контента меток в начальной и конечной точках
-                            var points = route.getViaPoints();
-                            console.log(points);
-                            points.get(0).properties.set("iconContent", "А");
-                            points.get(1).properties.set("iconContent", "Б");
-                            console.log(points.get(0));
-
-                            // Добавление маршрута на карту
-                            map.yMap.geoObjects.add(route);
-                        }, function (error) {
-                            alert('Возникла ошибка: ' + error.message);
-                        });*/
-                        /*ymaps.route(mass).then(function (route) {
-                            map.yMap.geoObjects.add(route);
-
-                        }, function (error) {
-                            alert('Возникла ошибка: ' + error.message);
-                        });*/
+                        
                           ymaps.route(mass,{ mapStateAutoApply: true}).then(function (route) {
                             myRoute = route;
                             map.yMap.geoObjects.add(route);
-                            console.log(route);
-                          })   /*, {
-                            // Описываем свойства геообъекта.
-                            // Содержимое балуна.
-                            balloonContent: "Ломаная линия"
-                        }, {
-                            // Задаем опции геообъекта.
-                            // Отключаем кнопку закрытия балуна.
-                            balloonHasCloseButton:false,
-                            // Цвет линии.
-                            strokeColor: "#000000",
-                            // Ширина линии.
-                            strokeWidth: 4,
-                        });*/
- 
-                        //map.yMap.geoObjects.add(myPolyline);
-
+                          });
                         var slider = Ext.create('Ext.slider.Single', {
                                                     width: 480,
                                                     height: 50,

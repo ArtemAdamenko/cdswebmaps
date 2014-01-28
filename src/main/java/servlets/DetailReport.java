@@ -29,12 +29,6 @@ import static org.apache.ibatis.jdbc.SqlBuilder.*;
  * Формирование подробного отчета
  */
 public class DetailReport extends HttpServlet {
-    /*Менеджер подключений к БД*/
-     //private static MyBatisManager manager = new MyBatisManager();
-     /*Среда запуска приложения*/
-     //final String environment = "development";
-     /*База данных для подключения*/
-     //final String DB = "Data";
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка получения данных для детального отчета по ТС";
     /**

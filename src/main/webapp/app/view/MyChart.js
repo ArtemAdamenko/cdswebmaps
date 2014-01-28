@@ -65,9 +65,6 @@ Ext.define('CWM.view.MyChart', {
                                 newWin.document.write("<style>\n\
                                                         div\n\
                                                         {\n\
-                                                            transform:rotate(90deg);\n\
-                                                            -ms-transform:rotate(90deg);\n\
-                                                            -webkit-transform:rotate(90deg);\n\
                                                             margin-top:500px;\n\
                                                             width:100%;\n\
                                                             height:100%\n\

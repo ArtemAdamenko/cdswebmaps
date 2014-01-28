@@ -54,7 +54,6 @@ public class GetBusesServlet extends HttpServlet {
                      username = cookies[i].getValue();
             }
             /*Получаем id поль-ля*/
-            //List<BusStationObject> stations = mapper.getstations();
             int userId = mapper.selectUserId(username);
             /*Получаем проекты и маршруты по каждому в соответствии с id поль-ля*/
             List<Map> routes = mapper.selectProjsAndRoutes(userId);
@@ -91,7 +90,7 @@ public class GetBusesServlet extends HttpServlet {
                 /*Проход по всем маршрутам*/
                 for (int i = 0; i <= value.size()-1; i++){
                         //Объекты-автобусы по каждому маршруту
-                        buses = getAddresses(mapper.selectObjects(value.get(i), key));                  
+                        buses = getAddresses(mapper.selectObjects(value.get(i), key)); 
                         if (!buses.isEmpty())
                             allJsonBuses += gson.toJson(buses).replaceAll("\\[|\\]", "") +",";
                 }     
@@ -112,23 +111,23 @@ public class GetBusesServlet extends HttpServlet {
     private static List<BusObject> getAddresses(List<BusObject> buses) throws IOException{
         String address = ""; 
         for (int i = 0; i <= buses.size()-1; i++){
-            BusObject bus = buses.get(i);      
+            BusObject bus = buses.get(i);
+
             Double coord =  bus.getLast_lat_() + bus.getLast_lon_();
             //если координаты уже есть в кэше
             if (CacheManager.checkElement(coord)){
                 address = CacheManager.getValue(coord);
-                //System.out.println("get");
+                System.out.println("cache");
             }else{
                 //иначе запрашиваем адрес и кладем в кэш
                 address = Geocode.getReverseGeoCode(bus.getLast_lat_(), bus.getLast_lon_());
                 if (address != "Адрес не получен"){
                     CacheManager.add(coord, address);
-                    //System.out.println("add"); 
+                    System.out.println("add to cache");
                 }           
             }      
             buses.get(i).setAddress(address);
         }
-        //System.out.print(CacheManager.toStr());
         return buses;
     }
     

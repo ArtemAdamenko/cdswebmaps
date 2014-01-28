@@ -13,7 +13,7 @@ public class BusObject {
     /*идентификатор проекта*/
     int proj_id_;
     /*название перевозчика*/
-    String projName;
+    //String projName;
     /*текущая скорость*/
     int last_speed_;
     /*долгота*/
@@ -110,58 +110,31 @@ public class BusObject {
     }
 
     public void setLast_lon_(double last_lon_) {
-        this.last_lon_ = decimalDegrees(last_lon_);
+        this.last_lon_ = convertCoord(last_lon_);
     }
 
     public void setLast_lat_(double last_lat_) {
-        this.last_lat_ = decimalDegrees(last_lat_);
+        this.last_lat_ = convertCoord(last_lat_);
     }
 
     public void setLast_time_(Date last_time_) {
         this.last_time_ = last_time_;
     }
     
-    private double decimalDegrees(double coord){
-        double long_kostil = 0;
-        double lat_kostil = 0;
-        
-        double myCoord = coord/100;
-        //градусы
-        int degrees = (int)myCoord;
-        
-        //минуты
-        double temp = (myCoord - degrees)*100;
-        
-        int min = (int)temp;
-        if ((min < 60) && (degrees > 40))
-            long_kostil = 0.006423;
-        if ((min < 15) && (degrees < 40))
-            lat_kostil = 0.007058;
-        //секунды
-        double temp1 = (temp - min)*100;
-        Integer sec1 = (int)temp1;
-        double temp2 = (temp1 - sec1)*100;
-        Integer sec2 = (int)temp2;
-        double sec = Double.valueOf(sec1.toString() + "." + sec2.toString());
-        if (sec <=59.9 )
-            sec = sec/10;
-        
-        double min1 = Double.valueOf(min)/60;
-        double result = degrees + min1 + sec/3600;
-        
-        java.text.NumberFormat nf = java.text.NumberFormat.getInstance(java.util.Locale.UK);
-        nf.setMaximumFractionDigits(5);
-        nf.setMinimumFractionDigits(4);
-        
-        result = Double.valueOf(nf.format(result));
-        //Double result = coord/100;
-        if (result > 40)
-            result = result + long_kostil;//ебаный костыль для ебаных гранитов
-        if (result < 40)
-            result = result - lat_kostil;
-        return result;
+      /*перевод координат для яндекс карт
+    * @param double coord
+    * @return double convert coord
+    */
+    private static Double convertCoord(Double coord){    
+        double x = coord;
+        double y = x;
+        y = (int)x/100;
+        x=x-y*100;
+        double x1=(int)x;
+        y=y+x1/60+(x-x1)/60;
+        return y;
     }
-
+    
     @Override
     public String toString() {
         return "BusObject{" + "obj_id_=" + obj_id_ + ", proj_id_=" + proj_id_ + ", last_speed_=" + last_speed_ + ", last_lon_=" + last_lon_ + ", last_lat_=" + last_lat_ + ", name_=" + name_ + ", last_time_=" + last_time_ + ", last_station_time_=" + last_station_time_ + ", route_name_=" + route_name_ + ", bus_station_=" + bus_station_ + '}';

@@ -12,9 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
-import mapper.ProjectsMapper;
 import mybatis.RequestDataSessionManager;
-import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -42,18 +40,25 @@ public class GetRoute extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         /*инициализация объектов*/
-        SqlSession session = RequestDataSessionManager.getRequestSession();
-        DataMapper mapperData = session.getMapper(DataMapper.class);
+        SqlSession sessionData = RequestDataSessionManager.getRequestSession();    
+        DataMapper mapperData = sessionData.getMapper(DataMapper.class);
         
         String projectId = request.getParameter("proj");
         String busId = request.getParameter("bus");
         String fromTimeStr = request.getParameter("fromTime");
         String toTimeStr = request.getParameter("toTime");
         try {
+            /*тректория*/
             List<Route> route = mapperData.getRoute(Integer.parseInt(busId), Integer.parseInt(projectId), fromTimeStr, toTimeStr);
-
-            session = RequestProjectsSessionManager.getRequestSession();
-            ProjectsMapper mapperProjects = session.getMapper(ProjectsMapper.class);
+            /*пересчет ккординат для точек траектории*/
+            /*for (int i = 0; i <= route.size()-1; i++){
+                Double lon = convertCoord(route.get(i).getLON_());
+                Double lat = convertCoord(route.get(i).getLAT_());
+                System.out.println(lon + "-" + lat);
+                
+                route.get(i).setLON_(lon);
+                route.get(i).setLAT_(lat);
+            } */
             Gson gson = new Gson();
             out.print(gson.toJson(route));
         } finally {            
@@ -61,6 +66,16 @@ public class GetRoute extends HttpServlet {
         }
     }
 
+    
+    private static Double convertCoord(Double coord){   
+        double x = coord;
+        double y = x;
+        y = (int)x/100;
+        x=x-y*100;
+        double x1=(int)x;
+        y=y+x1/60+(x-x1)/60;
+        return y;
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP
