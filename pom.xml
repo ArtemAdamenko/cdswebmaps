@@ -44,11 +44,6 @@
         </dependency>
         <dependency>
             <groupId>jboss</groupId>
-            <artifactId>jboss-common</artifactId>
-            <version>4.2.3.GA</version>
-        </dependency>
-        <dependency>
-            <groupId>jboss</groupId>
             <artifactId>jboss-j2ee</artifactId>
             <version>4.2.3.GA</version>
         </dependency>
@@ -58,9 +53,14 @@
             <version>1.1.1</version>
         </dependency>
         <dependency>
-            <groupId>org.codeartisans</groupId>
-            <artifactId>org.json</artifactId>
-            <version>20130603</version>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20131018</version>
+        </dependency>
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jboss-common</artifactId>
+            <version>4.2.3.GA</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

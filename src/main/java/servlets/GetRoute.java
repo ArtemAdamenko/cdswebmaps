@@ -50,15 +50,6 @@ public class GetRoute extends HttpServlet {
         try {
             /*тректория*/
             List<Route> route = mapperData.getRoute(Integer.parseInt(busId), Integer.parseInt(projectId), fromTimeStr, toTimeStr);
-            /*пересчет ккординат для точек траектории*/
-            /*for (int i = 0; i <= route.size()-1; i++){
-                Double lon = convertCoord(route.get(i).getLON_());
-                Double lat = convertCoord(route.get(i).getLAT_());
-                System.out.println(lon + "-" + lat);
-                
-                route.get(i).setLON_(lon);
-                route.get(i).setLAT_(lat);
-            } */
             Gson gson = new Gson();
             out.print(gson.toJson(route));
         } finally {            

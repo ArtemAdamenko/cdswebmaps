@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.ProjectsMapper;
+import mybatis.MyBatisManager;
 import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
 
@@ -61,8 +62,9 @@ public class GetBusesServlet extends HttpServlet {
             Map<Integer, List<Integer>> newRoutes = mapFromListOfMap(routes);
             /*преобразовываем данные в json*/
             String res = getObjects(newRoutes);
+            List<BusObject> buses = getAddresses(mapper.selectObjects(0, 58));
             Gson gson = new Gson();
-            out.print(res);       
+            out.print(res);   
         }finally {
             out.close();
         }
@@ -75,7 +77,8 @@ public class GetBusesServlet extends HttpServlet {
     public static String getObjects(Map<Integer, List<Integer>> projects) throws Exception
     {
         /*Открываем сессию для запросов*/
-        SqlSession session = RequestProjectsSessionManager.getRequestSession();  
+        //SqlSession session = RequestProjectsSessionManager.getRequestSession();  
+        SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         /*результирующий список объектов по маршруту*/
         List<BusObject> buses = new ArrayList<BusObject>();
@@ -112,7 +115,7 @@ public class GetBusesServlet extends HttpServlet {
         String address = ""; 
         for (int i = 0; i <= buses.size()-1; i++){
             BusObject bus = buses.get(i);
-
+            address = Geocode.getReverseGeoCode(bus.getLast_lat_(), bus.getLast_lon_());
             Double coord =  bus.getLast_lat_() + bus.getLast_lon_();
             //если координаты уже есть в кэше
             if (CacheManager.checkElement(coord)){

@@ -47,6 +47,10 @@ public class AuthorizationServlet extends HttpServlet {
         
         try {
             /*Если пользователь существует, то генерируем сессию и кидаем в куки*/
+            while(pass == null || userName == null){
+                userName = request.getParameter("username");
+                pass = request.getParameter("pass");
+            }
             Integer id = mapper.checkUser(userName, pass);
             if (id != null){
                 cookie = new Cookie("session_id", userName);

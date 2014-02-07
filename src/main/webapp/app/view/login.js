@@ -33,6 +33,7 @@ var loginForm = new Ext.FormPanel({
             var login = loginForm.items.get(0);
             var pass = loginForm.items.get(1);
             Ext.Ajax.request({
+                        async: false,
                         url: 'AuthorizationServlet',
                         success: function(response){
                             if (response.responseText === "access done"){
