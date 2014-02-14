@@ -24,7 +24,14 @@ Ext.define('CWM.view.ReportRoute', {
                                 var data = Ext.getCmp("reportRoute");
                                 var newWin = window.open('','printWindow','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0'); 
                                 newWin.document.open(); 
-                                newWin.document.write(data.body.el.dom.childNodes[0].innerHTML); 
+                                //newWin.document.write(data.body.el.dom.childNodes[0].innerHTML); 
+                                var view  = "<table><tr>";
+                                for (var i = 0; i <= data.items.items[0].columns.length-1; i++){
+                                    view += "<td style='width:100px'>" + data.items.items[0].columns[i].text + "</td>"
+                                }
+                                view += "</tr>";
+                                var view2 = data.items.items[0].body.dom.outerHTML;
+                                newWin.document.write(view2);
                                 newWin.print();
                                 newWin.document.close(); 
                             }
@@ -61,8 +68,10 @@ Ext.define('CWM.view.ReportRoute', {
         var route = Ext.getCmp("routes").rawValue;
         Ext.Ajax.request({
                 url:'ReportRoute',
+                //async: false,
                 method: 'POST',
                 params: {
+                    
                     route: route, 
                     date: date
                 },
@@ -82,20 +91,8 @@ Ext.define('CWM.view.ReportRoute', {
                         return 0;
                     }
                     var report = Ext.getCmp('reportRoute');
-                    var view = report.createReport(response.responseText);
-                    var repId = Ext.getCmp('report');
-                    if (repId !== undefined)
-                        //очищаем предыдущий компонент отчета
-                        repId.destroy();
-                    report.add({
-                        title       : "Отчет по автобусам на маршруте за день «" + route + "» "+datef("YYYY.MM.dd hh:mm", date),
-                        frame       : true,
-                        collapsible : true,
-                        id: 'report',
-                        autoScroll : true,
-                        html        : view,
-                    });
-                    report.doLayout();
+                    report.createReport(response.responseText);
+
                 },
                 failure:function () {
                     Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');
@@ -105,26 +102,87 @@ Ext.define('CWM.view.ReportRoute', {
     
      /*Формирование таблицы отчета*/
     createReport:function(data){
-               var reportData = JSON.parse(data);
-               /*основной контент отчета*/  
-               var view = '<table id="report_content" align="center" BORDER="1" cellpadding="0" cellspacing="0"><tr id="table_header"><td>№ п/п</td><td>Автобус</td><td>Перевозчик</td><td>Вышел на маршрут</td><td>Ушел с маршрута</td><td>Количество рейсов</td></tr>';
-               for (var i = 0; i <= reportData.length-1; i++){
-                    view += "<tr>";
-                    var j = i;
-                    view += "<td  id=\"obj_num\">" + ++j +"</td>";
-                    view += "<td  id=\"obj_name\">" + reportData[i].obj_name_ +"</td>";
-                    view += "<td  id=\"obj_cbname\">" + reportData[i].proj_name_ +"</td>";
-                    var myDate = reportData[i].start_.replace(/(\d+)-(\d+)-(\d+)/, '$1/$2/$3');
+                var repId = Ext.getCmp('stateGrid');
+                if (repId !== undefined)
+                        //очищаем предыдущий компонент отчета
+                    repId.destroy();
+                var reportData = JSON.parse(data);
+               
+                var newData = Array();
+                for (var j = 0; j <= reportData.length-1; j++){
+                    newData[j] = new Array();
+                    newData[j][0] = j + 1;
+                    newData[j][1] = reportData[j].obj_name_;
+                    newData[j][2] = reportData[j].proj_name_;
+                   
+                    var myDate = reportData[j].start_.replace(/(\d+)-(\d+)-(\d+)/, '$1/$2/$3');
                     var date = new Date(myDate.substring(0, myDate.length - 2));
-                    view += "<td  id=\"obj_pvname\">" + datef("dd.MM.YYYY hh:mm", date) +"</td>";
-                    myDate = reportData[i].end_.replace(/(\d+)-(\d+)-(\d+)/, '$1/$2/$3');
-                    date = new Date(myDate.substring(0, myDate.length - 2));
-                    view += "<td  id=\"obj_rname\">" + datef("dd.MM.YYYY hh:mm", date) +"</td>";
-                    view += "<td  id=\"obj_rname\">" + reportData[i].rcount_ +"</td>";
-                   view += "</tr>";
-               }
-               view +="</table>";
-               return view;
+                    newData[j][3] = datef("dd.MM.YYYY hh:mm", date);
+                   
+                    var myDate = reportData[j].end_.replace(/(\d+)-(\d+)-(\d+)/, '$1/$2/$3');
+                    var date = new Date(myDate.substring(0, myDate.length - 2));
+                    newData[j][4] = datef("dd.MM.YYYY hh:mm", date);
+                   
+                    newData[j][5] = reportData[j].rcount_;
+                }
+               
+                    var store = Ext.create('Ext.data.ArrayStore', {
+                    fields: [
+                       {name: 'Number',   type:'float'},
+                       {name: 'Obj_ID'},
+                       {name: 'Proj_ID'},
+                       {name: 'Start'},
+                       {name: 'End'},
+                       {name: 'Count',    type: 'float'}
+                    ],
+                    data: newData
+                });
+                // create the Grid
+                var grid = Ext.create('Ext.grid.Panel', {
+                    store: store,
+                    id: 'stateGrid',
+                    columns: [
+                        {
+                            text     : '№',
+                            sortable : false,
+                            dataIndex: 'Number'
+                        },
+                        {
+                            text     : 'Автобус',
+                            sortable : false,
+                            dataIndex: 'Obj_ID'
+                        },
+                        {
+                            text     : 'Перевозчик',
+                            width    : 150,
+                            sortable : true,
+                            dataIndex: 'Proj_ID'
+                        },
+                        {
+                            text     : 'Вышел на маршрут',
+                            width    : 150,
+                            sortable : true,
+                            dataIndex: 'Start'
+                        },
+                        {
+                            text     : 'Ушел с маршрута',
+                            width    : 150,
+                            sortable : true,
+                            dataIndex: 'End'
+                        },
+                        {
+                            text     : 'Количество рейсов',
+                            sortable : true,                         
+                            dataIndex: 'Count'
+                        }
+                    ]
+                });
+                var report = Ext.getCmp('reportRoute');
+                //console.log(grid);
+                report.add(grid);
+                report.doLayout();
+                console.log(report);
+               
     }
 });
 

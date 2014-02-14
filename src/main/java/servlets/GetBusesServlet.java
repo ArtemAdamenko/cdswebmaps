@@ -45,7 +45,8 @@ public class GetBusesServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
-        SqlSession session = RequestProjectsSessionManager.getRequestSession();
+        //SqlSession session = RequestProjectsSessionManager.getRequestSession();
+        SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         Cookie[] cookies = request.getCookies();
         String username = "";
