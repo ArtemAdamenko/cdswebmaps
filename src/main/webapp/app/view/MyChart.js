@@ -59,18 +59,18 @@ Ext.define('CWM.view.MyChart', {
                         listeners:{
                             click:function(){
                                 var data = Ext.getCmp("speedChart");
-                                var newWin = window.open('','printWindow','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0'); 
+                                var newWin = window.open('','printWindow','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=1'); 
                                 newWin.document.open(); 
                                 //добавляем оформление для дива
                                 newWin.document.write("<style>\n\
                                                         div\n\
                                                         {\n\
-                                                            margin-top:500px;\n\
                                                             width:100%;\n\
-                                                            height:100%\n\
+                                                            height:100%;\n\\n\
+                                                            transform: rotate(90)\n\
                                                         }\n\
                                                         </style>\n\
-                                                        <div>" + data.container.dom.childNodes[0].innerHTML + "</div>"); 
+                                                        <div style='transform: rotate(90)'>" + data.container.dom.childNodes[0].innerHTML + "</div>"); 
                                 newWin.print();
                             }
                         }
@@ -205,13 +205,14 @@ Ext.define('CWM.view.MyChart', {
                 var routes =  JSON.parse(response.responseText);
                 var data = new Array();
                 //усредняем значение деля на 100
-                if (routes.length-1 < 100)
+                if (routes.length-1 < 100){
                     var temp = 1;
+                }
                 else
-                    var temp = Math.floor((routes.length-1) / 100);
+                    var temp = Math.ceil((routes.length-1) / 100);
                 for (var i = 0; i <= routes.length-1; i = i + temp){
                     data.push(new Object({
-                            name: datef("dd.MM hh:mm", routes[i].time_), 
+                            name: datef("hh:mm", routes[i].time_), 
                             data: routes[i].speed_
                         })
                     );
@@ -243,7 +244,13 @@ Ext.define('CWM.view.MyChart', {
                                                 type: 'Category',
                                                 position: 'bottom',
                                                 fields: ['name'],
-                                                title: 'Дата'
+                                                title: 'Время',
+                                                grid: true,
+                                                label: {
+                                                rotate: {
+                                                    degrees: 90
+                                                }
+                                            }
                                             }
                                         ],
                                         series: [

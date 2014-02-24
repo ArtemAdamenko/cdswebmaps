@@ -13,7 +13,7 @@ public class BusObject {
     /*идентификатор проекта*/
     int proj_id_;
     /*название перевозчика*/
-    //String projName;
+    String projName;
     /*текущая скорость*/
     int last_speed_;
     /*долгота*/
@@ -32,6 +32,24 @@ public class BusObject {
     String bus_station_;
     /*физический адрес местонахождения*/
     String address;
+    /*Тип ТС(обычный, спецтехника)*/
+    int type_proj;
+
+    public void setProjName(String projName) {
+        this.projName = projName;
+    }
+
+    public void setType_proj(int type_proj) {
+        this.type_proj = type_proj;
+    }
+
+    public String getProjName() {
+        return projName;
+    }
+
+    public int getType_proj() {
+        return type_proj;
+    }
 
     public void setAddress(String address) {
         this.address = address;

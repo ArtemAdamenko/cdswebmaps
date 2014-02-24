@@ -63,6 +63,9 @@ public interface DataMapper {
     /*имя автобуса*/
     @Select("SELECT NAME_ FROM OBJECTS WHERE PROJ_ID_ = #{projID} AND OBJ_ID_ = #{objID}")
     public String getNameofBus(@Param("projID")int projID, @Param("objID")int objID);
+    /*Тип ТС*/
+    @Select("SELECT TYPE_PROJ_ FROM OBJECTS WHERE PROJ_ID_ = #{projID} AND OBJ_ID_ = #{objID}")
+    public Integer getTypeofBus(@Param("projID")int projID, @Param("objID")int objID);
     
     /*выполнение пользовательского динамически составного запроса из класса DetailReport*/
     @SelectProvider(type = DetailReport.class, method = "selectPersonSql")

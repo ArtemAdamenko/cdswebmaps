@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.ProjectsMapper;
 import mybatis.MyBatisManager;
-import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -82,7 +81,7 @@ public class GetBusesServlet extends HttpServlet {
         SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         /*результирующий список объектов по маршруту*/
-        List<BusObject> buses = new ArrayList<BusObject>();
+        List<BusObject> buses;
         Gson gson = new Gson();
         String allJsonBuses="[";
        
@@ -93,13 +92,13 @@ public class GetBusesServlet extends HttpServlet {
                 List<Integer> value = routes.getValue();
                 /*Проход по всем маршрутам*/
                 for (int i = 0; i <= value.size()-1; i++){
-                        //Объекты-автобусы по каждому маршруту
+                        //Объекты-автобусы по каждому маршруту с адресами
                         buses = getAddresses(mapper.selectObjects(value.get(i), key)); 
                         if (!buses.isEmpty())
                             allJsonBuses += gson.toJson(buses).replaceAll("\\[|\\]", "") +",";
                 }     
             }
-            /*стирание лишних символов дял валидности json*/
+            /*стирание лишних символов для валидности json*/
             allJsonBuses = allJsonBuses.replaceAll(",,", ",");
             allJsonBuses = allJsonBuses.substring(0, allJsonBuses.length()-1);
         }
@@ -108,12 +107,12 @@ public class GetBusesServlet extends HttpServlet {
         return allJsonBuses + "]";
     }
     
-    /*Получение физического адреса ТС
+    /*Получение физического адреса ТС, а так же простоя ТС
      * @param List<BusObject> Тс которым нужен адрес
      * @return List<BusObject> ТС с адресами
      */
     private static List<BusObject> getAddresses(List<BusObject> buses) throws IOException{
-        String address = ""; 
+        String address; 
         for (int i = 0; i <= buses.size()-1; i++){
             BusObject bus = buses.get(i);
             address = Geocode.getReverseGeoCode(bus.getLast_lat_(), bus.getLast_lon_());
@@ -121,13 +120,13 @@ public class GetBusesServlet extends HttpServlet {
             //если координаты уже есть в кэше
             if (CacheManager.checkElement(coord)){
                 address = CacheManager.getValue(coord);
-                System.out.println("cache");
+                //System.out.println("cache");
             }else{
                 //иначе запрашиваем адрес и кладем в кэш
                 address = Geocode.getReverseGeoCode(bus.getLast_lat_(), bus.getLast_lon_());
                 if (address != "Адрес не получен"){
                     CacheManager.add(coord, address);
-                    System.out.println("add to cache");
+                    //System.out.println("add to cache");
                 }           
             }      
             buses.get(i).setAddress(address);
@@ -142,7 +141,7 @@ public class GetBusesServlet extends HttpServlet {
     public static Map<Integer,List<Integer>> mapFromListOfMap (List<Map> listOfMap ) 
     {
         Map<Integer,List<Integer>> map = new HashMap<Integer,List<Integer>>();
-        for(int i = 0; i < listOfMap.size(); i++) {
+        for(int i = 0; i <= listOfMap.size()-1; i++) {
             Integer key = (Integer)listOfMap.get(i).get("PROJ");
             Integer value = (Integer)listOfMap.get(i).get("ROUTE");
             if (map.containsKey(key)){

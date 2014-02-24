@@ -1,9 +1,13 @@
 package servlets;
 
 import com.google.gson.Gson;
+import entities.Geocode;
 import entities.Route;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,26 +51,138 @@ public class GetRoute extends HttpServlet {
         String busId = request.getParameter("bus");
         String fromTimeStr = request.getParameter("fromTime");
         String toTimeStr = request.getParameter("toTime");
+        Gson gson = new Gson();
         try {
+            int Bus_ID = Integer.parseInt(busId);
+            int Proj_ID = Integer.parseInt(projectId);
             /*тректория*/
-            List<Route> route = mapperData.getRoute(Integer.parseInt(busId), Integer.parseInt(projectId), fromTimeStr, toTimeStr);
-            Gson gson = new Gson();
-            out.print(gson.toJson(route));
-        } finally {            
+            List<Route> route = mapperData.getRoute(Bus_ID, Proj_ID, fromTimeStr, toTimeStr);
+            Integer typeAuto = mapperData.getTypeofBus(Proj_ID, Bus_ID);
+
+            List<waitInterval> intervals = new ArrayList<waitInterval>();
+            if (typeAuto == 1){
+                if (route != null){
+                    intervals = waitingAuto(route);
+                    out.print(gson.toJson(typeAuto) + gson.toJson(route) + gson.toJson(intervals));
+                }
+            }else if(typeAuto == 0 || typeAuto == null){
+                out.print(gson.toJson(typeAuto) + gson.toJson(route));
+            }
+
+        }catch(Exception e){
+            //String empty = "";
+            //out.print(gson.toJson(empty));
+        }finally {            
 
         }
     }
 
-    
-    private static Double convertCoord(Double coord){   
-        double x = coord;
-        double y = x;
-        y = (int)x/100;
-        x=x-y*100;
-        double x1=(int)x;
-        y=y+x1/60+(x-x1)/60;
-        return y;
+    /**
+     * внутренний класс для интервала простоев спец транспорта
+     */
+    public class waitInterval{
+        /*Начало интервала*/
+        private long startInterval;
+        /*Конец интервала*/
+        private long endInterval;
+        /*Адрес простоя*/
+        private String address;
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public long getStartInterval() {
+            return startInterval;
+        }
+
+        public long getEndInterval() {
+            return endInterval;
+        }
+
+        public void setStartInterval(long startInterval) {
+            this.startInterval = startInterval;
+        }
+
+        public void setEndInterval(long endInterval) {
+            this.endInterval = endInterval;
+        }
     }
+    
+    /**
+     * Точки простоев спецтранспорта
+     * @param route
+     * @return List<waitInterval>
+     * @throws ParseException
+     * @throws IOException 
+     */
+    private  List<waitInterval> waitingAuto(List<Route> route) throws ParseException, IOException{
+        //начальная точка отсчета
+        Double lon = route.get(0).LON_;
+        Double lat = route.get(0).LAT_;
+        String time = route.get(0).TIME_;
+        //промежуточные точки для сравнения с начальной
+        double lon2;
+        double lat2;
+        String time2;
+        
+        /*промежуточные значения для записи*/
+        long tempStart = 0;
+        long tempEnd = 0;
+        Double tempLon = 0.0;
+        Double tempLat = 0.0;
+        //список промежутков времени >5 минут
+        List<waitInterval> intervals = new ArrayList<waitInterval>();
+
+        //size-2 т.к. сравниваем попарно элементы и нам не надо IndexOut
+        for (int i = 1; i <= route.size()-2; i++){
+            lon2 = route.get(i).LON_;
+            lat2 = route.get(i).LAT_;
+            time2 = route.get(i).TIME_;
+
+            //если ТС стоит
+            if ((lon == lon2) && (lat == lat2)){
+                long start = Timestamp.valueOf(time).getTime();
+                long end = Timestamp.valueOf(time2).getTime();
+
+                long temp = end - start;
+                if (temp > 300000){
+                    tempStart = start;
+                    tempEnd = end;
+                    tempLat = lat;
+                    tempLon = lon;         
+                }
+                //если тс сдвинулся с места предыдущего местоположения
+            }else{
+                //и если у нас есть интервал простоя
+                if (tempStart !=0 && tempEnd != 0 && tempLat != 0 && tempLon != 0){    
+                    //создаем интервал
+                    waitInterval interval = new waitInterval();
+                    interval.setStartInterval(tempStart);
+                    interval.setEndInterval(tempEnd);
+                    interval.setAddress(Geocode.getReverseGeoCode(tempLat, tempLon));
+                    intervals.add(interval);
+                    //обнуляем переменные для дальнейшего интервала, иначе они будут и дальше подходить для интервала со своими значениями
+                    tempEnd = 0;
+                    tempStart = 0;
+                    tempLat = 0.0;
+                    tempLon = 0.0;
+                }
+                //берем новые координаты, для поиска следующего интервала
+                lon = route.get(i).LON_;
+                lat = route.get(i).LAT_;
+                time = route.get(i).TIME_;
+            }     
+        }
+
+        return intervals;
+        
+    }
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP

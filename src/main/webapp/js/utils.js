@@ -27,11 +27,10 @@ function checkResponseServer(response){
     //строковые константы для ответа
     var SERVER_ERROR = 'Потеряно соединение с сервером';
     var EMPTY_RESPONSE = 'Данные пусты';
-
     if (response.responseText === undefined || response.responseText === null){
         return SERVER_ERROR;
     }
-    if (response.responseText.length-1 === 0 || response.responseText === "[]"){
+    if (response.responseText.length-1 === 0 || response.responseText === "[]" || response.responseText === ""){
         return EMPTY_RESPONSE;
     }
 }

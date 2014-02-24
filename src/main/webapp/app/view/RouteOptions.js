@@ -86,7 +86,7 @@ Ext.define('CWM.view.RouteOptions', {
         
         var mass = new Array();
         var routes;
-        var Placemarks = new Array();
+        //var Placemarks = new Array();
         Ext.Ajax.request({
             url:'GetRoute',
             method: 'POST',
@@ -105,12 +105,21 @@ Ext.define('CWM.view.RouteOptions', {
                     Ext.Msg.alert('Предупреждение', 'Данные пусты');
                     return 0;
                 }*/
+                
                 var ERROR = checkResponseServer(response);
                 if (ERROR){
                     Ext.Msg.alert('Ошибка', ERROR);
                     return 0;
                 }
-                routes = JSON.parse(response.responseText);
+                var typeAuto = response.responseText[0];
+                routes = JSON.parse("[" + response.responseText.split("[")[1]);
+                if (typeAuto == 1){
+                    var inters = JSON.parse("[" +response.responseText.split("[")[2]);
+                    var intervalsWin = Ext.widget('intervals',{inter:inters});
+                    intervalsWin.show();
+                    intervalsWin.waiting();
+                }
+     
                 ymaps.ready(function init() {            
                         var map = Ext.getCmp("main");
                         map.yMap.geoObjects.each(function(geoObject){
@@ -118,10 +127,19 @@ Ext.define('CWM.view.RouteOptions', {
                         });
                         var myRoute;
                         var j = 0;
+                        var step = 0;
                         var leng = (routes.length-1)/10;
+                        step = parseInt(leng)/2;
                         leng = parseInt(leng) * 10;
+                        step = parseInt(step);
+                        if (leng < 200){
+                            step = 3;
+                        }
+                        if (leng < 400 && leng > 200){
+                            step = 6;
+                        }
                         
-                        for (var i = 0; i <= routes.length-1; i++){
+                        for (var i = 0; i < leng; i+=step){
                             mass[j] = new Object({
                                 point:[routes[i].LON_, routes[i].LAT_],
                                 type: 'viaPoint'
@@ -192,5 +210,5 @@ Ext.define('CWM.view.RouteOptions', {
                 Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');
             }       
         });
-    },
+    }
 });

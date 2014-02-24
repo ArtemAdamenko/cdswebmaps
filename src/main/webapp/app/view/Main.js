@@ -2,7 +2,7 @@
 Ext.define('CWM.view.Main', {
     alias: 'widget.main', // alias (xtype)
     extend: 'Ext.panel.Panel',
-    title: 'Панель управления МБУ ЦДС "Веб карта" FINAL версия Текущий пользователь: ' + document.cookie.split(";")[0].split("=")[1],
+    title: 'Панель управления МБУ ЦОДД "Веб карта" FINAL версия Текущий пользователь: ' + document.cookie.split(";")[0].split("=")[1],
     id:'main',
    // map instance
             yMap: null,
@@ -112,7 +112,7 @@ Ext.define('CWM.view.Main', {
                         ymaps.ready(function () {
 
                             me.yMap = new ymaps.Map(document.getElementById(me.yMapId), me.ymapConfig, {projection: ymaps.projection.wgs84Mercator });
-                            me.yMap.copyrights.add("Разработчик сервиса Адаменко Артем. МБУ ЦДС 'Веб карта'.");
+                            me.yMap.copyrights.add("Разработчик сервиса Адаменко Артем. МБУ ЦОДД 'Веб карта'.");
                             me.yMap.controls
                                 // Кнопка изменения масштаба.
                                 .add('zoomControl', { left: 5, top: 5 })

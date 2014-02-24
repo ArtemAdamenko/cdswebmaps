@@ -24,7 +24,6 @@ Ext.define('CWM.view.ReportRoute', {
                                 var data = Ext.getCmp("reportRoute");
                                 var newWin = window.open('','printWindow','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0'); 
                                 newWin.document.open(); 
-                                //newWin.document.write(data.body.el.dom.childNodes[0].innerHTML); 
                                 var view  = "<table><tr>";
                                 for (var i = 0; i <= data.items.items[0].columns.length-1; i++){
                                     view += "<td style='width:100px'>" + data.items.items[0].columns[i].text + "</td>"
@@ -144,12 +143,12 @@ Ext.define('CWM.view.ReportRoute', {
                     columns: [
                         {
                             text     : '№',
-                            sortable : false,
+                            sortable : true,
                             dataIndex: 'Number'
                         },
                         {
                             text     : 'Автобус',
-                            sortable : false,
+                            sortable : true,
                             dataIndex: 'Obj_ID'
                         },
                         {
@@ -178,10 +177,8 @@ Ext.define('CWM.view.ReportRoute', {
                     ]
                 });
                 var report = Ext.getCmp('reportRoute');
-                //console.log(grid);
                 report.add(grid);
                 report.doLayout();
-                console.log(report);
                
     }
 });

@@ -1,6 +1,6 @@
 Ext.define('CWM.controller.Main', {
     extend: 'Ext.app.Controller',
-    views: ['CWM.view.Main','CWM.view.Report','CWM.view.RouteOptions', 'CWM.view.ReportRoute', 'CWM.view.MyChart', 'CWM.view.DetailReport', 'CWM.view.MoveBusControl', 'CWM.view.BusesInfo'],
+    views: ['CWM.view.Main', 'CWM.view.WaitIntervals', 'CWM.view.Report','CWM.view.RouteOptions', 'CWM.view.ReportRoute', 'CWM.view.MyChart', 'CWM.view.DetailReport', 'CWM.view.MoveBusControl', 'CWM.view.BusesInfo'],
     refs: [
         {ref: 'MainView', selector: 'main'} // Reference to main view
     ],

@@ -19,7 +19,7 @@ Ext.define('CWM.view.BusesInfo', {
         var buses = new Array();
         for (var i = 0; i <= info.length-1; i++){
             buses.push(new Object({
-                    number: i,
+                    number: i+1,
                     name: info[i].name_,
                     projName: info[i].projName,
                     routeName: info[i].route_name_,
