@@ -29,6 +29,7 @@ Ext.define('CWM.view.MoveBusControl', {
                     },{
                         xtype: 'combobox',
                         displayField:'route',
+                        disabled: true,
                         store:{
                             fields: ['route'],
                             data: me.routes
@@ -71,7 +72,14 @@ Ext.define('CWM.view.MoveBusControl', {
                         maxValue: '23:30:00',
                         format: 'H:i:s',
                         increment: 30,
-                        value: time
+                        value: time,
+                        listeners:{
+                                        select:function(){
+                                            var combo = Ext.getCmp('combobox_routes');
+                                            if (combo.isDisabled)
+                                            combo.enable();
+                                        }
+                                    }
                     }
                 ];
         // add items to view
@@ -89,14 +97,7 @@ Ext.define('CWM.view.MoveBusControl', {
                 routeName: routeName
             },
             success: function(response){
-                /*if (response.responseText === undefined || response.responseText === null){
-                    Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
-                    return 0;
-                }
-                if (response.responseText.length === 0){
-                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
-                    return 0;
-                }*/
+
                 var ERROR = checkResponseServer(response);
                 if (ERROR){
                     Ext.Msg.alert('Ошибка', ERROR);
@@ -111,16 +112,25 @@ Ext.define('CWM.view.MoveBusControl', {
                         controls.push(allStations[i]);
                     }
                 }
-                     
+                
                 var objects = new Array();               
                 //формируем объекты для дерева
                 //достаем попарно конечные
                 //те остановки что между конечными, проходит ТС
-                for (var i=0; i <= controls.length-1; i = i+2) {
                     //собираем все остановки от начала маршрута до конца
-                    var childrens = new Array();
-                    for (var j = controls[i].Number-1; j <= controls[i+1].Number-1; j++){
-                        childrens.push(new Object({
+                    var childrens1 = new Array();
+                    for (var j = controls[0].Number-1; j <= controls[1].Number-1; j++){
+                        childrens1.push(new Object({
+                            text: allStations[j].Name,
+                            itemId:allStations[j].Number,
+                            leaf: true
+                        }));
+                    };
+                    var childrens2 = new Array();
+                    console.log(allStations);
+                    for (var j = controls[1].Number-1; j <= controls[2].Number-2; j++){
+                        console.log(j);
+                        childrens2.push(new Object({
                             text: allStations[j].Name,
                             itemId:allStations[j].Number,
                             leaf: true
@@ -128,10 +138,14 @@ Ext.define('CWM.view.MoveBusControl', {
                     };
                     //обозначаем начало маршрута и конец и закидываем все его остановки
                     objects.push(new Object({
-                        text: controls[i].Name + " => " + controls[i+1].Name,
-                        children: childrens
-                    }));                
-                }
+                        text: controls[0].Name + " => " + controls[1].Name,
+                        children: childrens1
+                    }));   
+                    objects.push(new Object({
+                        text: controls[1].Name + " => " + controls[2].Name,
+                        children: childrens2
+                    }));   
+
                 /*store для дерева*/
                 var store = Ext.create('Ext.data.TreeStore', {
                     root: {
@@ -195,15 +209,7 @@ Ext.define('CWM.view.MoveBusControl', {
                 routeName: route
             },
             success: function(response){
-                /*if (response.responseText === undefined || response.responseText === null){
-                    Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
-                    return 0;
-                }
-                
-                if (response.responseText.length === 0){
-                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
-                    return 0;
-                }*/
+
                 var ERROR = checkResponseServer(response);
                 if (ERROR){
                     Ext.Msg.alert('Ошибка', ERROR);

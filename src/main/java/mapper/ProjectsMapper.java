@@ -39,6 +39,11 @@ public interface ProjectsMapper {
     public Integer checkGranit(@Param("IDS")int IDS);
     
     /*Запрос на объекты по маршруту*/
+    @Select("SELECT o.name_,o.last_time_, o.obj_id_, o.proj_id_, o.last_rout_,o.last_station_,\n" 
+            + "(SELECT rt.name_ as route_name_ FROM routs rt where rt.id_ = o.last_rout_)"
+            + " FROM objects o WHERE o.last_rout_ = #{route} and proj_id_ = #{proj_id_} and obj_output_ = 0 ORDER BY o.last_time_ DESC")
+    public List<BusObject> selectListObjects(@Param("route")int route, @Param("proj_id_")int proj_id_);
+    /*Запрос на объекты по маршруту*/
     @Select("SELECT o.name_, o.last_lon_, o.last_lat_, o.last_time_, o.obj_id_, o.proj_id_, o.last_speed_, o.last_station_time_, o.last_rout_,o.last_station_, ids_,\n" 
             + "(SELECT rt.name_ as route_name_ FROM routs rt where rt.id_ = o.last_rout_),"
             + "(SELECT bs.name_ as bus_station_ FROM bus_stations bs where bs.number_ = o.last_station_ AND bs.rout_ = o.last_rout_)"

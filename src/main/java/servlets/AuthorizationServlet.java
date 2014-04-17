@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import mapper.ProjectsMapper;
 import mybatis.MyBatisManager;
-import mybatis.RequestProjectsSessionManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -39,8 +38,11 @@ public class AuthorizationServlet extends HttpServlet {
             throws ServletException, IOException, Exception {
         PrintWriter out = response.getWriter();
         
+        //#
         //SqlSession session = RequestProjectsSessionManager.getRequestSession();
         SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
+        //#
+        
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         
         String userName = request.getParameter("username");

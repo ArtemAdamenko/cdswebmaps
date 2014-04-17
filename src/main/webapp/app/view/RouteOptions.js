@@ -97,14 +97,6 @@ Ext.define('CWM.view.RouteOptions', {
                 toTime:fullDateTo
             },
             success:function(response){
-                /*if (response.responseText === undefined || response.responseText === null){
-                    Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
-                    return 0;
-                }
-                if (response.responseText.length === 0){
-                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
-                    return 0;
-                }*/
                 
                 var ERROR = checkResponseServer(response);
                 if (ERROR){
@@ -115,7 +107,11 @@ Ext.define('CWM.view.RouteOptions', {
                 routes = JSON.parse("[" + response.responseText.split("[")[1]);
                 if (typeAuto == 1){
                     var inters = JSON.parse("[" +response.responseText.split("[")[2]);
-                    var intervalsWin = Ext.widget('intervals',{inter:inters});
+                    var intervalsWin = Ext.widget('intervals',{
+                                                        inter:inters,
+                                                        from: fullDateFrom,
+                                                        to: fullDateTo
+                                                    });
                     intervalsWin.show();
                     intervalsWin.waiting();
                 }
@@ -153,6 +149,7 @@ Ext.define('CWM.view.RouteOptions', {
                             myRoute = route;
                             map.yMap.geoObjects.add(route);
                           });
+                          
                         var slider = Ext.create('Ext.slider.Single', {
                                                     width: 480,
                                                     height: 50,
@@ -165,11 +162,7 @@ Ext.define('CWM.view.RouteOptions', {
                                                     },
                                                     listeners:{
                                                         changecomplete:function(slider, value, thumb, eOpts){
-                                                            if (myRoute !== null){
-                                                                //Очищаем карту от траектории
-                                                                myRoute && map.yMap.geoObjects.remove(myRoute);
-                                                                myRoute = null;
-                                                            }                                                
+                                       
                                                             if (Placemarks.length !== 0){
                                                                 //удаляем предыдущую метку ТС
                                                                 map.yMap.geoObjects.remove(Placemarks[0]);

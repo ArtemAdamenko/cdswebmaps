@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.ProjectsMapper;
-import mybatis.RequestProjectsSessionManager;
+import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -47,7 +47,12 @@ public class Report extends HttpServlet {
         PrintWriter out = response.getWriter();
         /*инициализация объектов*/
 
-        SqlSession session = RequestProjectsSessionManager.getRequestSession();
+        
+        //#
+        //SqlSession session = RequestProjectsSessionManager.getRequestSession();
+        SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
+        //#
+        
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         
         Cookie[] cookies = request.getCookies();
@@ -67,7 +72,8 @@ public class Report extends HttpServlet {
             String jsonUserProject = gson.toJson(userProject) + "@";
             out.println(jsonUserProject);
             out.println(buses);
-        } finally {      
+        } finally {   
+            //session.close();
             out.close();
         }
     }

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
-import mybatis.RequestDataSessionManager;
+import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -46,7 +46,11 @@ public class DetailReport extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        SqlSession session = RequestDataSessionManager.getRequestSession();
+        //#
+        //SqlSession session = RequestDataSessionManager.getRequestSession();
+        SqlSession session = MyBatisManager.getDataSessionFactory().openSession();
+        //#
+        
         DataMapper mapper = session.getMapper(DataMapper.class);         
         //парсим выбранные в клиентском окне автобусы
         String objects = request.getParameter("objects");  
@@ -69,8 +73,14 @@ public class DetailReport extends HttpServlet {
             //выполняем триггер
             mapper.getRepDetailMovObjects(fromTime, toTime, routeID, sid);
             session.commit();
-            RequestDataSessionManager.closeRequestSession();
-            session = RequestDataSessionManager.getRequestSession();
+            
+            //#
+            //RequestDataSessionManager.closeRequestSession();
+            //session = RequestDataSessionManager.getRequestSession();
+            session.close();
+            session = MyBatisManager.getDataSessionFactory().openSession();
+            //#
+            
             mapper = session.getMapper(DataMapper.class);
             String wsql = "";
             for(int i = 0; i <= buses.size()-1; i++){
@@ -83,7 +93,7 @@ public class DetailReport extends HttpServlet {
             List<DetailReportObject> resultObjects = mapper.selectPersonSql(sid,wsql);
             Gson gson = new Gson();  
             out.print(gson.toJson(resultObjects));
-        } finally {         
+        } finally {        
             out.close();
         }
     }

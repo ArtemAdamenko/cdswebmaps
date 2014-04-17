@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
-import mybatis.RequestDataSessionManager;
+import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -44,20 +44,29 @@ public class GetRoute extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         /*инициализация объектов*/
-        SqlSession sessionData = RequestDataSessionManager.getRequestSession();    
+        //#
+        //SqlSession sessionData = RequestDataSessionManager.getRequestSession();    
+        SqlSession sessionData = MyBatisManager.getDataSessionFactory().openSession();
+        //#
+        
         DataMapper mapperData = sessionData.getMapper(DataMapper.class);
         
         String projectId = request.getParameter("proj");
         String busId = request.getParameter("bus");
         String fromTimeStr = request.getParameter("fromTime");
         String toTimeStr = request.getParameter("toTime");
+        Integer typeAuto = 0;
         Gson gson = new Gson();
         try {
             int Bus_ID = Integer.parseInt(busId);
             int Proj_ID = Integer.parseInt(projectId);
+            if (Proj_ID == 58)
+                typeAuto = 1;
+            else
+                typeAuto = 0;
             /*тректория*/
             List<Route> route = mapperData.getRoute(Bus_ID, Proj_ID, fromTimeStr, toTimeStr);
-            Integer typeAuto = mapperData.getTypeofBus(Proj_ID, Bus_ID);
+            //typeAuto = mapperData.getTypeofBus(Proj_ID, Bus_ID);
 
             List<waitInterval> intervals = new ArrayList<waitInterval>();
             if (typeAuto == 1){
@@ -70,10 +79,8 @@ public class GetRoute extends HttpServlet {
             }
 
         }catch(Exception e){
-            //String empty = "";
-            //out.print(gson.toJson(empty));
+            
         }finally {            
-
         }
     }
 
@@ -150,7 +157,7 @@ public class GetRoute extends HttpServlet {
                 long end = Timestamp.valueOf(time2).getTime();
 
                 long temp = end - start;
-                if (temp > 300000){
+                if (temp > 600000){
                     tempStart = start;
                     tempEnd = end;
                     tempLat = lat;

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
-import mybatis.RequestDataSessionManager;
+import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -39,7 +39,11 @@ public class GetSpeedBus extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        SqlSession session = RequestDataSessionManager.getRequestSession();
+        //#
+        //SqlSession session = RequestDataSessionManager.getRequestSession();
+        SqlSession session = MyBatisManager.getDataSessionFactory().openSession();
+        //#
+        
         DataMapper mapper = session.getMapper(DataMapper.class);
         
         Integer objId = Integer.valueOf(request.getParameter("obj"));

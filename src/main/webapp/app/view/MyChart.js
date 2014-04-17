@@ -80,14 +80,7 @@ Ext.define('CWM.view.MyChart', {
             url: 'GetBusesServlet',
             scope: this,
             success: function(response){
-                /*if (response.responseText === undefined || response.responseText === null){
-                    Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
-                    return 0;
-                }
-                if (response.responseText.length === 0){
-                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
-                    return 0;
-                }*/
+
                 var ERROR = checkResponseServer(response);
                 if (ERROR){
                     Ext.Msg.alert('Ошибка', ERROR);
@@ -188,15 +181,7 @@ Ext.define('CWM.view.MyChart', {
                 to_: to
             },
             success: function(response){
-                /*if (response.responseText === undefined || response.responseText === null){
-                    Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
-                    return 0;
-                }
-                
-                if (routes.length === 0){
-                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
-                    return 0;
-                }*/
+
                 var ERROR = checkResponseServer(response);
                 if (ERROR){
                     Ext.Msg.alert('Ошибка', ERROR);

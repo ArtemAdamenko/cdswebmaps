@@ -15,8 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
 import mapper.ProjectsMapper;
-import mybatis.RequestDataSessionManager;
-import mybatis.RequestProjectsSessionManager;
+import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -67,6 +66,8 @@ public class GetRouteBuses extends HttpServlet {
             }
         }catch(Exception e){
              Logger.getLogger(GetRouteBuses.class.getName()).log(Level.SEVERE, null, e);
+        }finally{
+            
         }
     }
     
@@ -80,7 +81,11 @@ public class GetRouteBuses extends HttpServlet {
     private String getBusesOfOneRoute(String routeName, String from, String to) throws Exception{
         //Инициализация подключения к БД Data
 
-        SqlSession session = RequestDataSessionManager.getRequestSession();
+        //#
+        //SqlSession session = RequestDataSessionManager.getRequestSession();
+        SqlSession session = MyBatisManager.getDataSessionFactory().openSession();
+        //#
+        
         DataMapper mapper = session.getMapper(DataMapper.class);
         
         //результирующий список
@@ -103,7 +108,6 @@ public class GetRouteBuses extends HttpServlet {
             }
     
         }finally{
-
         }
         return gson.toJson(resultBuses);     
     }
@@ -118,8 +122,11 @@ public class GetRouteBuses extends HttpServlet {
         String allRoutesBuses = "[";
 
         //инициализация подключений к бд Data и Projects
-
-        SqlSession session = RequestProjectsSessionManager.getRequestSession();
+        
+        //#
+        //SqlSession session = RequestProjectsSessionManager.getRequestSession();
+        SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
+        //#
         
         //инициализация мапперов
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
@@ -147,7 +154,6 @@ public class GetRouteBuses extends HttpServlet {
             allRoutesBuses = allRoutesBuses.substring(0, allRoutesBuses.length()-1);
 
         }finally{
-  
         }
         return allRoutesBuses + "]";         
     }
@@ -163,16 +169,6 @@ public class GetRouteBuses extends HttpServlet {
             buses.get(i).setAddress(address);
         }
         return buses;
-    }
-    
-    private static Double convertCoord(Double coord){   
-        double x = coord;
-        double y = x;
-        y = (int)x/100;
-        x=x-y*100;
-        double x1=(int)x;
-        y=y+x1/60+(x-x1)/60;
-        return y;
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.ProjectsMapper;
-import mybatis.RequestProjectsSessionManager;
+import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -41,7 +41,11 @@ public class GetBusStations extends HttpServlet {
         
         String routeName = request.getParameter("routeName");
         
-        SqlSession session = RequestProjectsSessionManager.getRequestSession();
+        //#
+        //SqlSession session = RequestProjectsSessionManager.getRequestSession();
+        SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
+        //#
+        
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         try {
             Integer routeID = mapper.getRouteId(routeName);

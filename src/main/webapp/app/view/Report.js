@@ -11,14 +11,7 @@ Ext.define('CWM.view.Report', {
         Ext.Ajax.request({
             url: 'Report',
             success: function(response){
-                /*if (response.responseText === undefined || response.responseText === null){
-                    Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
-                    return 0;
-                }
-                if (response.responseText.length === 0){
-                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
-                    return 0;
-                }*/
+
                 var ERROR = checkResponseServer(response);
                 if (ERROR){
                     Ext.Msg.alert('Ошибка', ERROR);

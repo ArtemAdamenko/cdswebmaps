@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.DataMapper;
 import java.util.Random;
-import mybatis.RequestDataSessionManager;
+import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -45,8 +45,11 @@ public class ReportRoute extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-
-        SqlSession session = RequestDataSessionManager.getRequestSession();
+        //#
+        //SqlSession session = RequestDataSessionManager.getRequestSession();
+        SqlSession session = MyBatisManager.getDataSessionFactory().openSession();
+        //#
+        
         DataMapper mapper = session.getMapper(DataMapper.class);
         
         String routeName = request.getParameter("route");
@@ -57,15 +60,20 @@ public class ReportRoute extends HttpServlet {
             String sid = getSid();
             mapper.getReport4(from_date, to_date, routeId, sid);
             session.commit();
-
-            RequestDataSessionManager.closeRequestSession();
-            session = RequestDataSessionManager.getRequestSession();
+            
+            //#
+            session.close();
+            session = MyBatisManager.getDataSessionFactory().openSession();
+            //RequestDataSessionManager.closeRequestSession();
+            //session = RequestDataSessionManager.getRequestSession();
+            //#
+            
             mapper = session.getMapper(DataMapper.class);
             List<RouteReportObject> report = mapper.getDataToRouteReport(sid, routeId);
             Gson gson = new Gson();
             String jsonReport = gson.toJson(report);
             out.print(jsonReport);
-        } finally {            
+        } finally {   
             out.close();
         }
     }

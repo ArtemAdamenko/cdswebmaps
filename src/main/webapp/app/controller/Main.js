@@ -27,13 +27,13 @@ Ext.define('CWM.controller.Main', {
                             click: me.openReportRoute
                 }
         });
-        me.control({'main': {
-                afterrender: me.updateMap
-            }
-        });
         me.control({'button[action=openChart]': {
                 click: me.openChart
             }
+        });
+        me.control({'button[action=traffic]':{
+                            click: me.traffic
+                }
         });
         me.control({'button[action=openDetailReport]': {
                 click: me.openDetailReport
@@ -52,7 +52,8 @@ Ext.define('CWM.controller.Main', {
             }
         });
          
-         
+
+        
         //запрос на автобусы для списков
         Ext.Ajax.request({
             url: 'GetBusesServlet',
@@ -136,79 +137,11 @@ Ext.define('CWM.controller.Main', {
             }
         });
     },
-    
-    //обновление маркеров на карте без перезагрузки
-    updateMap: function (main) {
-        //var me = this;
-        function func() {
-            ymaps.ready(function(){
-                if (Ext.updateMap  === true){
-                Ext.Ajax.request({
-                    url: 'GetBusesServlet',
-                    success: function(response){
-                        var ERROR = checkResponseServer(response);
-                        if (ERROR){
-                            Ext.Msg.alert('Ошибка', ERROR);
-                            return 0;
-                        }
-                        var routes =  JSON.parse(response.responseText);                   
-                        var objects = new Array();
-                        
-                        //получаем адреса
-                        for (var i = 0; i <= routes.length-1; i++)
-                        {
-                            var lng = routes[i].last_lon_;
-                            var lat = routes[i].last_lat_;
-                            var marker = "twirl#blackStretchyIcon";
-                            
-                            //проверка тс на активность и соответствующий маркер
-                            var now = new Date().valueOf() - 12000000;                          
-                            var lastBusDate = new Date(routes[i].last_time_).valueOf();
-                            if (lastBusDate > now){
-                                //другой маркер для выделения активных автобусов
-                                marker = "twirl#greenStretchyIcon";
-                            }
-                            
-                            //создание маркера
-                            myGeoObject = new ymaps.GeoObject({
-                                geometry: {
-                                    type: "Point",
-                                    coordinates: [lng, lat]
-                                },
-                                properties: {
-                                    iconContent: routes[i].name_,
-                                    balloonContent: datef("dd.MM.YYYY hh:mm:ss", routes[i].last_time_) + 
-                                    "<br>Долгота: " + lng + 
-                                    " Широта: " + lat + 
-                                    "<br> Скорость: " + routes[i].last_speed_ + 
-                                    " КМ/Ч<br>Время последней остановки: " + datef("dd.MM.YYYY hh:mm:ss", routes[i].last_station_time_) +
-                                    "<br> Последняя остановка: " + routes[i].bus_station_ +
-                                    "<br>Местоположение: " + routes[i].address + 
-                                    "<br>Маршрут " + routes[i].route_name_
-                                }
-                            }, {
-                                    preset: marker
-                               });
-                               objects.push(myGeoObject);
-                            
-                        }
-                        //удаление старых маркеров
-                        main.yMap.geoObjects.each(function(geoObject){
-                            main.yMap.geoObjects.remove(geoObject);
-                        });
-                        //добавление новых маркеров
-                        for (var i = 0; i <= objects.length-1; i++){
-                            main.yMap.geoObjects.add(objects[i]);
-                        }
-                        
-                    },
-                    failure: function(){
-                        Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');
-                    }
-                });}
-            });
-        }
-        setInterval(func, 30000);
+    traffic:function(){
+        var map = Ext.getCmp("main");
+        var actualProvider = new ymaps.traffic.provider.Actual({}, {infoLayerShown: true});
+        actualProvider.setMap(map.yMap);
+        
     },
     //Открытие окна с отчетом по перевозчикам
     openReport: function(){
@@ -340,7 +273,7 @@ Ext.define('CWM.controller.Main', {
                         });
                     }
             }
-            setInterval(function(){updateRouteBuses(me);}, 30000);
+            setInterval(function(){updateRouteBuses(me);}, 15000);
     },
     /*Информация об автобусе*/
     search: function(){

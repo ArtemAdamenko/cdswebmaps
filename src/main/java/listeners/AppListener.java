@@ -48,6 +48,7 @@ public class AppListener implements ServletContextListener{
                     // close session
                     System.out.println("Conn close");
                     RequestDataSessionManager.closeRequestSession();
+                    
                 }
              }
               

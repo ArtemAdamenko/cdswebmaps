@@ -19,64 +19,112 @@ Ext.define('CWM.view.DetailReport', {
         var me = this; 
         var date = new Date();
         var time = parseTime(date);
-        me.tbar = [
-                    {   
-                        xtype: 'button',
-                        text: 'Построить',
-                        handler: me.constructDetailReport
-                    },{
-                        xtype: 'combobox',
-                        displayField:'route',
-                        store:{
-                            fields: ['route'],
-                            data: me.routes
+        me.dockedItems = [
+                       {
+                            xtype:'toolbar',
+                            items:[
+                                {   
+                                    xtype: 'button',
+                                    text: 'Построить',
+                                    handler: me.constructDetailReport,
+                                    id:'construct_report',
+                                },{
+                                    xtype: 'combobox',
+                                    disabled: true,
+                                    displayField:'route',
+                                    store:{
+                                        fields: ['route'],
+                                        data: me.routes
+                                    },
+                                    fieldLabel: 'Маршруты',
+                                    listeners:{
+                                        select: me.openTree
+                                    },
+                                    labelWidth: 55,
+                                    id: 'combobox_routes'
+                                },
+                                {   
+                                    xtype: 'datefield',
+                                    fieldLabel:'Начало',
+                                    labelWidth: 35,
+                                    name: 'startDate',
+                                    id: 'startDate',
+                                   // vtype: 'daterange',
+                                    endDateField: 'endDate',
+                                    value: date
+                                },{
+                                    xtype: 'timefield',
+                                    id: 'startTime',
+                                    labelWidth: 30,
+                                    minValue: '00:00',
+                                    maxValue: '23:30',
+                                    format: 'H:i:s',
+                                    increment: 30,
+                                    value: time
+                                },{   
+                                    xtype: 'datefield',
+                                    fieldLabel:'Конец',
+                                    name: 'endDate',
+                                    id: 'endDate',
+                                   // vtype: 'daterange',
+                                    startDateField: 'startDate',
+                                    value: date
+                                },{
+                                    xtype: 'timefield',
+                                    id: 'endTime',
+                                    minValue: '00:00:00',
+                                    maxValue: '23:30:00',
+                                    format: 'H:i:s',
+                                    increment: 30,
+                                    value: time,
+                                    listeners:{
+                                        select:function(){
+                                            var combo = Ext.getCmp('combobox_routes');
+                                            if (combo.isDisabled)
+                                            combo.enable();
+                                        }
+                                    }
+                                }
+                            ]
                         },
-                        fieldLabel: 'Маршруты',
-                        listeners:{
-                            select: me.openTree
-                        },
-                        labelWidth: 55,
-                        id: 'combobox_routes'
-                    },
-                    {   
-                        xtype: 'datefield',
-                        fieldLabel:'Начало',
-                        labelWidth: 35,
-                        name: 'startDate',
-                        id: 'startDate',
-                       // vtype: 'daterange',
-                        endDateField: 'endDate',
-                        value: date
-                    },{
-                        xtype: 'timefield',
-                        id: 'startTime',
-                        labelWidth: 30,
-                        minValue: '00:00',
-                        maxValue: '23:30',
-                        format: 'H:i:s',
-                        increment: 30,
-                        value: time
-                    },{   
-                        xtype: 'datefield',
-                        fieldLabel:'Конец',
-                        name: 'endDate',
-                        id: 'endDate',
-                       // vtype: 'daterange',
-                        startDateField: 'startDate',
-                        value: date
-                    },{
-                        xtype: 'timefield',
-                        id: 'endTime',
-                        minValue: '00:00:00',
-                        maxValue: '23:30:00',
-                        format: 'H:i:s',
-                        increment: 30,
-                        value: time
-                    }
-                ];
+                        {
+                            xtype:'toolbar',
+                            items:[
+                                {
+                                    xtype: 'button',
+                                    text: 'Вкл.',
+                                    handler: me.allCheckOn,
+                                    id:'on',
+                                    disabled:true
+                                },
+                                {
+                                    xtype: 'button',
+                                    text: 'Выкл.',
+                                    handler: me.allCheckff,
+                                    id:'off',
+                                    disabled:true
+                                }
+                            ]
+                        }
+            ];
+        
         // add items to view
         me.items = [];
         me.callParent(arguments);
+    },
+    
+    allCheckOn: function(){
+      console.log("all on");  
+      var win = Ext.getCmp('tree_panel');
+      var elements = win.items.items[0].store.data.items;
+      for (var i = 0; i <= elements.length-1; i++){
+          elements[i].data.checked = true;
+      }
+      console.log(elements);
+    },
+    
+    allCheckff: function(){
+      console.log("all off");  
     },
     
     //Построение списка автобусов с комбобоксами
@@ -100,14 +148,7 @@ Ext.define('CWM.view.DetailReport', {
                 to: to
             },
             success: function(response){
-                /*if (response.responseText === undefined || response.responseText === null){
-                    Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
-                    return 0;
-                }
-                if (response.responseText.length === 0){
-                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
-                    return 0;
-                }*/
+                
                 var ERROR = checkResponseServer(response);
                 if (ERROR){
                     Ext.Msg.alert('Ошибка', ERROR);
@@ -122,7 +163,7 @@ Ext.define('CWM.view.DetailReport', {
                         itemId:buses[i].obj_id_,
                         name:buses[i].proj_id_,
                         leaf: true,
-                        checked: true
+                        checked: false
                     }));                
                 }
                 /*store для дерева*/
@@ -149,6 +190,12 @@ Ext.define('CWM.view.DetailReport', {
                     window.remove('tree_panel');
                     window.doLayout();
                 }
+                
+                var on = Ext.getCmp('on');
+                var off = Ext.getCmp('off');
+                on.enable();
+                off.enable();
+                
                 window.add(panel);
                 window.doLayout();
             },
@@ -194,15 +241,7 @@ Ext.define('CWM.view.DetailReport', {
                 route: route
             },
             success: function(response){
-                /*if (response.responseText === undefined || response.responseText === null){
-                    Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
-                    return 0;
-                }
-                
-                if (response.responseText.length === 0){
-                    Ext.Msg.alert('Предупреждение', 'Данные пусты');
-                    return 0;
-                }*/
+
                 var ERROR = checkResponseServer(response);
                 if (ERROR){
                     Ext.Msg.alert('Ошибка', ERROR);

@@ -74,5 +74,6 @@ public class MyBatisManager {
     public static SqlSessionFactory getDataSessionFactory() throws Exception{
         return sqlDataSessionFactory;
     }
+
 }
 

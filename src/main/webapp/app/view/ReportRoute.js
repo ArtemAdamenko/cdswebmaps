@@ -75,15 +75,7 @@ Ext.define('CWM.view.ReportRoute', {
                     date: date
                 },
                 success:function(response){
-                    /*if (response.responseText === undefined || response.responseText === null){
-                        Ext.Msg.alert('Ошибка', 'Потеряно соединение с сервером');
-                        return 0;
-                    }
 
-                    if (response.responseText.length === 0){
-                        Ext.Msg.alert('Предупреждение', 'Данные пусты');
-                        return 0;
-                    }*/
                     var ERROR = checkResponseServer(response);
                     if (ERROR){
                         Ext.Msg.alert('Ошибка', ERROR);
@@ -139,6 +131,7 @@ Ext.define('CWM.view.ReportRoute', {
                 // create the Grid
                 var grid = Ext.create('Ext.grid.Panel', {
                     store: store,
+                    cls: 'custom-grid',
                     id: 'stateGrid',
                     columns: [
                         {
@@ -153,19 +146,19 @@ Ext.define('CWM.view.ReportRoute', {
                         },
                         {
                             text     : 'Перевозчик',
-                            width    : 150,
+                            width    : 200,
                             sortable : true,
                             dataIndex: 'Proj_ID'
                         },
                         {
                             text     : 'Вышел на маршрут',
-                            width    : 150,
+                            width    : 200,
                             sortable : true,
                             dataIndex: 'Start'
                         },
                         {
                             text     : 'Ушел с маршрута',
-                            width    : 150,
+                            width    : 200,
                             sortable : true,
                             dataIndex: 'End'
                         },

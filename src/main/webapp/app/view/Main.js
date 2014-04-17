@@ -72,6 +72,11 @@ Ext.define('CWM.view.Main', {
                                 allowBlank: false,
                                 fieldLabel: 'Номер'
                         }]
+                    },
+                    {
+                        itemId: 'traffic',
+                        text: 'Пробки',
+                        action: 'traffic'
                     },{
                         itemId: 'ExitItem',
                         text: 'Выход',
@@ -99,17 +104,7 @@ Ext.define('CWM.view.Main', {
             createYMap: function () {
                 var me = this;
                 me.update('<div style="width: ' + me.getEl().getWidth() + 'px; height: ' + me.getEl().getHeight() + 'px;" id="' + me.yMapId + '"></div>');
-                //Ext.updateMap = false;
-                Ext.Ajax.request({
-                    url: 'GetBusesServlet',
-                    success: function(response){               
-                        var ERROR = checkResponseServer(response);
-                        if (ERROR){
-                            Ext.Msg.alert('Ошибка', ERROR);
-                            return 0;
-                        }
-                        var routes =  JSON.parse(response.responseText);
-                        ymaps.ready(function () {
+                  ymaps.ready(function () {
 
                             me.yMap = new ymaps.Map(document.getElementById(me.yMapId), me.ymapConfig, {projection: ymaps.projection.wgs84Mercator });
                             me.yMap.copyrights.add("Разработчик сервиса Адаменко Артем. МБУ ЦОДД 'Веб карта'.");
@@ -121,53 +116,10 @@ Ext.define('CWM.view.Main', {
                                 // Стандартный набор кнопок
                                 .add('mapTools', { left: 35, top: 5 });
                         
-                        
-                                me.yMap.events.add('mousemove', function (e) {
-                                    var label = Ext.getCmp("realCoords");
-                                    label.setText(e.get('coordPosition') + "");
-                                });
-                           
-                                for (var i = 0; i <= routes.length-1; i++)
-                                {
-
-                                    var lng = routes[i].last_lon_;
-                                    var lat = routes[i].last_lat_;
-                                    
-                                    //проверка тс на активность и соответствующий маркер
-                                    var now = new Date().valueOf() - 600000;
-                                    var marker = "twirl#blackStretchyIcon";
-                                    var lastBusDate = new Date(routes[i].last_time_).valueOf();
-                                    if (lastBusDate > now){
-                                        //жирный шрифт для выделения активных автобусов
-                                        marker = "twirl#greenStretchyIcon";
-                                    }
-                                    
-                                    myGeoObject = new ymaps.GeoObject({
-                                        geometry: {
-                                            type: "Point",
-                                            coordinates: [lng, lat]
-                                        },
-                                        properties: {
-                                            iconContent: routes[i].name_,
-                                            balloonContent: datef("dd.MM.YYYY hh:mm:ss", routes[i].last_time_) + 
-                                                    "<br>Долгота: " + lng + 
-                                                    " Широта: " + lat + 
-                                                    "<br> Скорость: " + routes[i].last_speed_ + 
-                                                    " КМ/Ч<br>Время последней остановки: " + datef("dd.MM.YYYY hh:mm:ss", routes[i].last_station_time_) +
-                                                    "<br> Последняя остановка: " + routes[i].bus_station_ +
-                                                    "<br>Местоположение: " + routes[i].address + 
-                                                    "<br>Маршрут " + routes[i].route_name_
-                                        }
-                                    }, {
-                                            preset: marker
-                                        });
-                                   me.yMap.geoObjects.add(myGeoObject);
-                                }
+                        me.yMap.events.add('mousemove', function (e) {
+                            var label = Ext.getCmp("realCoords");
+                            label.setText(e.get('coordPosition') + "");
                         });
-                    },
-                    failure:function () {
-                        Ext.MessageBox.alert('Ошибка', 'Потеряно соединение с сервером');
-                    }      
                 });
-            },
+            }
 });

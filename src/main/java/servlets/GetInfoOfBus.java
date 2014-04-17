@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mapper.ProjectsMapper;
-import mybatis.RequestProjectsSessionManager;
+import mybatis.MyBatisManager;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -41,7 +41,11 @@ public class GetInfoOfBus extends HttpServlet {
         PrintWriter out = response.getWriter();
         /*инициализация объектов*/
 
-        SqlSession session = RequestProjectsSessionManager.getRequestSession();
+        //#
+        //SqlSession session = RequestProjectsSessionManager.getRequestSession();
+        SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
+        //#
+        
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         
         String busName = request.getParameter("busName");
@@ -50,8 +54,7 @@ public class GetInfoOfBus extends HttpServlet {
             List<BusObject> busInfo = mapper.getBusInfo(busName);
             out.print(gson.toJson(busInfo));
 
-        } finally {          
-
+        } finally {             
             out.close();
         }
     }
