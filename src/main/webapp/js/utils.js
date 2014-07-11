@@ -30,7 +30,7 @@ function checkResponseServer(response){
     if (response.responseText === undefined || response.responseText === null){
         return SERVER_ERROR;
     }
-    if (response.responseText.length-1 === 0 || response.responseText === "[]" || response.responseText === ""){
+    if (response.responseText.length-1 === 0 || response.responseText === "0[]" || response.responseText === "[]" || response.responseText === ""){
         return EMPTY_RESPONSE;
     }
 }

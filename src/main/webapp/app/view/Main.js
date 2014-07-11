@@ -2,7 +2,7 @@
 Ext.define('CWM.view.Main', {
     alias: 'widget.main', // alias (xtype)
     extend: 'Ext.panel.Panel',
-    title: 'Панель управления МБУ ЦОДД "Веб карта" 3.0RC версия Текущий пользователь: ' + document.cookie.split(";")[0].split("=")[1],
+    title: 'Панель управления МБУ ЦОДД "Веб карта" 3.1RC версия Текущий пользователь: ' + document.cookie.split(";")[0].split("=")[1],
     id:'main',
    // map instance
             yMap: null,

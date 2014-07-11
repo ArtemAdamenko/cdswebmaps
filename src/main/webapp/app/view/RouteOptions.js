@@ -187,8 +187,6 @@ Ext.define('CWM.view.RouteOptions', {
                 toTime: fullDateTo
             },
             success:function(response){
-                Ext.proj_id = null;
-                Ext.obj_id = null;
                 
                 var ERROR = checkResponseServer(response);
                 if (ERROR){
