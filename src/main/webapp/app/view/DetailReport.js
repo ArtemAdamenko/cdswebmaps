@@ -114,17 +114,63 @@ Ext.define('CWM.view.DetailReport', {
     },
     
     allCheckOn: function(){
-      console.log("all on");  
-      var win = Ext.getCmp('tree_panel');
-      var elements = win.items.items[0].store.data.items;
-      for (var i = 0; i <= elements.length-1; i++){
-          elements[i].data.checked = true;
-      }
-      console.log(elements);
+        var win = Ext.getCmp('tree_panel');
+        var elements = win.items.items[0].store.data.items;
+        for (var i = 0; i <= elements.length-1; i++){
+              elements[i].data.checked = true;
+          }
+        win.items.items[0].store.data.items = elements;  
+        var win = Ext.getCmp('tree_panel');
+        var window = Ext.getCmp('detailReport');    
+        window.remove('tree_panel');
+        window.doLayout();
+        var store = Ext.create('Ext.data.TreeStore', {
+                        root: {
+                            expanded: true,
+                            children: elements
+                        }
+                    });
+        var panel = Ext.create('Ext.tree.Panel', {
+                        title: 'Автобусы',
+                        width: 200,
+                        height: 350,
+                        store: store,
+                        rootVisible: false,
+                        region: 'west',
+                        id: 'tree_panel'
+                    });
+        window.add(panel);
+        window.doLayout();
     },
     
     allCheckff: function(){
-      console.log("all off");  
+      var win = Ext.getCmp('tree_panel');
+        var elements = win.items.items[0].store.data.items;
+        for (var i = 0; i <= elements.length-1; i++){
+              elements[i].data.checked = false;
+          }
+        win.items.items[0].store.data.items = elements;  
+        var win = Ext.getCmp('tree_panel');
+        var window = Ext.getCmp('detailReport');    
+        window.remove('tree_panel');
+        window.doLayout();
+        var store = Ext.create('Ext.data.TreeStore', {
+                        root: {
+                            expanded: true,
+                            children: elements
+                        }
+                    });
+        var panel = Ext.create('Ext.tree.Panel', {
+                        title: 'Автобусы',
+                        width: 200,
+                        height: 350,
+                        store: store,
+                        rootVisible: false,
+                        region: 'west',
+                        id: 'tree_panel'
+                    });
+        window.add(panel);
+        window.doLayout();
     },
     
     //Построение списка автобусов с комбобоксами

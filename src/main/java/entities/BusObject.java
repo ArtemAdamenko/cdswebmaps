@@ -7,6 +7,8 @@ import java.util.Date;
  * @author Adamenko Artem <adamenko.artem@gmail.com>
  * Класс хранящий данные об автобусах
  */
+
+
 public class BusObject {
     /*идентификатор объекта*/
     int obj_id_;
@@ -139,7 +141,7 @@ public class BusObject {
         this.last_time_ = last_time_;
     }
     
-      /*перевод координат для яндекс карт
+      /**перевод координат для яндекс карт
     * @param double coord
     * @return double convert coord
     */

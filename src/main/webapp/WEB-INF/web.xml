@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
     <listener>
         <listener-class>
   		listeners.AppListener
   	</listener-class>
     </listener>
-
     <servlet>
         <servlet-name>GetBusesServlet</servlet-name>
-        <servlet-class>servlets.GetBusesServlet</servlet-class>
+        <servlet-class>servlets.GetBuses</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AuthorizationServlet</servlet-name>
@@ -49,6 +51,14 @@
     <servlet>
         <servlet-name>GetMoveBusStationReport</servlet-name>
         <servlet-class>servlets.GetMoveBusStationReport</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetCurrentRoutes</servlet-name>
+        <servlet-class>servlets.GetCurrentRoutes</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetCurrentRouteBuses</servlet-name>
+        <servlet-class>servlets.GetCurrentRouteBuses</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>GetBusesServlet</servlet-name>
@@ -93,6 +103,14 @@
     <servlet-mapping>
         <servlet-name>GetMoveBusStationReport</servlet-name>
         <url-pattern>/GetMoveBusStationReport</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetCurrentRoutes</servlet-name>
+        <url-pattern>/GetCurrentRoutes</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetCurrentRouteBuses</servlet-name>
+        <url-pattern>/GetCurrentRouteBuses</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

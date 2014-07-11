@@ -45,10 +45,7 @@ public class ReportRoute extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        //#
-        //SqlSession session = RequestDataSessionManager.getRequestSession();
         SqlSession session = MyBatisManager.getDataSessionFactory().openSession();
-        //#
         
         DataMapper mapper = session.getMapper(DataMapper.class);
         
@@ -61,12 +58,8 @@ public class ReportRoute extends HttpServlet {
             mapper.getReport4(from_date, to_date, routeId, sid);
             session.commit();
             
-            //#
             session.close();
             session = MyBatisManager.getDataSessionFactory().openSession();
-            //RequestDataSessionManager.closeRequestSession();
-            //session = RequestDataSessionManager.getRequestSession();
-            //#
             
             mapper = session.getMapper(DataMapper.class);
             List<RouteReportObject> report = mapper.getDataToRouteReport(sid, routeId);
@@ -78,7 +71,10 @@ public class ReportRoute extends HttpServlet {
         }
     }
 
-    /*получение уникального id*/
+    /**
+     * получение уникального id
+     * @return String
+     */
     private String getSid(){
         Date date = new Date();
         int h = date.getHours();

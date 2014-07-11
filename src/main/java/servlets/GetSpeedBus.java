@@ -39,10 +39,7 @@ public class GetSpeedBus extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        //#
-        //SqlSession session = RequestDataSessionManager.getRequestSession();
         SqlSession session = MyBatisManager.getDataSessionFactory().openSession();
-        //#
         
         DataMapper mapper = session.getMapper(DataMapper.class);
         

@@ -24,7 +24,7 @@ import org.apache.ibatis.session.SqlSession;
  * @author Adamenko Artem <adamenko.artem@gmail.com>
  * Сервлет отдающий данные об автобусах
  */
-public class GetBusesServlet extends HttpServlet {
+public class GetBuses extends HttpServlet {
      /*сообщение об ошибке*/
      final String SERVLET_ERROR = "Ошибка обработки данных GetBusesServlet";
     /**
@@ -41,11 +41,9 @@ public class GetBusesServlet extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        
-        //#
-        //SqlSession session = RequestProjectsSessionManager.getRequestSession();
+
         SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
-        //#
+
         
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         Cookie[] cookies = request.getCookies();
@@ -69,9 +67,11 @@ public class GetBusesServlet extends HttpServlet {
         }
     }
     
-    /*Получить автобусы в виде json
-     * @param Map<Integer, List<Integer>> проекты с маршрутами
+    /**
+     * Получить автобусы в виде json
+     * @param projects
      * @return String
+     * @throws Exception 
      */
     public static String getObjects(Map<Integer, List<Integer>> projects) throws Exception
     {
@@ -111,9 +111,10 @@ public class GetBusesServlet extends HttpServlet {
     }
     
     
-    /*Преобразование в Map из List<Map>
-     * @param List<Map> Список с Map
-     * @return Map<Integer, List<Integer>>
+    /**
+     * Преобразование в Map из List<Map>
+     * @param listOfMap
+     * @return Map<Integer,List<Integer>>
      */
     public static Map<Integer,List<Integer>> mapFromListOfMap (List<Map> listOfMap ) 
     {
@@ -151,7 +152,7 @@ public class GetBusesServlet extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(GetBusesServlet.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
+             Logger.getLogger(GetBuses.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
          }
     }
 
@@ -170,7 +171,7 @@ public class GetBusesServlet extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(GetBusesServlet.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
+             Logger.getLogger(GetBuses.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
          }
     }
 

@@ -98,7 +98,11 @@ public class DetailReport extends HttpServlet {
         }
     }
     
-    /*Составной динамический запрос*/
+    /**
+     * Составной динамический запрос
+     * @param params
+     * @return string
+     */
     public String selectPersonSql(Map<String, Object> params) {
       String sid = params.get("sid").toString();
       String wsql = params.get("wsql").toString();
@@ -112,7 +116,10 @@ public class DetailReport extends HttpServlet {
       return SQL();
     }
     
-    /*получение уникального id*/
+    /**
+     * получение уникального id
+     * @return string
+     */
     private String getSid(){
         Date date = new Date();
         int h = date.getHours();

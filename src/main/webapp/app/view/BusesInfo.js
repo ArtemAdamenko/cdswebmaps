@@ -26,7 +26,7 @@ Ext.define('CWM.view.BusesInfo', {
                     lastTime: datef("dd.MM.YYYY hh:mm", info[i].last_time_)
                 }));
             }
-                //создание хранидища данных для отображения
+         //создание хранилища данных для отображения
          Ext.create('Ext.data.Store', {
             storeId: 'infoOfBuses',
             fields: ['number', 'name', 'projName', 'routeName', 'lastTime'],

@@ -127,9 +127,7 @@ Ext.define('CWM.view.MoveBusControl', {
                         }));
                     };
                     var childrens2 = new Array();
-                    console.log(allStations);
                     for (var j = controls[1].Number-1; j <= controls[2].Number-2; j++){
-                        console.log(j);
                         childrens2.push(new Object({
                             text: allStations[j].Name,
                             itemId:allStations[j].Number,

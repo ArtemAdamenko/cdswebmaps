@@ -22,7 +22,9 @@ import org.apache.ibatis.session.SqlSession;
  */
 public class GetInfoOfBus extends HttpServlet {
 
-     /*сообщение об ошибке*/
+     /**
+      * сообщение об ошибке
+      */
      final String SERVLET_ERROR = "Ошибка в GetInfoOfBus";
 
     /**
@@ -41,10 +43,7 @@ public class GetInfoOfBus extends HttpServlet {
         PrintWriter out = response.getWriter();
         /*инициализация объектов*/
 
-        //#
-        //SqlSession session = RequestProjectsSessionManager.getRequestSession();
         SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
-        //#
         
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         

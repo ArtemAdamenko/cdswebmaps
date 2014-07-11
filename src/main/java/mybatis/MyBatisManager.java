@@ -27,7 +27,7 @@ public class MyBatisManager {
     final static String ERROR_DB_PROJECT = "Ошибка подключения к БД Project";
     
     
-    /*
+    /**
      * Инициализация подключения к БД
      * @param String environment
      */
@@ -59,7 +59,7 @@ public class MyBatisManager {
         }
     }
     
-    /*
+    /**
      * Возвращает singleton SqlProjectSessionFactory
      * @return SqlSessionFactory
      */
@@ -67,7 +67,7 @@ public class MyBatisManager {
         return sqlProjectSessionFactory;
     }
     
-     /*
+     /**
      * Возвращает singleton SqlDataSessionFactory
      * @return SqlSessionFactory
      */

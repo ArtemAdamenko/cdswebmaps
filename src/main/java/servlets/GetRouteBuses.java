@@ -71,7 +71,7 @@ public class GetRouteBuses extends HttpServlet {
         }
     }
     
-    /*
+    /**
      * Обработка запроса на автобусы с одного маршрута по интервалу времени
      * @param String routeName название маршрута
      * @param String from начало интервала времени
@@ -112,7 +112,7 @@ public class GetRouteBuses extends HttpServlet {
         return gson.toJson(resultBuses);     
     }
     
-    /*
+    /**
      * Обработка запроса по конкретным маршрутам
      * @param String routesNames список названия маршрутов
      * @param String список автобусов с информацией
@@ -122,11 +122,9 @@ public class GetRouteBuses extends HttpServlet {
         String allRoutesBuses = "[";
 
         //инициализация подключений к бд Data и Projects
-        
-        //#
-        //SqlSession session = RequestProjectsSessionManager.getRequestSession();
+
         SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
-        //#
+
         
         //инициализация мапперов
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
@@ -146,7 +144,7 @@ public class GetRouteBuses extends HttpServlet {
                 JSONObject obj = (JSONObject)routes.get(i);
                 int routeID = mapper.getRouteId(obj.get("route").toString());
                 int projID = Integer.parseInt(obj.get("proj_ID").toString());
-                buses = getAddresses(mapper.selectObjects(routeID, projID));
+                buses = getAddresses(mapper.selectListObjectsWithoutStations(routeID, projID));
                 allRoutesBuses += gson.toJson(buses).replaceAll("\\[|\\]", "") +",";
             }
             //валидация json
@@ -158,7 +156,7 @@ public class GetRouteBuses extends HttpServlet {
         return allRoutesBuses + "]";         
     }
     
-    /*Получение физического адреса ТС
+    /**Получение физического адреса ТС
      * @param List<BusObject> Тс которым нужен адрес
      * @return List<BusObject> ТС с адресами
      */

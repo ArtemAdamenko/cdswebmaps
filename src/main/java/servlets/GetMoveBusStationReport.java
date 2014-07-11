@@ -41,10 +41,7 @@ public class GetMoveBusStationReport extends HttpServlet {
         PrintWriter out = response.getWriter();
         
          /*инициализация объектов*/
-        //#
-        //SqlSession session = RequestDataSessionManager.getRequestSession();
         SqlSession session = MyBatisManager.getDataSessionFactory().openSession();
-        //#
         
         DataMapper mapper = session.getMapper(DataMapper.class);
         

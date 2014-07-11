@@ -2,8 +2,8 @@ Ext.define('CWM.view.RouteOptions', {
     alias: 'widget.routeOptions', // alias (xtype)
     extend: 'Ext.window.Window',
     title: 'Параметры маршрута',
-    width: 200,
-    height: 250,
+    width: 300,
+    height: 350,
     items: [],
     id: 'routes',
     config:{
@@ -24,7 +24,9 @@ Ext.define('CWM.view.RouteOptions', {
         var me = this; 
         me.tbar=[{
             xtype:'button',
+            id: 'routingButtonStart',
             text:'Проложить маршрут',
+            disabled: true,
             listeners:{
                     click: me.routing
             }
@@ -33,38 +35,126 @@ Ext.define('CWM.view.RouteOptions', {
                 xtype: 'label',
                 forId: 'myFieldId',
                 text: 'Начало',
-                margin: '0 0 0 10'
+                margin: '0 0 0 50'
         },{
                 xtype: 'datefield',
+                fieldLabel: "Дата",
                 anchor: '100%',
                 id: 'from_date',
                 maxValue: new Date()
         },{
                 xtype: 'textfield',
+                fieldLabel: "Время",
                 id: 'from_time',
-                increment: 30
+                increment: 30,
+
         },{
                 xtype: 'label',
                 forId: 'myFieldId',
                 text: 'Конец',
-                margin: '0 0 0 10'
+                margin: '0 0 0 50'
         },{
                 xtype: 'datefield',
+                fieldLabel: "Дата",
                 anchor: '100%',
                 id: 'to_date',
                 value: new Date(),
                 maxValue: new Date()
         },{
                 xtype: 'textfield',
+                fieldLabel: "Время",
                 id: 'to_time',
                 increment: 30,
                 value: date
+        },{
+                xtype: 'label',
+                forId: 'myFieldId',
+                text: 'Автобус',
+                margin: '0 0 0 50'
+        },{
+                xtype:'combo',
+                id: 'currentRoutes',
+                fieldLabel: 'Маршрут',
+                //загружаются маршруты текущего перевозчика
+                store: Ext.create('Ext.data.Store', {
+                        fields: [
+                            {name: 'NAME_'},
+                            {name: 'ROUTE'}
+                        ],
+                        proxy: {
+                            type: 'ajax',
+                            url: 'GetCurrentRoutes',
+                            reader: {
+                                type: 'json',
+                                root: 'rows'
+                            }
+                        }
+                }),
+                displayField: 'NAME_',
+                emptyText: 'Выберите маршрут...',
+                valueField: 'ROUTE',
+                listeners: {
+                    render: function(combo) {
+                        //при отрисовке компонента, загружаются в него наши маршруты
+                        combo.getStore().load();
+                    },
+                    select: function( combo, records, eOpts ){
+                        //при выборе маршрута из списка, запрашиваются по нему все автобусы
+                        
+                        
+                        Ext.routeId = combo.getValue();
+                         var busesStore = Ext.create('Ext.data.Store', {
+                            fields: [
+                                {name: 'name_'},
+                                {name: 'obj_id_'},
+                                {name: 'proj_id_'}
+                            ],
+                            proxy: {
+                                type: 'ajax',
+                                url: 'GetCurrentRouteBuses',
+                                extraParams: {
+                                    idRoute: Ext.routeId
+                                },
+                                reader: {
+                                    type: 'json',
+                                    root: 'rows'
+                                }
+                            }
+                        });
+                        
+                        var comboCmp = Ext.getCmp("comboBuses");
+                        if (comboCmp !== undefined){
+                            comboCmp.update();
+                            Ext.getCmp("routes").doLayout();
+                        }
+                        
+                        comboCmp = Ext.create('Ext.form.ComboBox', {
+                            fieldLabel: 'Гос.номер',
+                            itemId: "comboBuses",
+                            id: "comboBuses",
+                            emptyText: "Выберите автобус...",
+                            store: busesStore.load(),
+                            displayField: 'name_',
+                            listeners:{
+                                select: function(combo, records){
+                                    Ext.obj_id = records[0].data.obj_id_;
+                                    Ext.proj_id = records[0].data.proj_id_;
+                                    var button = Ext.getCmp('routingButtonStart');
+                                    if (button.isDisabled)
+                                        button.enable();
+                                }
+                            }
+                        });
+                        
+                        Ext.getCmp("routes").add(comboCmp);
+                        Ext.getCmp("routes").doLayout();
+                    }
+                }
         }];
-        
         me.callParent(arguments);
 
     },
-            
+           
     /*прорисовка траектории и прохождение по каждой точке*/    
     routing: function(){
         //отключение любых обновлений на карте
@@ -86,17 +176,19 @@ Ext.define('CWM.view.RouteOptions', {
         
         var mass = new Array();
         var routes;
-        //var Placemarks = new Array();
+        
         Ext.Ajax.request({
             url:'GetRoute',
             method: 'POST',
             params: { 
-                proj:widget.getProj(),
-                bus:widget.getObj(),
-                fromTime:fullDateFrom, 
-                toTime:fullDateTo
+                proj: Ext.proj_id,
+                bus: Ext.obj_id,
+                fromTime: fullDateFrom, 
+                toTime: fullDateTo
             },
             success:function(response){
+                Ext.proj_id = null;
+                Ext.obj_id = null;
                 
                 var ERROR = checkResponseServer(response);
                 if (ERROR){
@@ -124,16 +216,25 @@ Ext.define('CWM.view.RouteOptions', {
                         var myRoute;
                         var j = 0;
                         var step = 0;
-                        var leng = (routes.length-1)/10;
-                        step = parseInt(leng)/2;
-                        leng = parseInt(leng) * 10;
-                        step = parseInt(step);
-                        if (leng < 200){
-                            step = 3;
+                        
+                        if (routes.length-1 > 20){
+                            var leng = (routes.length-1)/10;
+                        
+                            step = parseInt(leng)/2;
+                            leng = parseInt(leng) * 10;
+                            step = parseInt(step);
+                            if (leng < 200){
+                                step = 3;
+                            }
+                            if (leng < 400 && leng > 200){
+                                step = 6;
+                            }
                         }
-                        if (leng < 400 && leng > 200){
-                            step = 6;
+                        else{
+                            step = 1;
+                            leng = routes.length-1;
                         }
+
                         
                         for (var i = 0; i < leng; i+=step){
                             mass[j] = new Object({
@@ -142,7 +243,7 @@ Ext.define('CWM.view.RouteOptions', {
                             });
                             j++;
                         }
-                        
+
                         var Placemarks = new Array();
                         
                           ymaps.route(mass,{ mapStateAutoApply: true}).then(function (route) {

@@ -11,7 +11,7 @@ public class CacheManager {
     /*Кэш хранящий ключ,значение*/
     final private static Map<Double,String> cacheMap = new ConcurrentHashMap<Double,String>();
    
-    /*
+    /**
      * добавить элемент
      * @param double ключ
      * @param String значение
@@ -22,7 +22,7 @@ public class CacheManager {
         }    
     }
     
-    /*
+    /**
      * Получить значение из кэша
      * @param double ключ
      * @return String значение
@@ -35,7 +35,7 @@ public class CacheManager {
         return value;
     }
     
-    /*
+    /**
      * Проверка на существование элементы в кэше
      * @param Double ключ
      * @return boolean 
@@ -47,7 +47,7 @@ public class CacheManager {
             return false;
     }
     
-    /*
+    /**
      * Удаление элемента
      * @param Double ключ
      */

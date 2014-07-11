@@ -38,10 +38,7 @@ public class AuthorizationServlet extends HttpServlet {
             throws ServletException, IOException, Exception {
         PrintWriter out = response.getWriter();
         
-        //#
-        //SqlSession session = RequestProjectsSessionManager.getRequestSession();
         SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
-        //#
         
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         
@@ -50,12 +47,7 @@ public class AuthorizationServlet extends HttpServlet {
         Cookie cookie = null;
         
         try {
-            /*Если пользователь существует, то генерируем сессию и кидаем в куки*/
-            /*while(pass == null || userName == null){
-                System.out.println(userName + " " + pass);
-                userName = request.getParameter("username");
-                pass = request.getParameter("pass");
-            }*/
+
             System.out.println(userName + " " + pass);
             Integer id = mapper.checkUser(userName, pass);
             if (id != null){
@@ -65,7 +57,6 @@ public class AuthorizationServlet extends HttpServlet {
                 HttpSession sessionUser = request.getSession();
                 sessionUser.setAttribute("session_id", userName);
                 RequestDispatcher view = request.getRequestDispatcher("maps.html");
-                //view.forward(request, response);
                 out.print("access done");
             }
         }finally {   

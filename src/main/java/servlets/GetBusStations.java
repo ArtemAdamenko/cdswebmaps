@@ -40,11 +40,8 @@ public class GetBusStations extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         String routeName = request.getParameter("routeName");
-        
-        //#
-        //SqlSession session = RequestProjectsSessionManager.getRequestSession();
         SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
-        //#
+
         
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         try {

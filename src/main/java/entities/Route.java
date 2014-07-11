@@ -43,7 +43,7 @@ public class Route {
         this.TIME_ = TIME_;
     }
 
-    /*перевод координат для яндекс карт
+    /**перевод координат для яндекс карт
     * @param double coord
     * @return double convert coord
     */

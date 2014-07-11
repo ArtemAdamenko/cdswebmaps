@@ -47,11 +47,7 @@ public class Report extends HttpServlet {
         PrintWriter out = response.getWriter();
         /*инициализация объектов*/
 
-        
-        //#
-        //SqlSession session = RequestProjectsSessionManager.getRequestSession();
         SqlSession session = MyBatisManager.getProjectSessionFactory().openSession();
-        //#
         
         ProjectsMapper mapper = session.getMapper(ProjectsMapper.class);
         
@@ -73,12 +69,11 @@ public class Report extends HttpServlet {
             out.println(jsonUserProject);
             out.println(buses);
         } finally {   
-            //session.close();
             out.close();
         }
     }
     
-    /*Сортировка
+    /**Сортировка
      * @param List<ReportObject>
      * @return List<ReportObject>
      */

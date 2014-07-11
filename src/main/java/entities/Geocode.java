@@ -46,7 +46,7 @@ public class Geocode {
         return formattedAddress;
     }
     
-    /*
+    /**
      * Разбор ответа сервера
      * @param Reader данные
      * @return String ответ
@@ -59,7 +59,8 @@ public class Geocode {
         }
         return sb.toString();
     }
-    /*
+    
+    /**
      * Отправка запроса
      * @param String адрес запроса
      * @return JSONObject ответ сервера
@@ -75,7 +76,8 @@ public class Geocode {
             is.close();
         }
     }
-    /*
+    
+    /**
      * Генерация пути с параметрами
      * @param Map<String, String> параметры запроса
      * @return String путь(url) запроса

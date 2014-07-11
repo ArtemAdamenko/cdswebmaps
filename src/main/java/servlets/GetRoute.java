@@ -43,11 +43,8 @@ public class GetRoute extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        /*инициализация объектов*/
-        //#
-        //SqlSession sessionData = RequestDataSessionManager.getRequestSession();    
+        /*инициализация объектов*/  
         SqlSession sessionData = MyBatisManager.getDataSessionFactory().openSession();
-        //#
         
         DataMapper mapperData = sessionData.getMapper(DataMapper.class);
         
@@ -66,7 +63,6 @@ public class GetRoute extends HttpServlet {
                 typeAuto = 0;
             /*тректория*/
             List<Route> route = mapperData.getRoute(Bus_ID, Proj_ID, fromTimeStr, toTimeStr);
-            //typeAuto = mapperData.getTypeofBus(Proj_ID, Bus_ID);
 
             List<waitInterval> intervals = new ArrayList<waitInterval>();
             if (typeAuto == 1){

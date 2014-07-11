@@ -2,7 +2,7 @@
 Ext.define('CWM.view.Main', {
     alias: 'widget.main', // alias (xtype)
     extend: 'Ext.panel.Panel',
-    title: 'Панель управления МБУ ЦОДД "Веб карта" FINAL версия Текущий пользователь: ' + document.cookie.split(";")[0].split("=")[1],
+    title: 'Панель управления МБУ ЦОДД "Веб карта" 3.0RC версия Текущий пользователь: ' + document.cookie.split(";")[0].split("=")[1],
     id:'main',
    // map instance
             yMap: null,
@@ -18,6 +18,7 @@ Ext.define('CWM.view.Main', {
                 me.tbar = [
                     {
                         itemId: 'MainMenuItem',
+                        id: 'MainMenuItem',
                         text: 'Автобусы',
                         menu:[]
                     },{
@@ -40,6 +41,10 @@ Ext.define('CWM.view.Main', {
                                 text: 'Контроль движения транспорта',
                                 action: 'moveBusControl'
                         }]
+                    },{
+                        itemId: 'trajectory',
+                        text: 'Траектория',
+                        action: 'getRoute'
                     },{
                         itemId: 'lineChart',
                         text: 'График',
