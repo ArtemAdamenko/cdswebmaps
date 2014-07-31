@@ -2,7 +2,7 @@ package mapper;
 
 import entities.BusObject;
 import entities.BusStationObject;
-import entities.ReportObject;
+import entities.OwnerReportObject;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.MapKey;
@@ -124,6 +124,7 @@ public interface ProjectsMapper {
      */
     @Select("SELECT \n"
             + "o.NAME_\n"
+            + ", o.PHONE_\n"
             + ", (select cb.CB_NAME_ from CAR_BRAND cb where cb.CB_ID_ = o.CAR_BRAND_) as cbname_\n"
             + ", (select r.name_ from routs r where r.id_=o.last_rout_)  as rname_\n"
             + ", o.LAST_TIME_\n"
@@ -133,7 +134,7 @@ public interface ProjectsMapper {
             + " WHERE o.PROJ_ID_ in (select up.PROJ_ID_ from USERS_PROJS up left join USERS u on up.USER_=u.ID_ where u.NAME_= #{name})\n"
             + " AND o.OBJ_OUTPUT_ = 0\n"
             + " ORDER BY o.last_station_time_ desc")
-    public List<ReportObject> getDataToReport(String name);
+    public List<OwnerReportObject> getDataToOwnerReport(String name);
     
     
     @Select("SELECT FIRST 1 SKIP 0 a.NAME_\n"

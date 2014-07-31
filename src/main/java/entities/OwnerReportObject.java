@@ -7,7 +7,7 @@ import java.util.Date;
  * @author Adamenko Artem <adamenko.artem@gmail.com>
  * Класс для работы с объектами для отчета
  */
-public class ReportObject {
+public class OwnerReportObject {
     /*гос. номер*/
     public String NAME_;
     /*марка т.с.*/
@@ -20,6 +20,24 @@ public class ReportObject {
     public Date LAST_STATION_TIME_;
     /*установщик*/
     public String PVNAME;
+    /*номер SIM*/
+    public String PHONE_;
+
+    public void setLAST_STATION_TIME_(Date LAST_STATION_TIME_) {
+        this.LAST_STATION_TIME_ = LAST_STATION_TIME_;
+    }
+
+    public void setPHONE_(String PHONE_) {
+        this.PHONE_ = PHONE_;
+    }
+
+    public Date getLAST_STATION_TIME_() {
+        return LAST_STATION_TIME_;
+    }
+
+    public String getPHONE_() {
+        return PHONE_;
+    }
 
     public String getNAME_() {
         return NAME_;

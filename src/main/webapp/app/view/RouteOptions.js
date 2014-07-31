@@ -103,6 +103,7 @@ Ext.define('CWM.view.RouteOptions', {
                         
                         
                         Ext.routeId = combo.getValue();
+                        console.log(combo.getValue());
                          var busesStore = Ext.create('Ext.data.Store', {
                             fields: [
                                 {name: 'name_'},
@@ -139,6 +140,7 @@ Ext.define('CWM.view.RouteOptions', {
                                 select: function(combo, records){
                                     Ext.obj_id = records[0].data.obj_id_;
                                     Ext.proj_id = records[0].data.proj_id_;
+                                    
                                     var button = Ext.getCmp('routingButtonStart');
                                     if (button.isDisabled)
                                         button.enable();
@@ -176,7 +178,7 @@ Ext.define('CWM.view.RouteOptions', {
         
         var mass = new Array();
         var routes;
-        
+        console.log(Ext);
         Ext.Ajax.request({
             url:'GetRoute',
             method: 'POST',
@@ -187,7 +189,7 @@ Ext.define('CWM.view.RouteOptions', {
                 toTime: fullDateTo
             },
             success:function(response){
-                
+                console.log(response);
                 var ERROR = checkResponseServer(response);
                 if (ERROR){
                     Ext.Msg.alert('Ошибка', ERROR);

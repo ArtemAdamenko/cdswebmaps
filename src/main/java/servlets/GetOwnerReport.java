@@ -1,7 +1,7 @@
 package servlets;
 
 import com.google.gson.Gson;
-import entities.ReportObject;
+import entities.OwnerReportObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -24,9 +24,9 @@ import org.apache.ibatis.session.SqlSession;
 /**
  *
  * @author Adamenko Artem <adamenko.artem@gmail.com>
- * Класс для формирования данных для отчетов
+ * Класс для формирования данных для отчета по перевозчикам
  */
-public class Report extends HttpServlet {
+public class GetOwnerReport extends HttpServlet {
 
 
      /*сообщение об ошибке*/
@@ -62,10 +62,12 @@ public class Report extends HttpServlet {
         }
         try {
             /*подготовка данных для клиентской стороны*/
-            List<ReportObject> Objects = mapper.getDataToReport(username);
+            List<OwnerReportObject> Objects = mapper.getDataToOwnerReport(username);
             String buses = gson.toJson(Objects);
+            
             Map<Integer,String> userProject = mapper.getUserProject(username);
             String jsonUserProject = gson.toJson(userProject) + "@";
+            
             out.println(jsonUserProject);
             out.println(buses);
         } finally {   
@@ -77,10 +79,10 @@ public class Report extends HttpServlet {
      * @param List<ReportObject>
      * @return List<ReportObject>
      */
-    private static List<ReportObject> sortDataList(List<ReportObject> Objects) throws UnsupportedEncodingException, ParseException{
-        Collections.sort(Objects, new Comparator<ReportObject>(){
+    private static List<OwnerReportObject> sortDataList(List<OwnerReportObject> Objects) throws UnsupportedEncodingException, ParseException{
+        Collections.sort(Objects, new Comparator<OwnerReportObject>(){
             @Override
-            public int compare(ReportObject o1, ReportObject o2) {
+            public int compare(OwnerReportObject o1, OwnerReportObject o2) {
                return o1.NAME_.compareTo(o2.NAME_);
             }
         });
@@ -103,7 +105,7 @@ public class Report extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
+             Logger.getLogger(GetOwnerReport.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
          }
     }
 
@@ -122,7 +124,7 @@ public class Report extends HttpServlet {
          try {
              processRequest(request, response);
          } catch (Exception ex) {
-             Logger.getLogger(Report.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
+             Logger.getLogger(GetOwnerReport.class.getName()).log(Level.SEVERE, SERVLET_ERROR, ex);
          }
     }
 

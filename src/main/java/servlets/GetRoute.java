@@ -53,6 +53,7 @@ public class GetRoute extends HttpServlet {
         String fromTimeStr = request.getParameter("fromTime");
         String toTimeStr = request.getParameter("toTime");
         Integer typeAuto = 0;
+        System.out.println(projectId + " " + busId + " " + fromTimeStr + " " + toTimeStr);
         Gson gson = new Gson();
         try {
             int Bus_ID = Integer.parseInt(busId);
@@ -63,10 +64,10 @@ public class GetRoute extends HttpServlet {
                 typeAuto = 0;
             /*тректория*/
             List<Route> route = mapperData.getRoute(Bus_ID, Proj_ID, fromTimeStr, toTimeStr);
-
+            List<Route> route2 = mapperData.getRoute(Bus_ID, Proj_ID, fromTimeStr, toTimeStr);
             List<waitInterval> intervals = new ArrayList<waitInterval>();
             if (typeAuto == 1){
-                if (route != null){
+                if (!route.isEmpty()){
                     intervals = waitingAuto(route);
                     out.print(gson.toJson(typeAuto) + gson.toJson(route) + gson.toJson(intervals));
                 }

@@ -1,15 +1,15 @@
-Ext.define('CWM.view.Report', {
-    alias: 'widget.report', // alias (xtype)
+Ext.define('CWM.view.OwnerReport', {
+    alias: 'widget.ownerReport', // alias (xtype)
     extend: 'Ext.window.Window',
     title: 'Отчет',
     width: "50%",
     height: "70%",
-    id: 'report',
+    id: 'ownerReport',
     
     initComponent: function () {
         var me = this; 
         Ext.Ajax.request({
-            url: 'Report',
+            url: 'GetOwnerReport',
             success: function(response){
 
                 var ERROR = checkResponseServer(response);
@@ -64,7 +64,17 @@ Ext.define('CWM.view.Report', {
                var header = "<div id='report_header'>Отчет по перевозчику «" + headData.NAME_ + "» по состоянию на «"+datef("YYYY.MM.dd hh:mm", currentDate)+"»<br>Всего записей " + reportData.length + "</div>";
                /*основной контент отчета*/  
                var view = header; 
-               view += '<table id="report_content" align="center" BORDER="1" cellpadding="0" cellspacing="0"><tr id="table_header"><td>№ п/п</td><td>ГосНомерТС</td><td>Марка ТС</td><td>Установщик</td><td>Маршрут следования</td><td>Время последнего отклика</td><td>Время прохождения последней остановки</td> </tr>';
+               view += '<table id="report_content" align="center" BORDER="1" cellpadding="0" cellspacing="0">\n\
+                        <tr id="table_header">\n\
+                            <td>№ п/п</td>\n\
+                            <td>ГосНомерТС</td>\n\
+                            <td>Марка ТС</td>\n\
+                            <td>Установщик</td>\n\
+                            <td>Маршрут следования</td>\n\
+                            <td>Время последнего отклика</td>\n\
+                            <td>Время прохождения последней остановки</td>\n\
+                            <td>Номер SIM</td> \n\
+                        </tr>';
                var lastStationTime = "";
                var lastTime = "";
                for (var i = 0; i <= reportData.length-1; i++){
@@ -75,6 +85,7 @@ Ext.define('CWM.view.Report', {
                     view += "<td  id=\"obj_cbname\">" + reportData[i].CBNAME_ +"</td>";
                     view += "<td  id=\"obj_pvname\">" + reportData[i].PVNAME +"</td>";
                     view += "<td  id=\"obj_rname\">" + reportData[i].RNAME_ +"</td>";
+                    
                     if (reportData[i].LAST_TIME_ !== undefined)
                         lastTime = datef("dd.MM.YYYY hh:mm",reportData[i].LAST_TIME_);
                     else
@@ -85,7 +96,8 @@ Ext.define('CWM.view.Report', {
                     else
                         lastStationTime = "Дата неизвестна";
                     view += "<td id=\"obj_lastStationTime\">" + lastStationTime +"</td>";
-                   view += "</tr>";
+                    view += "<td>" + reportData[i].PHONE_ + "</td>";
+                    view += "</tr>";
                }
                view +="</table>";
                return view;

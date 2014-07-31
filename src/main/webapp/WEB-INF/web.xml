@@ -17,8 +17,8 @@
         <servlet-class>servlets.AuthorizationServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Report</servlet-name>
-        <servlet-class>servlets.Report</servlet-class>
+        <servlet-name>GetOwnerReport</servlet-name>
+        <servlet-class>servlets.GetOwnerReport</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>GetRoute</servlet-name>
@@ -69,8 +69,8 @@
         <url-pattern>/AuthorizationServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Report</servlet-name>
-        <url-pattern>/Report</url-pattern>
+        <servlet-name>GetOwnerReport</servlet-name>
+        <url-pattern>/GetOwnerReport</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>GetRoute</servlet-name>

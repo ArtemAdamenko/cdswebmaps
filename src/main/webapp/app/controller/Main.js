@@ -1,6 +1,6 @@
 Ext.define('CWM.controller.Main', {
     extend: 'Ext.app.Controller',
-    views: ['CWM.view.Main', 'CWM.view.WaitIntervals', 'CWM.view.Report','CWM.view.RouteOptions', 'CWM.view.ReportRoute', 'CWM.view.MyChart', 'CWM.view.DetailReport', 'CWM.view.MoveBusControl', 'CWM.view.BusesInfo'],
+    views: ['CWM.view.Main', 'CWM.view.WaitIntervals', 'CWM.view.OwnerReport','CWM.view.RouteOptions', 'CWM.view.ReportRoute', 'CWM.view.MyChart', 'CWM.view.DetailReport', 'CWM.view.MoveBusControl', 'CWM.view.BusesInfo'],
     refs: [
         {ref: 'MainView', selector: 'main'} // Reference to main view
     ],
@@ -162,7 +162,7 @@ Ext.define('CWM.controller.Main', {
     },
     //Открытие окна с отчетом по перевозчикам
     openReport: function(){
-        var win = Ext.widget('report');
+        var win = Ext.widget('ownerReport');
         win.show();
     },
     
